@@ -4,13 +4,15 @@ import ResultTable from "../common/table/ResultTable";
 import axios from "axios";
 import { formatTableDate } from "../utils/tableUtils";
 import { useNavigate } from "react-router-dom";
+import { backendUrl } from "../utils/fetchUtils";
+import { SubmitButton } from "../common/Button";
 
 const HomePage = (props) => {
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
 
   const fetchTeams = () => {
-    axios.get("http://localhost:8080/event/getAll").then((res) => {
+    axios.get(`${backendUrl()}/event/getAll`).then((res) => {
       setEvents(res.data);
     });
   };
@@ -37,18 +39,39 @@ const HomePage = (props) => {
       },
       {
         width: "30%",
-        id: "Data",
-        Header: "#",
+        id: "date",
+        Header: "Data wydarzenia",
         accessor: (cellInfo) => formatTableDate(cellInfo.date),
         disableFilters: true,
+      },
+      {
+        width: "30%",
+        id: "deadlineDate",
+        Header: "Zapisy",
+        disableSortBy: true,
+        disableFilters: true,
+        accessor: (cellInfo) => cellInfo.date,
+        disableRowClick: true,
+        Cell: (row) => (
+          <SubmitButton
+            action={() => addTeamToEvent(row)}
+            label={"Zapisz się"}
+            disabled={new Date().getTime() < new Date(row.value).getTime()}
+            paddingTop={" button_in_table"}
+            small={true}
+          />
+        ),
       },
     ],
     []
   );
 
   const onRowClick = (row) => {
-    console.log(row.allCells[0].value);
     navigate("event", { state: { eventId: row.allCells[0].value } });
+  };
+
+  const addTeamToEvent = (row) => {
+    navigate("joinToEvent", { state: { eventId: row.data[0].eventId } });
   };
 
   return (

@@ -6,6 +6,7 @@ import DriverListPage from "./components/page/DriverListPage";
 import AddScorePage from "./components/page/AddScorePage";
 import StageScorePage from "./components/page/StageScorePage";
 import HomePage from "./components/page/HomePage";
+import TeamCreatePage from "./components/page/TeamCreatePage";
 import { NavigationBar } from "./components/common/NavigationBar";
 
 function App() {
@@ -14,10 +15,11 @@ function App() {
   return (
     <div className="App container">
       {/* <header className="App-header">RACE SCORE</header> */}
-      <NavigationBar />
-      <div className="shadow bg-body rounded pb-3">
-        <div className="p-3">
-          <BrowserRouter>
+
+      <BrowserRouter>
+        <NavigationBar />
+        <div className="shadow bg-body rounded pb-3">
+          <div className="p-3">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route
@@ -29,10 +31,11 @@ function App() {
                 element={<StageScorePage addedNewScore={addedNewScore} />}
               />
               <Route path="/drivers" element={<DriverListPage />} />
+              <Route path="/joinToEvent" element={<TeamCreatePage />} />
             </Routes>
-          </BrowserRouter>
+          </div>
         </div>
-      </div>
+      </BrowserRouter>
     </div>
   );
 }

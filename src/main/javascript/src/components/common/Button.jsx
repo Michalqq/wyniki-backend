@@ -4,26 +4,17 @@ export const SubmitButton = ({
   action,
   disabled = false,
   label = "",
-  wide = false,
   role = "",
   paddingTop = " u-margin-top-l",
   small = false,
 }) => {
-  let buttonStyle =
-    disabled === true
-      ? " opl-btn-disabled opl-button--secondary "
-      : " opl-btn--primary";
-  let className =
-    "o-btn opl-btn try-print-button" +
-    buttonStyle +
-    (wide ? " u-w-100" : paddingTop) +
-    " u-margin-left-s u-margin-right-s " +
-    (small ? " opl-btn--small" : "");
+  let className = "btn btn-success " + (small ? " opl-btn--small" : "");
   return (
     <button
       role={role}
       onClick={!disabled ? action : undefined}
       className={className}
+      disabled={disabled}
     >
       {label}
     </button>

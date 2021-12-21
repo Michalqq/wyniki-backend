@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { ScoreDiv, TeamDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
 import Badge from "react-bootstrap/Button";
+import { backendUrl } from "../utils/fetchUtils";
 
 const StageScorePage = (props) => {
   const location = useLocation();
@@ -28,7 +29,7 @@ const StageScorePage = (props) => {
 
   const fetchScores = () => {
     axios
-      .get(`http://localhost:8080/score/getStageScores?stageId=${stage}`)
+      .get(`${backendUrl()}/score/getStageScores?stageId=${stage}`)
       .then((res) => {
         setScores(res.data);
         setLoading(false);
@@ -37,7 +38,7 @@ const StageScorePage = (props) => {
 
   const fetchSummedScores = () => {
     axios
-      .get(`http://localhost:8080/score/getStagesSumScores?stageId=${stage}`)
+      .get(`${backendUrl()}/score/getStagesSumScores?stageId=${stage}`)
       .then((res) => {
         setSummedScores(res.data);
         setLoading(false);
@@ -46,7 +47,7 @@ const StageScorePage = (props) => {
 
   const fetchPsOptions = () => {
     axios
-      .get(`http://localhost:8080/event/getStagesAndClasses?eventId=${stage}`)
+      .get(`${backendUrl()}/event/getStagesAndClasses?eventId=${stage}`)
       .then((res) => {
         setPsOptions(res.data.psOptions || []);
         setClassesOptions(res.data.classesOptions || []);

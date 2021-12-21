@@ -4,6 +4,7 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
 import { RadioButton } from "../common/Button";
+import { backendUrl } from "../utils/fetchUtils";
 
 export const AddUserPanel = (props) => {
   const mode = [
@@ -32,17 +33,17 @@ export const AddUserPanel = (props) => {
   const [disable, setDisable] = useState(false);
 
   const fetchPsOptions = () => {
-    axios
-      .get("http://localhost:8080/event/getPsOptions?eventId=1")
-      .then((res) => {
-        setPsOptions(res.data);
-      });
+    axios.get(`${backendUrl()}/event/getPsOptions?eventId=1`).then((res) => {
+      setPsOptions(res.data);
+    });
   };
 
   const fetchTeamsOptions = (stageId) => {
     setLoadingTeams(true);
     axios
-      .get("http://localhost:8080/score/getTeamOptions?stageId=" + stageId)
+      .get(
+        `${backendUrl()}/score/getTeamOptions?stageId=${stageId}&mode=${editMode}`
+      )
       .then((res) => {
         setTeamOptions(res.data);
         setLoadingTeams(false);
@@ -50,15 +51,13 @@ export const AddUserPanel = (props) => {
   };
 
   const startEvent = () => {
-    axios
-      .post("http://localhost:8080/event/startEvent?eventId=1")
-      .then((res) => {
-        console.log(res);
-      });
+    axios.post(`${backendUrl()}/event/startEvent?eventId=1`).then((res) => {
+      console.log(res);
+    });
   };
 
   const addScore = (data) => {
-    axios.post("http://localhost:8080/score/addScore", data).then((res) => {
+    axios.post(`${backendUrl()}/score/addScore`, data).then((res) => {
       fetchTeamsOptions(stage);
     });
   };
@@ -86,7 +85,7 @@ export const AddUserPanel = (props) => {
 
   const getTeamData = () => {
     axios
-      .post("http://localhost:8080/score/getTeamScore?eventId=1&teamId=1")
+      .post(`${backendUrl()}/score/getTeamScore?eventId=1&teamId=1`)
       .then((res) => {
         setScoreMin(res.data.scoreMin);
         setScoreSec(res.data.scoreSec);

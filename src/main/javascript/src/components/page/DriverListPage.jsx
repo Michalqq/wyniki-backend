@@ -2,12 +2,13 @@
 import React, { useState, useMemo, useEffect } from "react";
 import ResultTable from "../common/table/ResultTable";
 import axios from "axios";
+import { backendUrl } from "../utils/fetchUtils";
 
 const DriverListPage = (props) => {
   const [teams, setTeams] = useState([]);
 
   const fetchTeams = () => {
-    axios.get("http://localhost:8080/event/getTeams?eventId=1").then((res) => {
+    axios.get(`${backendUrl()}/event/getTeams?eventId=1`).then((res) => {
       setTeams(res.data);
     });
   };

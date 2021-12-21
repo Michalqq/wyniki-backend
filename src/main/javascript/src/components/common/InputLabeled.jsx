@@ -8,6 +8,7 @@ export const InputLabeled = ({
   handleChange,
   disabled = false,
   max,
+  big = false,
 }) => {
   const [cellValue, setCellValue] = useState(value);
   const [error, setError] = useState(false);
@@ -40,12 +41,12 @@ export const InputLabeled = ({
   const errorClass = error ? " border border-danger border-3 rounded" : "";
 
   return (
-    <div className="form-group p-2">
-      <span className="input-group-text my-input" id="">
+    <div className="centered-grid form-group p-2">
+      <span className={"input-group-text " + (big ? "" : "my-input")} id="">
         {label}
       </span>
       <input
-        className={"form-control my-input" + errorClass}
+        className={"form-control " + (big ? "" : "my-input") + errorClass}
         value={cellValue}
         placeholder={inputPlaceholder}
         onChange={(e) => onChange(e.target.value)}
