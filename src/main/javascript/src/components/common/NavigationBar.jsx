@@ -20,7 +20,12 @@ export const NavigationBar = () => {
                 <NavDropdown.Item
                   href={`/add_score?${location.state?.eventId}`}
                 >
-                  Dodaj wynik/karę
+                  Dodaj wyniki
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href={`/add_penalty?${location.state?.eventId}`}
+                >
+                  Dodaj kary
                 </NavDropdown.Item>
                 <NavDropdown.Item href="/drivers">
                   Lista startowa

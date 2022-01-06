@@ -18,7 +18,7 @@ public class ScoreToString {
         int minutes = (int) (scoreInMilis / 60000);
         int seconds = (int) (scoreInMilis - minutes * 60000) / 1000;
         String sec = String.valueOf(seconds);
-        return sec.length() == 0 ? 0 + sec : sec;
+        return "00".substring(sec.length(), 2) + sec;
     }
 
     public static final String getMilis(Long scoreInMilis) {

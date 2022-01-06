@@ -8,9 +8,11 @@ import { ScoreDiv, ScoreDivPenalty, TeamDiv, CarDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
 import Badge from "react-bootstrap/Button";
 import { backendUrl } from "../utils/fetchUtils";
+import PenaltyTable from "../common/PenaltyTable";
 
 const StageScorePage = (props) => {
   const location = useLocation();
+  const eventId = location.state.eventId;
 
   const GENERAL = "GENERALNA";
 
@@ -21,7 +23,7 @@ const StageScorePage = (props) => {
   const [classesOptions, setClassesOptions] = useState([]);
 
   const [currentClass, setCurrentClass] = useState(GENERAL);
-  const [stage, setStage] = useState(location.state.eventId);
+  const [stage, setStage] = useState();
 
   const [stageName, setStageName] = useState("");
 
@@ -38,7 +40,9 @@ const StageScorePage = (props) => {
 
   const fetchSummedScores = () => {
     axios
-      .get(`${backendUrl()}/score/getStagesSumScores?stageId=${stage}`)
+      .get(
+        `${backendUrl()}/score/getStagesSumScores?eventId=${eventId}&stageId=${stage}`
+      )
       .then((res) => {
         setSummedScores(res.data);
         setLoading(false);
@@ -47,23 +51,28 @@ const StageScorePage = (props) => {
 
   const fetchPsOptions = () => {
     axios
-      .get(`${backendUrl()}/event/getStagesAndClasses?eventId=${stage}`)
+      .get(`${backendUrl()}/event/getStagesAndClasses?eventId=${eventId}`)
       .then((res) => {
         setPsOptions(res.data.psOptions || []);
         setClassesOptions(res.data.classesOptions || []);
       });
   };
 
-  useEffect(() => {
+  const fetchData = () => {
     setLoading(true);
-    fetchScores();
-    fetchSummedScores();
+    if (stage !== undefined) {
+      fetchScores();
+      fetchSummedScores();
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, [stage]);
 
   useEffect(() => {
     fetchPsOptions();
-    fetchScores();
-    fetchSummedScores();
+    fetchData();
   }, [props.addedNewScore]);
 
   const columns = useMemo(
@@ -215,6 +224,7 @@ const StageScorePage = (props) => {
           />
         </div>
       </div>
+      <PenaltyTable eventId={eventId} onRemove={fetchData} />
     </div>
   );
 };

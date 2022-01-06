@@ -1,9 +1,6 @@
 package com.akbp.racescore.service;
 
-import com.akbp.racescore.model.dto.ScoreDTO;
-import com.akbp.racescore.model.dto.StageScoreDTO;
-import com.akbp.racescore.model.dto.StageScoreSumDTO;
-import com.akbp.racescore.model.dto.TeamOption;
+import com.akbp.racescore.model.dto.*;
 import com.akbp.racescore.model.entity.Penalty;
 import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.StageScore;
@@ -66,8 +63,8 @@ public class ScoreService {
         return calculateTime(scoresDTOS);
     }
 
-    public List<StageScoreDTO> getStagesSumScores(Long stageId) {
-        List<StageScoreSumDTO> scoresDTOS = stageScoreRepository.findSummedScoreByStageId(stageId);
+    public List<StageScoreDTO> getStagesSumScores(Long eventId, Long stageId) {
+        List<StageScoreSumDTO> scoresDTOS = stageScoreRepository.findSummedScoreByStageId(eventId, stageId);
         return calculateTime(scoresDTOS);
     }
 
@@ -101,5 +98,28 @@ public class ScoreService {
     public Long addPenalty(Penalty penalty) {
         penaltyRepository.save(penalty);
         return 1L;
+    }
+
+    public List<PenaltyByTeamDTO> getPenalties(Long eventId) {
+        List<PenaltyDTO> penalties = penaltyRepository.findAllByEventId(eventId);
+
+        List<PenaltyByTeamDTO> penaltyDTOS = new ArrayList<>();
+
+        for (PenaltyDTO penalty : penalties) {
+            if (penaltyDTOS.stream().filter(x -> x.getNumber() == penalty.getNumber()).findAny().isPresent())
+                continue;
+
+            List<PenaltyDTO> teamPenalties = penalties.stream()
+                    .filter(x -> x.getNumber() == penalty.getNumber())
+                    .sorted(Comparator.comparingInt(x -> x.getNumber()))
+                    .collect(Collectors.toList());
+            penaltyDTOS.add(new PenaltyByTeamDTO(penalty.getDriver(), penalty.getCoDriver(), penalty.getNumber(), teamPenalties));
+        }
+        return penaltyDTOS.stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList());
+    }
+
+    public boolean removePenalty(Long penaltyId) {
+        penaltyRepository.deleteById(penaltyId);
+        return true;
     }
 }

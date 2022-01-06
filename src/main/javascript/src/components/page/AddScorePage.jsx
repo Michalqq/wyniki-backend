@@ -80,11 +80,6 @@ export const AddScorePage = (props) => {
     axios.post(`${backendUrl()}/score/addPenalty`, data).then((res) => {});
   };
 
-  const setScoreInMilis = (value) => {
-    if (value.length === 1) value = value + "0";
-    setScoreMiliSec(value);
-  };
-
   useEffect(() => {
     setEventId(location.search.replace("?", ""));
   }, []);
@@ -143,7 +138,7 @@ export const AddScorePage = (props) => {
     const data = {
       teamId: teamId,
       stageId: stage,
-      penaltySec: penaltySec * 1000,
+      penaltySec: penaltySec,
       description: penaltyDesc,
     };
     postPenalty(data);
@@ -238,13 +233,13 @@ export const AddScorePage = (props) => {
                     label="Setne"
                     inputPlaceholder="00"
                     value={scoreMiliSec}
-                    handleChange={(e) => setScoreInMilis(e)}
+                    handleChange={(e) => setScoreMiliSec(e)}
                     disabled={disable}
                     onlyNumber={true}
                     max={99}
                   />
                 </div>
-                {msg}
+                <div className="col-xl-12 pt-1 fw-bolder">{msg}</div>
                 <div className="col-xl-12 pt-5">
                   <button
                     type="button"

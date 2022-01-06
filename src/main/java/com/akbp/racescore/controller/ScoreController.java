@@ -1,5 +1,6 @@
 package com.akbp.racescore.controller;
 
+import com.akbp.racescore.model.dto.PenaltyByTeamDTO;
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.TeamOption;
@@ -51,7 +52,18 @@ public class ScoreController {
     }
 
     @GetMapping("getStagesSumScores")
-    public List<StageScoreDTO> getStagesSumScores(@RequestParam("stageId") Long stageId) {
-        return scoreService.getStagesSumScores(stageId);
+    public List<StageScoreDTO> getStagesSumScores(@RequestParam("eventId") Long eventId, @RequestParam("stageId") Long stageId) {
+        return scoreService.getStagesSumScores(eventId, stageId);
+    }
+
+    @GetMapping("getPenalties")
+    public List<PenaltyByTeamDTO> getPenalties(@RequestParam("eventId") Long eventId) {
+        return scoreService.getPenalties(eventId);
+    }
+
+    @PostMapping("removePenalty")
+    public boolean removePenalty(@RequestParam("penaltyId") Long penaltyId)
+    {
+        return scoreService.removePenalty(penaltyId);
     }
 }

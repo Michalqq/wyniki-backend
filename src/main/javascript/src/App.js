@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import DriverListPage from "./components/page/DriverListPage";
 import AddScorePage from "./components/page/AddScorePage";
+import AddPenaltyPage from "./components/page/AddPenaltyPage";
 import StageScorePage from "./components/page/StageScorePage";
 import HomePage from "./components/page/HomePage";
 import TeamCreatePage from "./components/page/TeamCreatePage";
@@ -25,6 +26,10 @@ function App() {
               <Route
                 path="/add_score"
                 element={<AddScorePage setAddedNewScore={setAddedNewScore} />}
+              />{" "}
+              <Route
+                path="/add_penalty"
+                element={<AddPenaltyPage setAddedNewScore={setAddedNewScore} />}
               />
               <Route
                 path="/event"

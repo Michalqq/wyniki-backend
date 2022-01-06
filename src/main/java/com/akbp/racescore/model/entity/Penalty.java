@@ -18,7 +18,7 @@ public class Penalty {
     @Column(name = "STAGE_ID", updatable = false)
     private Long stageId;
 
-    @Column(name = "TEAM_ID", updatable = false)
+    @Column(name = "TEAM_ID")
     private Long teamId;
 
     @Column(name = "PENALTY_SEC")
