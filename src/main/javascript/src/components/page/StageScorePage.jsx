@@ -4,7 +4,7 @@ import axios from "axios";
 import ResultTable from "../common/table/ResultTable";
 import { useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ScoreDiv, TeamDiv } from "../common/Div";
+import { ScoreDiv, ScoreDivPenalty, TeamDiv, CarDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
 import Badge from "react-bootstrap/Button";
 import { backendUrl } from "../utils/fetchUtils";
@@ -78,7 +78,7 @@ const StageScorePage = (props) => {
         Cell: (row) => <> {row.row.index + 1}</>,
       },
       {
-        width: "3%",
+        width: "5%",
         id: "nr",
         Header: "Nr",
         accessor: (cellInfo) => cellInfo.number,
@@ -91,7 +91,7 @@ const StageScorePage = (props) => {
         ),
       },
       {
-        width: "25%",
+        width: "20%",
         id: "team",
         Header: "Załoga",
         disableFilters: true,
@@ -105,23 +105,42 @@ const StageScorePage = (props) => {
         ),
       },
       {
-        width: "12%",
+        width: "20%",
         id: "car",
         Header: "Samochód",
-        accessor: (cellInfo) => cellInfo.car + cellInfo.className,
         disableFilters: true,
         disableSortBy: true,
+        Cell: (cellInfo) => (
+          <CarDiv
+            line1={cellInfo.row.original.car}
+            line2={cellInfo.row.original.className}
+          />
+        ),
       },
       {
-        width: "10%",
+        width: "15%",
         id: "score",
-        Header: "Czas",
+        Header: "Czas / kary",
+        accessor: (cellInfo) => cellInfo.stageScore,
+        disableFilters: true,
+        disableSortBy: true,
+        Cell: (cellInfo) => (
+          <ScoreDivPenalty
+            line1={cellInfo.row.original.stageScore}
+            line2={cellInfo.row.original.totalPenalty}
+          />
+        ),
+      },
+      {
+        width: "15%",
+        id: "result",
+        Header: "Wynik",
         accessor: (cellInfo) => cellInfo.stageScore,
         disableFilters: true,
         disableSortBy: true,
         Cell: (cellInfo) => (
           <ScoreDiv
-            line1={cellInfo.row.original.stageScore}
+            line1={cellInfo.row.original.totalTime}
             line2={cellInfo.row.original.timeTo}
             line3={cellInfo.row.original.timeToFirst}
           />

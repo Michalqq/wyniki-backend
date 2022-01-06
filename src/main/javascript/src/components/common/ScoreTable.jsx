@@ -2,7 +2,7 @@
 import React, { useMemo } from "react";
 import ResultTable from "../common/table/ResultTable";
 
-const DriverListPage = (props) => {
+const ScoreTable = (props) => {
   const columns = useMemo(
     () => [
       {
@@ -73,4 +73,4 @@ const DriverListPage = (props) => {
   );
 };
 
-export default DriverListPage;
+export default ScoreTable;

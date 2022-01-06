@@ -111,9 +111,14 @@
 .font14 {
   font-size: 14px;
 }
-
+.font13 {
+  font-size: 13px;
+}
 .font12 {
   font-size: 12px;
+}
+.font11 {
+  font-size: 11px;
 }
 
 .text-left {

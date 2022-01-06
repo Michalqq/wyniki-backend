@@ -16,4 +16,6 @@ public interface StageScoreSumDTO {
 
     String getCarClass();
 
+    String getTeamName();
+
 }

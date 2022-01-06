@@ -40,7 +40,7 @@ public class StageScoreDTO {
         this.stageScoreId = score.getId();
         this.driver = score.getTeam().getDriver();
         this.coDriver = score.getTeam().getCoDriver();
-        this.teamName = "Todo";
+        this.teamName = score.getTeam().getTeamName();
         this.car = score.getTeam().getCar();
         this.className = score.getTeam().getCarClass().getName();
         this.number = score.getTeamNumber();
@@ -53,13 +53,14 @@ public class StageScoreDTO {
     public StageScoreDTO(StageScoreSumDTO sssDTO) {
         this.driver = sssDTO.getDriver();
         this.coDriver = sssDTO.getCoDriver();
-        //this.teamName = sssDTO
+        this.teamName = sssDTO.getTeamName();
         this.car = sssDTO.getCar();
         this.className = sssDTO.getCarClass();
         this.number = sssDTO.getNumber();
         this.totalPenalty = String.valueOf(sssDTO.getPenalty());
-        this.stageScore = ScoreToString.toString(sssDTO.getSumScore());
         this.totalTimeWithPenalty = sssDTO.getSumScore() + (sssDTO.getPenalty() * 1000);
+        this.stageScore = ScoreToString.toString(sssDTO.getSumScore());
+        this.totalTime = ScoreToString.toString(this.totalTimeWithPenalty);
     }
 
     public void setScoreFromTotalScore(StageScore score) {

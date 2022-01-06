@@ -14,7 +14,10 @@ import com.akbp.racescore.utils.ScoreToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,39 +62,18 @@ public class ScoreService {
     }
 
     public List<StageScoreDTO> getStageScores(Long stageId) {
-        List<StageScore> scores = stageScoreRepository.findByStageIdAndScoreIsNotNull(stageId);
-        if (scores.isEmpty())
-            return Collections.emptyList();
-        List<StageScore> sortedScores = scores.stream()
-                .sorted(Comparator.comparingLong(x -> x.getScore() + Optional.ofNullable(x.getPenalty()).orElse(0L))).collect(Collectors.toList());
-        Long leadTime = sortedScores.get(0).getScore() + Optional.ofNullable(sortedScores.get(0).getPenalty()).orElse(0L);
-
-        return calculateTime(sortedScores, leadTime);
-    }
-
-    private List<StageScoreDTO> calculateTime(List<StageScore> sortedScores, Long leadTime) {
-        StageScore previousScore = null;
-        List<StageScoreDTO> stageScoreDTOS = new ArrayList<>();
-        int place = 1;
-        for (StageScore score : sortedScores) {
-            StageScoreDTO stageScoreDTO = new StageScoreDTO(score);
-            stageScoreDTO.setPlace(place++);
-
-            if (previousScore != null) {
-                stageScoreDTO.setTimeTo("+" + ScoreToString.toString(score.getScore() - previousScore.getScore()));
-                stageScoreDTO.setTimeToFirst("+" + ScoreToString.toString(score.getScore() - leadTime));
-            }
-            stageScoreDTOS.add(stageScoreDTO);
-            previousScore = score;
-        }
-
-        return stageScoreDTOS;
+        List<StageScoreSumDTO> scoresDTOS = stageScoreRepository.findScoresInStage(stageId);
+        return calculateTime(scoresDTOS);
     }
 
     public List<StageScoreDTO> getStagesSumScores(Long stageId) {
         List<StageScoreSumDTO> scoresDTOS = stageScoreRepository.findSummedScoreByStageId(stageId);
+        return calculateTime(scoresDTOS);
+    }
 
+    private List<StageScoreDTO> calculateTime(List<StageScoreSumDTO> scoresDTOS) {
         List<StageScoreDTO> scores = scoresDTOS.stream().map(x -> new StageScoreDTO(x)).collect(Collectors.toList());
+        scores = scores.stream().sorted(Comparator.comparingLong(x -> x.getTotalTimeWithPenalty())).collect(Collectors.toList());
         Long leadTime = scores.get(0).getTotalTimeWithPenalty();
 
         StageScoreDTO previousScore = null;
