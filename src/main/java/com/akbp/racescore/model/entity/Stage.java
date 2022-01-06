@@ -10,7 +10,9 @@ import java.util.Set;
 @Getter
 @Setter
 public class Stage {
+    
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "STAGE_ID", updatable = false, nullable = false)
     private Long stageId;
 

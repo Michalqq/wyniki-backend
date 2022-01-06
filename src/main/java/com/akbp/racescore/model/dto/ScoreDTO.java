@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScoreDTO {
+    private Long stageScoreId;
     private Long teamId;
     private Long stageId;
     private Long stageStartTime;

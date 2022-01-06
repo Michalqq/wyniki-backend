@@ -99,8 +99,8 @@ const StageScorePage = (props) => {
         Cell: (cellInfo) => (
           <TeamDiv
             line1={cellInfo.row.original.driver}
-            line2={cellInfo.row.original.driver}
-            line3={cellInfo.row.original.driver}
+            line2={cellInfo.row.original.coDriver}
+            line3={cellInfo.row.original.teamName}
           />
         ),
       },

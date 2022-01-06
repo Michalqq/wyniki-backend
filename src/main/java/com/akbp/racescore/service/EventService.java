@@ -4,6 +4,7 @@ import com.akbp.racescore.model.dto.ClassesOption;
 import com.akbp.racescore.model.dto.PsOption;
 import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.repository.EventRepository;
+import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,17 @@ public class EventService {
     private static final String GENERAL = "GENERALNA";
 
     private final EventRepository eventRepository;
+    private final EventTeamRepository eventTeamRepository;
     private final StageScoreRepository stageScoreRepository;
 
     @Autowired
     public EventService(EventRepository eventRepository,
+                        EventTeamRepository eventTeamRepository,
                         StageScoreRepository stageScoreRepository) {
         this.eventRepository = eventRepository;
+        this.eventTeamRepository = eventTeamRepository;
         this.stageScoreRepository = stageScoreRepository;
+
     }
 
     public List<String> getStages(Long eventId) {
@@ -46,7 +51,7 @@ public class EventService {
                 .map(x -> x.getTeam()).collect(Collectors.toList());
     }
 
-    public List<PsOption> getStagesAndClasses(Long eventId) {
+    public List<PsOption> getPsOptions(Long eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
         return eventOptional.get().getStages().stream()
@@ -90,5 +95,20 @@ public class EventService {
                         .map(x -> new ClassesOption(x, x, false)).collect(Collectors.toList()));
 
         return classesOptions;
+    }
+
+    public String addTeamToEvent(Team team, Long eventId) {
+        try {
+            int number = eventTeamRepository.getMaxNumberByEventId(eventId);
+
+            EventTeam et = new EventTeam();
+            et.setTeam(team);
+            et.setEventId(eventId);
+            et.setNumber(number + 1);
+            eventTeamRepository.save(et);
+            return "Załoga została dodana do wydarzenia";
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 }

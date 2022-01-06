@@ -19,10 +19,13 @@ public class StageScore {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "TEAM_ID")
-    Team team;
+    private Team team;
+
+    @Column(name = "TEAM_ID", updatable = false, insertable = false)
+    private Long teamId;
 
     @Column(name = "TEAM_NUMBER", nullable = false)
-    Integer teamNumber;
+    private Integer teamNumber;
 
     @Column(name = "SCORE")
     private Long score;

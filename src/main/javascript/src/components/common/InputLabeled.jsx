@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export const InputLabeled = ({
+  name = "",
   value = "",
   label = "",
   inputPlaceholder = "",
@@ -10,7 +11,6 @@ export const InputLabeled = ({
   max,
   big = false,
 }) => {
-  const [cellValue, setCellValue] = useState(value);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -34,7 +34,6 @@ export const InputLabeled = ({
   const onChange = (val) => {
     value = onlyNumber ? numericValidation(val) : val;
     value = max ? maxValidation(val) : val;
-    setCellValue(value);
     if (handleChange !== undefined) handleChange(value);
   };
 
@@ -46,8 +45,9 @@ export const InputLabeled = ({
         {label}
       </span>
       <input
+        name={name}
         className={"form-control " + (big ? "" : "my-input") + errorClass}
-        value={cellValue}
+        value={value}
         placeholder={inputPlaceholder}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}

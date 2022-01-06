@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter
 public class StageScoreDTO {
 
+    private Long stageScoreId;
     private int place;
     private Integer number;
 
@@ -26,12 +27,17 @@ public class StageScoreDTO {
     private String timeTo;
     private String timeToFirst;
 
+    private String scoreMin;
+    private String scoreSec;
+    private String scoreMiliSec;
+
     private String totalTime;
     private String totalPenalty;
 
     private Long totalTimeWithPenalty;
 
     public StageScoreDTO(StageScore score) {
+        this.stageScoreId = score.getId();
         this.driver = score.getTeam().getDriver();
         this.coDriver = score.getTeam().getCoDriver();
         this.teamName = "Todo";
@@ -51,7 +57,14 @@ public class StageScoreDTO {
         this.car = sssDTO.getCar();
         this.className = sssDTO.getCarClass();
         this.number = sssDTO.getNumber();
+        this.totalPenalty = String.valueOf(sssDTO.getPenalty());
         this.stageScore = ScoreToString.toString(sssDTO.getSumScore());
-        this.totalTimeWithPenalty = sssDTO.getSumScore() + sssDTO.getPenalty();
+        this.totalTimeWithPenalty = sssDTO.getSumScore() + (sssDTO.getPenalty() * 1000);
+    }
+
+    public void setScoreFromTotalScore(StageScore score) {
+        this.scoreMin = ScoreToString.getMinutes(score.getScore());
+        this.scoreSec = ScoreToString.getSeconds(score.getScore());
+        this.scoreMiliSec = ScoreToString.getMilis(score.getScore());
     }
 }

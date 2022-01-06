@@ -4,8 +4,10 @@ import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreSumDTO;
 import com.akbp.racescore.model.dto.TeamOption;
+import com.akbp.racescore.model.entity.Penalty;
 import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.StageScore;
+import com.akbp.racescore.model.repository.PenaltyRepository;
 import com.akbp.racescore.model.repository.StageRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.utils.ScoreToString;
@@ -19,27 +21,37 @@ import java.util.stream.Collectors;
 public class ScoreService {
     private final StageScoreRepository stageScoreRepository;
     private final StageRepository stageRepository;
+    private final PenaltyRepository penaltyRepository;
 
     @Autowired
     public ScoreService(StageScoreRepository stageScoreRepository,
-                        StageRepository stageRepository) {
+                        StageRepository stageRepository,
+                        PenaltyRepository penaltyRepository) {
         this.stageScoreRepository = stageScoreRepository;
         this.stageRepository = stageRepository;
+        this.penaltyRepository = penaltyRepository;
     }
 
     public Long addScore(ScoreDTO score) {
         Stage stage = stageRepository.findByStageId(score.getStageId());
         Set<StageScore> stageScores = stage.getStageScores();
 
-        StageScore stageScore = stageScores.stream().filter(x -> x.getTeam().getTeamId() == score.getTeamId()).findFirst().get();
+        StageScore stageScore = stageScores.stream()
+                .filter(x -> x.getTeam().getTeamId() == score.getTeamId())
+                .filter(y -> y.getStageId() == score.getStageId())
+                .findFirst().get();
         stageScore.setScore(score.getScore());
+        stageScore.setId(score.getStageScoreId());
         stageScoreRepository.save(stageScore);
 
         return 1L;
     }
 
-    public List<TeamOption> getTeamOptions(Long stageId) {
-        List<StageScore> scores = stageScoreRepository.findByStageIdAndScoreIsNull(stageId);
+    public List<TeamOption> getTeamOptions(Long stageId, String mode) {
+        List<StageScore> scores = new ArrayList<>();
+        if (mode.equals("NEW"))
+            scores = stageScoreRepository.findByStageIdAndScoreIsNull(stageId);
+        else if (mode.equals("EDIT")) scores = stageScoreRepository.findByStageIdAndScoreIsNotNull(stageId);
 
         return scores.stream()
                 .sorted(Comparator.comparingLong(StageScore::getTeamNumber))
@@ -95,5 +107,17 @@ public class ScoreService {
         }
 
         return scores;
+    }
+
+    public StageScoreDTO getTeamScore(Long stageId, Long teamId) {
+        StageScore stageScore = stageScoreRepository.findByStageIdAndTeamId(stageId, teamId);
+        StageScoreDTO stageScoreDTO = new StageScoreDTO(stageScore);
+        stageScoreDTO.setScoreFromTotalScore(stageScore);
+        return stageScoreDTO;
+    }
+
+    public Long addPenalty(Penalty penalty) {
+        penaltyRepository.save(penalty);
+        return 1L;
     }
 }

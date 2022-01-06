@@ -14,6 +14,7 @@ import java.util.Set;
 public class Event implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EVENT_ID", updatable = false, nullable = false)
     private Long eventId;
 

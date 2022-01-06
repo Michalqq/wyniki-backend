@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 export const NavigationBar = () => {
   const location = useLocation();
@@ -17,8 +17,10 @@ export const NavigationBar = () => {
 
             {location.state?.eventId !== undefined && (
               <NavDropdown title="Administrator" id="basic-nav-dropdown">
-                <NavDropdown.Item href="/add_score">
-                  Dodaj wyniki/kary
+                <NavDropdown.Item
+                  href={`/add_score?${location.state?.eventId}`}
+                >
+                  Dodaj wynik/karę
                 </NavDropdown.Item>
                 <NavDropdown.Item href="/drivers">
                   Lista startowa

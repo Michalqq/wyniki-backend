@@ -49,9 +49,14 @@ public class EventController {
         return teams;
     }
 
+    @GetMapping("/getPsOptions")
+    public List<PsOption> getPsOptions(@RequestParam("eventId") Long eventId) {
+        return eventService.getPsOptions(eventId);
+    }
+
     @GetMapping("/getStagesAndClasses")
-    public StgesAndClassesDTO getPsOptions(@RequestParam("eventId") Long eventId) {
-        List<PsOption> psOptions = eventService.getStagesAndClasses(eventId);
+    public StgesAndClassesDTO getStagesAndClasses(@RequestParam("eventId") Long eventId) {
+        List<PsOption> psOptions = eventService.getPsOptions(eventId);
         List<ClassesOption> classes = eventService.getClasses(eventId);
         StgesAndClassesDTO sacDTO = new StgesAndClassesDTO(psOptions, classes);
         return sacDTO;

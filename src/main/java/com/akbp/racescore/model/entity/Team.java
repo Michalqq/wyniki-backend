@@ -10,7 +10,9 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class Team {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TEAM_ID", updatable = false, nullable = false)
     private Long teamId;
 

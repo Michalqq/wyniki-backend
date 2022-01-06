@@ -3,6 +3,7 @@ package com.akbp.racescore.controller;
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.TeamOption;
+import com.akbp.racescore.model.entity.Penalty;
 import com.akbp.racescore.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -28,10 +29,20 @@ public class ScoreController {
         return scoreService.addScore(score);
     }
 
+    @PostMapping("/addPenalty")
+    public Long addPenalty(@RequestBody Penalty penalty) {
+        return scoreService.addPenalty(penalty);
+    }
+
     @GetMapping("/getTeamOptions")
-    public List<TeamOption> getTeamOptions(@RequestParam("stageId") Long stageId) {
-        List<TeamOption> teamOptions = scoreService.getTeamOptions(stageId);
+    public List<TeamOption> getTeamOptions(@RequestParam("stageId") Long stageId, @RequestParam("mode") String mode) {
+        List<TeamOption> teamOptions = scoreService.getTeamOptions(stageId, mode);
         return teamOptions;
+    }
+
+    @GetMapping("/getTeamScore")
+    public StageScoreDTO getTeamScore(@RequestParam("stageId") Long stageId, @RequestParam("teamId") Long teamId) {
+        return scoreService.getTeamScore(stageId, teamId);
     }
 
     @GetMapping("getStageScores")

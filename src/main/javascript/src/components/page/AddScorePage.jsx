@@ -5,14 +5,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
 import { RadioButton } from "../common/Button";
 import { backendUrl } from "../utils/fetchUtils";
+import { useLocation } from "react-router-dom";
 
-export const AddUserPanel = (props) => {
+export const AddScorePage = (props) => {
+  const location = useLocation();
   const mode = [
     { value: "NEW", desc: "Wprowadzanie nowych wyników" },
     { value: "EDIT", desc: "Tryb edycji wyników" },
   ];
 
+  const [msg, setMsg] = useState("");
+  const [eventId, setEventId] = useState();
   const [editMode, setEditMode] = useState(mode[0].value);
+  const [stageScoreId, setStageScoreId] = useState();
 
   const [psOptions, setPsOptions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
@@ -23,8 +28,8 @@ export const AddUserPanel = (props) => {
   const [scoreMin, setScoreMin] = useState();
   const [scoreSec, setScoreSec] = useState();
   const [scoreMiliSec, setScoreMiliSec] = useState();
-  const [teamId, setTeamId] = useState("");
-  const [stage, setStage] = useState("");
+  const [teamId, setTeamId] = useState();
+  const [stage, setStage] = useState();
 
   const [penaltySec, setPenaltySec] = useState("");
   const [penaltyDesc, setPenaltyDesc] = useState("");
@@ -33,20 +38,29 @@ export const AddUserPanel = (props) => {
   const [disable, setDisable] = useState(false);
 
   const fetchPsOptions = () => {
-    axios.get(`${backendUrl()}/event/getPsOptions?eventId=1`).then((res) => {
-      setPsOptions(res.data);
-    });
+    axios
+      .get(`${backendUrl()}/event/getPsOptions?eventId=${eventId}`)
+      .then((res) => {
+        setPsOptions(res.data);
+        setStage(res.data[0]?.value);
+      });
   };
 
-  const fetchTeamsOptions = (stageId) => {
+  const fetchTeamsOptions = () => {
     setLoadingTeams(true);
     axios
       .get(
-        `${backendUrl()}/score/getTeamOptions?stageId=${stageId}&mode=${editMode}`
+        `${backendUrl()}/score/getTeamOptions?stageId=${stage}&mode=${editMode}`
       )
       .then((res) => {
         setTeamOptions(res.data);
         setLoadingTeams(false);
+        setMsg("");
+        setDisable(false);
+        if (res.data.length === 0) {
+          resetData();
+          setMsg("Wszystkie wyniki zostały wprowadzone");
+        }
       });
   };
 
@@ -58,8 +72,12 @@ export const AddUserPanel = (props) => {
 
   const addScore = (data) => {
     axios.post(`${backendUrl()}/score/addScore`, data).then((res) => {
-      fetchTeamsOptions(stage);
+      fetchTeamsOptions();
     });
+  };
+
+  const postPenalty = (data) => {
+    axios.post(`${backendUrl()}/score/addPenalty`, data).then((res) => {});
   };
 
   const setScoreInMilis = (value) => {
@@ -68,11 +86,15 @@ export const AddUserPanel = (props) => {
   };
 
   useEffect(() => {
-    fetchPsOptions();
+    setEventId(location.search.replace("?", ""));
   }, []);
 
   useEffect(() => {
-    if (psOptions.length > 0) fetchTeamsOptions(stage);
+    if (eventId !== undefined) fetchPsOptions();
+  }, [eventId]);
+
+  useEffect(() => {
+    if (psOptions.length > 0 && stage !== undefined) fetchTeamsOptions();
   }, [stage, psOptions]);
 
   useEffect(() => {
@@ -80,16 +102,23 @@ export const AddUserPanel = (props) => {
   }, [teamOptions]);
 
   useEffect(() => {
-    if (editMode === mode[1].value) getTeamData();
+    if (teamId !== undefined && editMode === mode[1].value) getTeamData();
   }, [teamId]);
+
+  useEffect(() => {
+    if (stage !== undefined) fetchTeamsOptions();
+  }, [editMode]);
 
   const getTeamData = () => {
     axios
-      .post(`${backendUrl()}/score/getTeamScore?eventId=1&teamId=1`)
+      .get(
+        `${backendUrl()}/score/getTeamScore?stageId=${stage}&teamId=${teamId}`
+      )
       .then((res) => {
         setScoreMin(res.data.scoreMin);
         setScoreSec(res.data.scoreSec);
         setScoreMiliSec(res.data.scoreMiliSec);
+        setStageScoreId(res.data.stageScoreId);
       });
   };
 
@@ -103,16 +132,31 @@ export const AddUserPanel = (props) => {
       stageId: stage,
       stageStartTime: startStageInMin,
       score: scoreInMilis,
+      stageScoreId: editMode === mode[1].value ? stageScoreId : null,
     };
     addScore(data);
     props.setAddedNewScore(data);
     resetData();
   };
 
+  const addPenalty = () => {
+    const data = {
+      teamId: teamId,
+      stageId: stage,
+      penaltySec: penaltySec * 1000,
+      description: penaltyDesc,
+    };
+    postPenalty(data);
+    setPenaltyDesc("");
+    setPenaltySec("");
+  };
+
   const checkboxChange = (e) => {
     if (e.target.checked && editMode !== e.target.value) {
       setEditMode(e.target.value);
       resetData();
+      setTeamOptions([]);
+      console.log(e.target.value);
     }
   };
 
@@ -164,7 +208,7 @@ export const AddUserPanel = (props) => {
               options={teamOptions}
               handleChange={(value) => setTeamId(value)}
               isValid={true}
-              isLoading={teamOptions.length === 0 || loadingTeams}
+              isLoading={loadingTeams}
             />
           </div>
 
@@ -172,19 +216,20 @@ export const AddUserPanel = (props) => {
             <div className="row">
               <div className="col-xl-12">
                 <h4>Wynik</h4>
-
                 <div className="inline-flex">
                   <InputLabeled
                     label="Minuty"
                     inputPlaceholder="00"
-                    handleChange={(e) => setScoreMin(e.target.value)}
+                    value={scoreMin}
+                    handleChange={(e) => setScoreMin(e)}
                     disabled={disable}
                     onlyNumber={true}
                   />
                   <InputLabeled
                     label="Sekundy"
                     inputPlaceholder="00"
-                    handleChange={(e) => setScoreSec(e.target.value)}
+                    value={scoreSec}
+                    handleChange={(e) => setScoreSec(e)}
                     disabled={disable}
                     onlyNumber={true}
                     max={59}
@@ -192,12 +237,14 @@ export const AddUserPanel = (props) => {
                   <InputLabeled
                     label="Setne"
                     inputPlaceholder="00"
-                    handleChange={(e) => setScoreInMilis(e.target.value)}
+                    value={scoreMiliSec}
+                    handleChange={(e) => setScoreInMilis(e)}
                     disabled={disable}
                     onlyNumber={true}
                     max={99}
                   />
                 </div>
+                {msg}
                 <div className="col-xl-12 pt-5">
                   <button
                     type="button"
@@ -220,7 +267,8 @@ export const AddUserPanel = (props) => {
                   <InputLabeled
                     label="Sekundy"
                     inputPlaceholder="00"
-                    handleChange={(e) => setPenaltySec(e.target.value)}
+                    value={penaltySec}
+                    handleChange={(e) => setPenaltySec(e)}
                     disabled={disable}
                   />
                   <textarea
@@ -237,7 +285,7 @@ export const AddUserPanel = (props) => {
                   <button
                     type="button"
                     className="btn btn-success"
-                    onClick={addScoreClick}
+                    onClick={addPenalty}
                     disabled={disable}
                   >
                     Dodaj karę
@@ -256,4 +304,4 @@ export const AddUserPanel = (props) => {
   );
 };
 
-export default AddUserPanel;
+export default AddScorePage;

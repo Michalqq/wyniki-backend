@@ -2,6 +2,8 @@ package com.akbp.racescore.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 
@@ -17,8 +19,10 @@ public class EventTeam {
     @Column(name = "EVENT_ID", nullable = false)
     Long eventId;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "TEAM_ID")
+    @JoinColumn(name = "TEAM_ID",
+            nullable = false)
     Team team;
 
     @Column(name = "NUMBER", nullable = false)

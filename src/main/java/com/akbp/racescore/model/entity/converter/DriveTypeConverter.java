@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 public class DriveTypeConverter implements AttributeConverter<DriveType, String> {
     @Override
     public String convertToDatabaseColumn(DriveType driveType) {
-        return driveType == null ? null : driveType.getName();
+        return driveType == null ? null : String.valueOf(driveType.getId());
     }
 
     @Override

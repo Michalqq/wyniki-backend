@@ -32,6 +32,7 @@ export const Selector = (props) => {
 
   useEffect(() => {
     if (props.options === undefined) return;
+    if (props.options.length === 0) setSelectedOption();
     if (props.skipDefault === undefined || !props.skipDefault) setDefValue();
   }, [props.options]);
 
