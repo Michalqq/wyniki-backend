@@ -75,6 +75,7 @@ public class EventService {
         stageScore.setStageId(stage.getStageId());
         stageScore.setTeam(team.getTeam());
         stageScore.setTeamNumber(team.getNumber());
+        stageScore.setDisqualified(false);
 
         stageScoreRepository.save(stageScore);
     }

@@ -8,13 +8,15 @@ import { backendUrl } from "../utils/fetchUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
-const PenaltyTable = (props) => {
+const DisqualificationTable = (props) => {
   const [penalties, setPenalties] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchPenalties = () => {
     axios
-      .get(`${backendUrl()}/score/getPenalties?eventId=${props.eventId}`)
+      .get(
+        `${backendUrl()}/penalty/getDisqualifications?eventId=${props.eventId}`
+      )
       .then((res) => {
         setPenalties(res.data);
         setIsLoading(false);
@@ -23,7 +25,9 @@ const PenaltyTable = (props) => {
 
   const removePenalty = (penaltyId) => {
     axios
-      .post(`${backendUrl()}/score/removePenalty?penaltyId=${penaltyId}`)
+      .post(
+        `${backendUrl()}/penalty/removeDisqualification?penaltyId=${penaltyId}`
+      )
       .then((res) => {
         setIsLoading(true);
         props.onRemove();
@@ -66,7 +70,7 @@ const PenaltyTable = (props) => {
       {
         width: "60%",
         id: "penalty",
-        Header: "Czas - Powód - OS/PS",
+        Header: "Powód - OS/PS",
         disableFilters: true,
         disableSortBy: true,
         Cell: (cellInfo) => (
@@ -74,9 +78,7 @@ const PenaltyTable = (props) => {
             {cellInfo.row.original.penalties.map((penalty) => (
               <>
                 <tr>
-                  <td className="text-left fw-bolder">
-                    {penalty.penaltySec + " s"}
-                  </td>
+                  <td className="text-left fw-bolder"></td>
                   <td className="text-left px-3 width-300">
                     {penalty.description}
                   </td>
@@ -113,4 +115,4 @@ const PenaltyTable = (props) => {
   );
 };
 
-export default PenaltyTable;
+export default DisqualificationTable;

@@ -14,7 +14,7 @@ const PenaltyTable = (props) => {
 
   const fetchPenalties = () => {
     axios
-      .get(`${backendUrl()}/score/getPenalties?eventId=${props.eventId}`)
+      .get(`${backendUrl()}/penalty/getPenalties?eventId=${props.eventId}`)
       .then((res) => {
         setPenalties(res.data);
         setIsLoading(false);
@@ -23,7 +23,7 @@ const PenaltyTable = (props) => {
 
   const removePenalty = (penaltyId) => {
     axios
-      .post(`${backendUrl()}/score/removePenalty?penaltyId=${penaltyId}`)
+      .post(`${backendUrl()}/penalty/removePenalty?penaltyId=${penaltyId}`)
       .then((res) => {
         setIsLoading(true);
         props.onRemove();

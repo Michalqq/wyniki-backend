@@ -14,11 +14,11 @@ public class PenaltyDict {
     private Long id;
 
     @Column(name = "PENALTY_SEC", nullable = false)
-    private String penaltySec;
+    private Long penaltySec;
 
     @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
-    @Column(name = "DISQUALIFICATION")
+    @Column(name = "DISQUALIFICATION", nullable = false)
     private Boolean disqualification;
 }

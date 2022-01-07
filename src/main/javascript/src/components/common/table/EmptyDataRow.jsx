@@ -5,10 +5,9 @@ const EmptyDataRow = ({ headerGroups }) => {
       <tr
         style={{
           textDecoration: "none",
-          fontWeight: "100",
           display: "table-row",
         }}
-        className="l-table-row u-border u-link"
+        className="font14 l-table-row u-border u-link"
       >
         {headerGroups[0].headers.map((column) => (
           <th
@@ -20,7 +19,7 @@ const EmptyDataRow = ({ headerGroups }) => {
             }}
           >
             {headerGroups[0].headers[0].id === column.id
-              ? "Brak danych spełniających podane kryteria wyszukiwania."
+              ? "Brak danych"
               : "___"}
           </th>
         ))}

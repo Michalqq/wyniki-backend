@@ -32,4 +32,7 @@ public class StageScore {
 
     @Column(name = "PENALTY")
     private Long penalty;
+
+    @Column(name = "DISQUALIFIED")
+    private Boolean disqualified;
 }

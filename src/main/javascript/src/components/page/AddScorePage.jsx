@@ -50,7 +50,7 @@ export const AddScorePage = (props) => {
     setLoadingTeams(true);
     axios
       .get(
-        `${backendUrl()}/score/getTeamOptions?stageId=${stage}&mode=${editMode}`
+        `${backendUrl()}/team/getTeamOptions?stageId=${stage}&mode=${editMode}`
       )
       .then((res) => {
         setTeamOptions(res.data);

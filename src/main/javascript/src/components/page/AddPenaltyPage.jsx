@@ -2,24 +2,26 @@ import React, { useState, useEffect } from "react";
 import { Selector } from "../common/Selector";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { InputLabeled } from "../common/InputLabeled";
-import { RadioButton } from "../common/Button";
+
 import { backendUrl } from "../utils/fetchUtils";
 import { useLocation } from "react-router-dom";
 
-export const AddScorePage = (props) => {
+export const AddPenaltyPage = (props) => {
   const location = useLocation();
 
   const [eventId, setEventId] = useState();
 
   const [psOptions, setPsOptions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
+  const [penaltyOptions, setPenaltyOptions] = useState([]);
 
   const [teamId, setTeamId] = useState();
   const [stage, setStage] = useState();
 
-  const [penaltySec, setPenaltySec] = useState("");
-  const [penaltyDesc, setPenaltyDesc] = useState("");
+  const [penalty, setPenalty] = useState({
+    penaltyDesc: null,
+    penaltyKind: null,
+  });
 
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [disable, setDisable] = useState(false);
@@ -30,35 +32,47 @@ export const AddScorePage = (props) => {
       .then((res) => {
         setPsOptions(res.data);
         setStage(res.data[0]?.value);
-        fetchTeamsOptions();
       });
+  };
+
+  const fetchPenaltyOptions = () => {
+    axios.get(`${backendUrl()}/penalty/getPenaltyOptions`).then((res) => {
+      setPenaltyOptions(res.data);
+    });
   };
 
   const fetchTeamsOptions = () => {
     setLoadingTeams(true);
     axios
-      .get(`${backendUrl()}/score/getTeamOptions?stageId=${stage}&mode=EDIT`)
+      .get(`${backendUrl()}/team/getTeamOptions?stageId=${stage}&mode=PENALTY`)
       .then((res) => {
         setTeamOptions(res.data);
         setLoadingTeams(false);
         setDisable(false);
         if (res.data.length === 0) {
-          resetData();
+          setDisable(true);
         }
       });
   };
 
   const postPenalty = (data) => {
-    axios.post(`${backendUrl()}/score/addPenalty`, data).then((res) => {});
+    axios.post(`${backendUrl()}/penalty/addPenalty`, data).then((res) => {
+      setPenaltyOptions(res.data);
+    });
   };
 
   useEffect(() => {
     setEventId(location.search.replace("?", ""));
+    fetchPenaltyOptions();
   }, []);
 
   useEffect(() => {
     if (eventId !== undefined) fetchPsOptions();
   }, [eventId]);
+
+  useEffect(() => {
+    if (stage !== undefined) fetchTeamsOptions();
+  }, [stage]);
 
   useEffect(() => {
     if (teamOptions.length > 0) setTeamId(teamOptions[0].value);
@@ -68,19 +82,22 @@ export const AddScorePage = (props) => {
     const data = {
       teamId: teamId,
       stageId: stage,
-      penaltySec: penaltySec,
-      description: penaltyDesc,
+      penaltyKind: penalty.penaltyKind,
+      description: penalty.penaltyDesc,
     };
     postPenalty(data);
-    setPenaltyDesc("");
-    setPenaltySec("");
+    resetPenalty();
   };
 
-  const resetData = () => {
-    setDisable(true);
+  const resetPenalty = () => {
+    setPenalty({
+      penaltyDesc: null,
+      penaltyKind: null,
+    });
+  };
 
-    setPenaltyDesc("");
-    setPenaltySec("");
+  const handleChange = (event) => {
+    setPenalty({ ...penalty, [event.target.name]: event.target.value });
   };
 
   return (
@@ -113,17 +130,22 @@ export const AddScorePage = (props) => {
                 <h4>Kara</h4>
 
                 <div className="inline-flex">
-                  <InputLabeled
-                    label="Sekundy"
-                    inputPlaceholder="00"
-                    value={penaltySec}
-                    handleChange={(e) => setPenaltySec(e)}
-                    disabled={disable}
+                  <Selector
+                    label={"Rodzaj kary"}
+                    options={penaltyOptions}
+                    handleChange={(value) =>
+                      setPenalty({ ...penalty, penaltyKind: value })
+                    }
+                    isValid={true}
+                    isLoading={penaltyOptions.length === 0}
                   />
+                </div>
+                <div className="inline-flex">
                   <textarea
-                    value={penaltyDesc}
-                    placeholder={"Opis kary"}
-                    onChange={(e) => setPenaltyDesc(e.target.value)}
+                    placeholder={"Dodatkowy opis"}
+                    value={penalty.penaltyDesc}
+                    name="penaltyDesc"
+                    onChange={handleChange}
                     className={"form-control centered-grid "}
                     rows={2}
                     disabled={disable}
@@ -135,7 +157,7 @@ export const AddScorePage = (props) => {
                     type="button"
                     className="btn btn-success"
                     onClick={addPenalty}
-                    disabled={disable}
+                    disabled={disable || teamId === undefined}
                   >
                     Dodaj karę
                   </button>
@@ -150,4 +172,4 @@ export const AddScorePage = (props) => {
   );
 };
 
-export default AddScorePage;
+export default AddPenaltyPage;

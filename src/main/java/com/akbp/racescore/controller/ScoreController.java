@@ -28,11 +28,6 @@ public class ScoreController {
         return scoreService.addScore(score);
     }
 
-    @GetMapping("/getTeamOptions")
-    public List<TeamOption> getTeamOptions(@RequestParam("stageId") Long stageId, @RequestParam("mode") String mode) {
-        List<TeamOption> teamOptions = scoreService.getTeamOptions(stageId, mode);
-        return teamOptions;
-    }
 
     @GetMapping("/getTeamScore")
     public StageScoreDTO getTeamScore(@RequestParam("stageId") Long stageId, @RequestParam("teamId") Long teamId) {
