@@ -17,15 +17,18 @@ public class EventTeam {
     private Long id;
 
     @Column(name = "EVENT_ID", nullable = false)
-    Long eventId;
+    private Long eventId;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "TEAM_ID",
             nullable = false)
-    Team team;
+    private Team team;
 
     @Column(name = "NUMBER", nullable = false)
-    Integer number;
+    private Integer number;
+
+    @Column(name = "ENTRY_FEE_PAID")
+    private Boolean entryFeePaid;
 
 }

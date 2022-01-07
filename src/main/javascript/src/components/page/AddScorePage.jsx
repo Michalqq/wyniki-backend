@@ -5,17 +5,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
 import { RadioButton } from "../common/Button";
 import { backendUrl } from "../utils/fetchUtils";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 export const AddScorePage = (props) => {
   const location = useLocation();
+  const eventId = location.state.eventId;
+
   const mode = [
     { value: "NEW", desc: "Wprowadzanie nowych wyników" },
     { value: "EDIT", desc: "Tryb edycji wyników" },
   ];
 
   const [msg, setMsg] = useState("");
-  const [eventId, setEventId] = useState();
   const [editMode, setEditMode] = useState(mode[0].value);
   const [stageScoreId, setStageScoreId] = useState();
 
@@ -59,15 +60,9 @@ export const AddScorePage = (props) => {
         setDisable(false);
         if (res.data.length === 0) {
           resetData();
-          setMsg("Wszystkie wyniki zostały wprowadzone");
+          setMsg("Wszystkie wyniki wybranego odcinka zostały wprowadzone");
         }
       });
-  };
-
-  const startEvent = () => {
-    axios.post(`${backendUrl()}/event/startEvent?eventId=1`).then((res) => {
-      console.log(res);
-    });
   };
 
   const addScore = (data) => {
@@ -81,12 +76,8 @@ export const AddScorePage = (props) => {
   };
 
   useEffect(() => {
-    setEventId(location.search.replace("?", ""));
+    fetchPsOptions();
   }, []);
-
-  useEffect(() => {
-    if (eventId !== undefined) fetchPsOptions();
-  }, [eventId]);
 
   useEffect(() => {
     if (psOptions.length > 0 && stage !== undefined) fetchTeamsOptions();
@@ -240,14 +231,14 @@ export const AddScorePage = (props) => {
                   />
                 </div>
                 <div className="col-xl-12 pt-1 fw-bolder">{msg}</div>
-                <div className="col-xl-12 pt-5">
+                <div className="col-xl-12 pt-3">
                   <button
                     type="button"
                     className="btn btn-success"
                     onClick={addScoreClick}
                     disabled={disable}
                   >
-                    Dodaj wynik
+                    Zapisz wynik
                   </button>
                 </div>
               </div>
@@ -256,9 +247,9 @@ export const AddScorePage = (props) => {
         </div>
       </div>
       <div className="col-sm pt-5"></div>
-      <button type="button" className="btn btn-success" onClick={startEvent}>
-        Start event
-      </button>
+      <Link to={"/add_penalty?" + eventId} className="btn btn-primary">
+        Przejdź do dodawania kar
+      </Link>
     </div>
   );
 };

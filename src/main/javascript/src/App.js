@@ -26,7 +26,7 @@ function App() {
               <Route
                 path="/add_score"
                 element={<AddScorePage setAddedNewScore={setAddedNewScore} />}
-              />{" "}
+              />
               <Route
                 path="/add_penalty"
                 element={<AddPenaltyPage setAddedNewScore={setAddedNewScore} />}

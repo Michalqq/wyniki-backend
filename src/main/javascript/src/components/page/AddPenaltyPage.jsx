@@ -4,12 +4,11 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { backendUrl } from "../utils/fetchUtils";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 export const AddPenaltyPage = (props) => {
   const location = useLocation();
-
-  const [eventId, setEventId] = useState();
+  const eventId = location.state.eventId;
 
   const [psOptions, setPsOptions] = useState([]);
   const [teamOptions, setTeamOptions] = useState([]);
@@ -62,7 +61,6 @@ export const AddPenaltyPage = (props) => {
   };
 
   useEffect(() => {
-    setEventId(location.search.replace("?", ""));
     fetchPenaltyOptions();
   }, []);
 
@@ -152,14 +150,14 @@ export const AddPenaltyPage = (props) => {
                   />
                 </div>
 
-                <div className="col-xl-12 pt-5">
+                <div className="col-xl-12 pt-3">
                   <button
                     type="button"
                     className="btn btn-success"
                     onClick={addPenalty}
                     disabled={disable || teamId === undefined}
                   >
-                    Dodaj karę
+                    Zapisz karę
                   </button>
                 </div>
               </div>
@@ -167,7 +165,10 @@ export const AddPenaltyPage = (props) => {
           </div>
         </div>
       </div>
-      <div className="col-sm pt-5"></div>
+      <div className="col-sm pt-5"></div>{" "}
+      <Link to={"/add_score?" + eventId} className="btn btn-primary">
+        Przejdź do dodawania wyników
+      </Link>
     </div>
   );
 };

@@ -1,9 +1,10 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const NavigationBar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <Navbar bg="warning gradient" expand="lg">
@@ -18,12 +19,20 @@ export const NavigationBar = () => {
             {location.state?.eventId !== undefined && (
               <NavDropdown title="Administrator" id="basic-nav-dropdown">
                 <NavDropdown.Item
-                  href={`/add_score?${location.state?.eventId}`}
+                  onClick={() =>
+                    navigate(`add_score`, {
+                      state: { eventId: location.state.eventId },
+                    })
+                  }
                 >
                   Dodaj wyniki
                 </NavDropdown.Item>
                 <NavDropdown.Item
-                  href={`/add_penalty?${location.state?.eventId}`}
+                  onClick={() =>
+                    navigate(`add_penalty`, {
+                      state: { eventId: location.state.eventId },
+                    })
+                  }
                 >
                   Dodaj kary
                 </NavDropdown.Item>
