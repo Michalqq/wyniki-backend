@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class ScoreService {
     private final StageScoreRepository stageScoreRepository;
     private final StageRepository stageRepository;
-    private final PenaltyRepository penaltyRepository;
 
     @Autowired
     public ScoreService(StageScoreRepository stageScoreRepository,
@@ -29,7 +28,6 @@ public class ScoreService {
                         PenaltyRepository penaltyRepository) {
         this.stageScoreRepository = stageScoreRepository;
         this.stageRepository = stageRepository;
-        this.penaltyRepository = penaltyRepository;
     }
 
     public Long addScore(ScoreDTO score) {
@@ -95,31 +93,4 @@ public class ScoreService {
         return stageScoreDTO;
     }
 
-    public Long addPenalty(Penalty penalty) {
-        penaltyRepository.save(penalty);
-        return 1L;
-    }
-
-    public List<PenaltyByTeamDTO> getPenalties(Long eventId) {
-        List<PenaltyDTO> penalties = penaltyRepository.findAllByEventId(eventId);
-
-        List<PenaltyByTeamDTO> penaltyDTOS = new ArrayList<>();
-
-        for (PenaltyDTO penalty : penalties) {
-            if (penaltyDTOS.stream().filter(x -> x.getNumber() == penalty.getNumber()).findAny().isPresent())
-                continue;
-
-            List<PenaltyDTO> teamPenalties = penalties.stream()
-                    .filter(x -> x.getNumber() == penalty.getNumber())
-                    .sorted(Comparator.comparingInt(x -> x.getNumber()))
-                    .collect(Collectors.toList());
-            penaltyDTOS.add(new PenaltyByTeamDTO(penalty.getDriver(), penalty.getCoDriver(), penalty.getNumber(), teamPenalties));
-        }
-        return penaltyDTOS.stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList());
-    }
-
-    public boolean removePenalty(Long penaltyId) {
-        penaltyRepository.deleteById(penaltyId);
-        return true;
-    }
 }

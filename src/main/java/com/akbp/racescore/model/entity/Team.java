@@ -1,5 +1,6 @@
 package com.akbp.racescore.model.entity;
 
+import com.akbp.racescore.model.entity.dictionary.CarClass;
 import com.akbp.racescore.model.enums.DriveType;
 import lombok.Getter;
 import lombok.Setter;

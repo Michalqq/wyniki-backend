@@ -1,10 +1,8 @@
 package com.akbp.racescore.controller;
 
-import com.akbp.racescore.model.dto.PenaltyByTeamDTO;
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.TeamOption;
-import com.akbp.racescore.model.entity.Penalty;
 import com.akbp.racescore.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,11 +28,6 @@ public class ScoreController {
         return scoreService.addScore(score);
     }
 
-    @PostMapping("/addPenalty")
-    public Long addPenalty(@RequestBody Penalty penalty) {
-        return scoreService.addPenalty(penalty);
-    }
-
     @GetMapping("/getTeamOptions")
     public List<TeamOption> getTeamOptions(@RequestParam("stageId") Long stageId, @RequestParam("mode") String mode) {
         List<TeamOption> teamOptions = scoreService.getTeamOptions(stageId, mode);
@@ -54,16 +47,5 @@ public class ScoreController {
     @GetMapping("getStagesSumScores")
     public List<StageScoreDTO> getStagesSumScores(@RequestParam("eventId") Long eventId, @RequestParam("stageId") Long stageId) {
         return scoreService.getStagesSumScores(eventId, stageId);
-    }
-
-    @GetMapping("getPenalties")
-    public List<PenaltyByTeamDTO> getPenalties(@RequestParam("eventId") Long eventId) {
-        return scoreService.getPenalties(eventId);
-    }
-
-    @PostMapping("removePenalty")
-    public boolean removePenalty(@RequestParam("penaltyId") Long penaltyId)
-    {
-        return scoreService.removePenalty(penaltyId);
     }
 }

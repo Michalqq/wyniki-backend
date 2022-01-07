@@ -1,5 +1,6 @@
 package com.akbp.racescore.model.entity;
 
+import com.akbp.racescore.model.entity.dictionary.PenaltyDict;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,8 +25,9 @@ public class Penalty {
     @Column(name = "PENALTY_SEC")
     private Long penaltySec;
 
-    @Column(name = "PENALTY_KIND")
-    private Long penaltyKind;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "PENALTY_KIND")
+    private PenaltyDict penaltyDict;
 
     private String description;
 }

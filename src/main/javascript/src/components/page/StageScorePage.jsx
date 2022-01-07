@@ -8,7 +8,7 @@ import { ScoreDiv, ScoreDivPenalty, TeamDiv, CarDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
 import Badge from "react-bootstrap/Button";
 import { backendUrl } from "../utils/fetchUtils";
-import PenaltyTable from "../common/PenaltyTable";
+import PenaltyTable from "../tables/PenaltyTable";
 
 const StageScorePage = (props) => {
   const location = useLocation();

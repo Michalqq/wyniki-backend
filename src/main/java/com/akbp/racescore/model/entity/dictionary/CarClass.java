@@ -1,4 +1,4 @@
-package com.akbp.racescore.model.entity;
+package com.akbp.racescore.model.entity.dictionary;
 
 import lombok.Getter;
 import lombok.Setter;

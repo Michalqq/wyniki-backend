@@ -89,8 +89,8 @@ export const AddScorePage = (props) => {
         <div className="col-xl-12">
           <h4 className="pb-2 mb-3 border-bottom">Dodaj kare:</h4>
         </div>
-        <div className="row">
-          <div className="col-lg-6 pb-3 border-bottom">
+        <div className="row justify-content-center">
+          <div className="col-lg-4 pb-3 border-bottom">
             <div className="pb-3" />
             <Selector
               label={"PS"}
@@ -107,7 +107,7 @@ export const AddScorePage = (props) => {
             />
           </div>
 
-          <div className="col-lg-6 pb-1 border-bottom">
+          <div className="col-lg-4 pb-1 border-bottom">
             <div className="row">
               <div className="col-xl-12">
                 <h4>Kara</h4>

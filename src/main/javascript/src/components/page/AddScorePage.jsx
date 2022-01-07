@@ -172,7 +172,7 @@ export const AddScorePage = (props) => {
           <h4 className="pb-2 mb-3 border-bottom">Dodaj wynik:</h4>
         </div>
 
-        <div className="row">
+        <div className="row justify-content-center">
           <div className="col-lg-4 pb-3  border-bottom">
             <div className="centered-grid form-group ">
               <RadioButton
@@ -248,42 +248,6 @@ export const AddScorePage = (props) => {
                     disabled={disable}
                   >
                     Dodaj wynik
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 pb-1 border-bottom">
-            <div className="row">
-              <div className="col-xl-12">
-                <h4>Kara</h4>
-
-                <div className="inline-flex">
-                  <InputLabeled
-                    label="Sekundy"
-                    inputPlaceholder="00"
-                    value={penaltySec}
-                    handleChange={(e) => setPenaltySec(e)}
-                    disabled={disable}
-                  />
-                  <textarea
-                    value={penaltyDesc}
-                    placeholder={"Opis kary"}
-                    onChange={(e) => setPenaltyDesc(e.target.value)}
-                    className={"form-control centered-grid "}
-                    rows={2}
-                    disabled={disable}
-                  />
-                </div>
-
-                <div className="col-xl-12 pt-5">
-                  <button
-                    type="button"
-                    className="btn btn-success"
-                    onClick={addPenalty}
-                    disabled={disable}
-                  >
-                    Dodaj karę
                   </button>
                 </div>
               </div>
