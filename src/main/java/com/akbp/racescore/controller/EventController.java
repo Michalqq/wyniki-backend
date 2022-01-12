@@ -1,10 +1,11 @@
 package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.ClassesOption;
+import com.akbp.racescore.model.dto.EventDTO;
 import com.akbp.racescore.model.dto.PsOption;
 import com.akbp.racescore.model.dto.StgesAndClassesDTO;
 import com.akbp.racescore.model.entity.Event;
-import com.akbp.racescore.model.entity.Team;
+import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ public class EventController {
     }
 
     @GetMapping("/getAll")
-    public List<Event> getAll() {
+    public List<EventDTO> getAll() {
         return eventService.getAll();
     }
 
@@ -44,9 +45,8 @@ public class EventController {
     }
 
     @GetMapping("/getTeams")
-    public List<Team> getTeams(@RequestParam("eventId") Long eventId) {
-        List<Team> teams = eventService.getTeams(eventId);
-        return teams;
+    public List<EventTeam> getTeams(@RequestParam("eventId") Long eventId) {
+        return eventService.getTeams(eventId);
     }
 
     @GetMapping("/getPsOptions")
@@ -60,5 +60,23 @@ public class EventController {
         List<ClassesOption> classes = eventService.getClasses(eventId);
         StgesAndClassesDTO sacDTO = new StgesAndClassesDTO(psOptions, classes);
         return sacDTO;
+    }
+
+    @PostMapping("removeTeam")
+    public boolean removeTeam(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
+        eventService.removeTeam(eventId, teamId);
+        return true;
+    }
+
+    @PostMapping("confirmEntryFee")
+    public boolean confirmEntryFee(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
+        eventService.confirmEntryFee(eventId, teamId);
+        return true;
+    }
+
+    @PutMapping("createNew")
+    public boolean createNew(@RequestBody Event event) {
+        eventService.createNew(event);
+        return true;
     }
 }

@@ -16,14 +16,17 @@ public class EventTeam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "EVENT_ID", nullable = false)
+    @Column(name = "EVENT_ID", nullable = false, insertable = false, updatable = false)
     private Long eventId;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "TEAM_ID",
-            nullable = false)
+            nullable = false, updatable = false, insertable = false)
     private Team team;
+
+    @Column(name = "TEAM_ID", nullable = false)
+    private Long teamId;
 
     @Column(name = "NUMBER", nullable = false)
     private Integer number;

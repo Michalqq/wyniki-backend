@@ -224,18 +224,20 @@ const StageScorePage = (props) => {
             cursor={"pointer"}
           />
         </div>
-      </div>{" "}
-      <div className="shadow bg-body rounded">
-        <div className="alert alert-secondary p-1 m-0" role="alert">
-          {"Kary"}
-        </div>
-        <PenaltyTable eventId={eventId} onRemove={fetchData} />
       </div>
-      <div className="shadow bg-body rounded">
-        <div className="alert alert-secondary p-1 m-0" role="alert">
-          {`Dyskwalifikacje / Wycofania`}
+      <div className="col-xl-12">
+        <div className="shadow bg-body rounded mt-4 p-0">
+          <div className="alert alert-secondary p-1 m-0" role="alert">
+            {"Kary"}
+          </div>
+          <PenaltyTable eventId={eventId} onRemove={fetchData} />
         </div>
-        <DisqualificationTable eventId={eventId} onRemove={fetchData} />
+        <div className="shadow bg-body rounded mt-4">
+          <div className="alert alert-secondary p-1 m-0" role="alert">
+            {`Dyskwalifikacje / Wycofania`}
+          </div>
+          <DisqualificationTable eventId={eventId} onRemove={fetchData} />
+        </div>
       </div>
     </div>
   );

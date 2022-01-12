@@ -13,8 +13,7 @@ export const NavigationBar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/">Lista imprez</Nav.Link>
-            <Nav.Link href="/">Todo</Nav.Link>
+            <Nav.Link href="/">Lista wydarzeń</Nav.Link>
 
             {location.state?.eventId !== undefined && (
               <NavDropdown title="Administrator" id="basic-nav-dropdown">
@@ -36,11 +35,21 @@ export const NavigationBar = () => {
                 >
                   Dodaj kary
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/drivers">
+                <NavDropdown.Item
+                  onClick={() =>
+                    navigate(`drivers`, {
+                      state: { eventId: location.state.eventId },
+                    })
+                  }
+                >
                   Lista startowa
                 </NavDropdown.Item>
               </NavDropdown>
             )}
+          </Nav>
+          <Nav>
+            <Nav.Link href="/login">Zaloguj</Nav.Link>
+            <Nav.Link href="/login">Rejestracja</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

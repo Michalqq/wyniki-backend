@@ -10,6 +10,7 @@ export const InputLabeled = ({
   disabled = false,
   max,
   big = false,
+  type = "text",
 }) => {
   const [error, setError] = useState(false);
 
@@ -21,7 +22,7 @@ export const InputLabeled = ({
     if (/\D/.test(newValue)) {
       return "";
     }
-    return newValue;
+    return Number(newValue);
   };
 
   const maxValidation = (newValue) => {
@@ -31,16 +32,18 @@ export const InputLabeled = ({
     return "";
   };
 
-  const onChange = (val) => {
-    value = onlyNumber ? numericValidation(val) : val;
-    value = max ? maxValidation(val) : val;
-    if (handleChange !== undefined) handleChange(value);
+  const onChange = (e) => {
+    e.target.value = onlyNumber
+      ? numericValidation(e.target.value)
+      : e.target.value;
+    e.target.value = max ? maxValidation(e.target.value) : e.target.value;
+    if (handleChange !== undefined) handleChange(e);
   };
 
   const errorClass = error ? " border border-danger border-3 rounded" : "";
 
   return (
-    <div className="centered-grid form-group p-2">
+    <div className="form-group p-2">
       <span className={"input-group-text " + (big ? "" : "my-input")} id="">
         {label}
       </span>
@@ -49,9 +52,10 @@ export const InputLabeled = ({
         className={"form-control " + (big ? "" : "my-input") + errorClass}
         value={value}
         placeholder={inputPlaceholder}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(e)}
         disabled={disabled}
         max={max}
+        type={type}
       ></input>
     </div>
   );

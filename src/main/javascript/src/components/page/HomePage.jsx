@@ -6,9 +6,12 @@ import { formatTableDate } from "../utils/tableUtils";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../utils/fetchUtils";
 import { SubmitButton } from "../common/Button";
+import Button from "react-bootstrap/Button";
+import { NewEventForm } from "../event/NewEventForm";
 
 const HomePage = (props) => {
   const [events, setEvents] = useState([]);
+  const [createEvent, setCreateEvent] = useState(false);
   const navigate = useNavigate();
 
   const fetchTeams = () => {
@@ -85,6 +88,20 @@ const HomePage = (props) => {
         isFooter={false}
         isHeader={true}
         cursor={"pointer"}
+      />
+      <div className="p-3 border-top">
+        <Button
+          className={"border-top mx-3"}
+          variant="primary"
+          onClick={() => setCreateEvent(true)}
+        >
+          Dodaj wydarzenie
+        </Button>
+      </div>
+
+      <NewEventForm
+        show={createEvent}
+        handleClose={() => setCreateEvent(false)}
       />
     </>
   );

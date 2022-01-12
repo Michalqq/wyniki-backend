@@ -32,7 +32,7 @@ public class Team {
     @Column(name = "LPG")
     private Boolean lpg;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "CLASS")
     private CarClass carClass;
 

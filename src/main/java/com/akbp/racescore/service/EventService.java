@@ -1,6 +1,7 @@
 package com.akbp.racescore.service;
 
 import com.akbp.racescore.model.dto.ClassesOption;
+import com.akbp.racescore.model.dto.EventDTO;
 import com.akbp.racescore.model.dto.PsOption;
 import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.repository.EventRepository;
@@ -8,6 +9,7 @@ import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -43,12 +45,10 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    public List<Team> getTeams(Long eventId) {
+    public List<EventTeam> getTeams(Long eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-        return eventOptional.get().getEventTeams().stream()
-                .sorted(Comparator.comparingLong(EventTeam::getNumber))
-                .map(x -> x.getTeam()).collect(Collectors.toList());
+        return eventOptional.get().getEventTeams().stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList());
     }
 
     public List<PsOption> getPsOptions(Long eventId) {
@@ -80,9 +80,9 @@ public class EventService {
         stageScoreRepository.save(stageScore);
     }
 
-    public List<Event> getAll() {
+    public List<EventDTO> getAll() {
         List<Event> events = eventRepository.findAll();
-        return events;
+        return events.stream().map(x -> new EventDTO(x)).collect(Collectors.toList());
     }
 
     public List<ClassesOption> getClasses(Long eventId) {
@@ -111,5 +111,25 @@ public class EventService {
         } catch (Exception e) {
             return e.getMessage();
         }
+    }
+
+    @Transactional
+    public void removeTeam(Long eventId, Long teamId) {
+        try {
+            stageScoreRepository.removeStageScoresByTeamIdAndEventId(eventId, teamId);
+            eventTeamRepository.deleteByEventIdAndTeamId(eventId, teamId);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void confirmEntryFee(Long eventId, Long teamId) {
+        EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
+        eventTeam.setEntryFeePaid(true);
+        eventTeamRepository.save(eventTeam);
+    }
+
+    public void createNew(Event event) {
+        eventRepository.save(event);
     }
 }

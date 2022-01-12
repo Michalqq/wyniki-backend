@@ -164,7 +164,7 @@ export const AddScorePage = (props) => {
         </div>
 
         <div className="row justify-content-center">
-          <div className="col-lg-4 pb-3  border-bottom">
+          <div className="col-lg-4 pb-3 border-bottom">
             <div className="centered-grid form-group ">
               <RadioButton
                 label={mode[0].desc}
@@ -207,7 +207,7 @@ export const AddScorePage = (props) => {
                     label="Minuty"
                     inputPlaceholder="00"
                     value={scoreMin}
-                    handleChange={(e) => setScoreMin(e)}
+                    handleChange={(e) => setScoreMin(e.target.value)}
                     disabled={disable}
                     onlyNumber={true}
                   />
@@ -215,7 +215,7 @@ export const AddScorePage = (props) => {
                     label="Sekundy"
                     inputPlaceholder="00"
                     value={scoreSec}
-                    handleChange={(e) => setScoreSec(e)}
+                    handleChange={(e) => setScoreSec(e.target.value)}
                     disabled={disable}
                     onlyNumber={true}
                     max={59}
@@ -224,7 +224,7 @@ export const AddScorePage = (props) => {
                     label="Setne"
                     inputPlaceholder="00"
                     value={scoreMiliSec}
-                    handleChange={(e) => setScoreMiliSec(e)}
+                    handleChange={(e) => setScoreMiliSec(e.target.value)}
                     disabled={disable}
                     onlyNumber={true}
                     max={99}

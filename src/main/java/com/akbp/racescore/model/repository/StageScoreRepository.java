@@ -3,6 +3,7 @@ package com.akbp.racescore.model.repository;
 import com.akbp.racescore.model.dto.StageScoreSumDTO;
 import com.akbp.racescore.model.entity.StageScore;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -49,4 +50,9 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
 
     List<StageScore> findByTeamIdAndStageIdGreaterThanEqual(Long teamId, Long stageId);
 
+    @Modifying
+    @Query(value = "delete from race_score.stage_score ss " +
+            "where ss.team_id = :teamId and ss.stage_id in " +
+            "   (select stage_id from race_score.stage where event_id = :eventId )", nativeQuery = true)
+    void removeStageScoresByTeamIdAndEventId(@Param("eventId") Long eventId, @Param("teamId") Long teamId);
 }

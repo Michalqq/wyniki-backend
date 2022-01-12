@@ -4,20 +4,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 public class Stage {
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "STAGE_ID", updatable = false, nullable = false)
     private Long stageId;
 
-    @Column(name = "EVENT_ID", nullable = false)
-    Long eventId;
+    @Column(name = "EVENT_ID", nullable = false, insertable = false, updatable = false)
+    private Long eventId;
 
     @Column(name = "NAME", nullable = false)
     private String name;
@@ -26,7 +27,7 @@ public class Stage {
     private Long distance;
 
     @Column(name = "START_TIME")
-    private Long startTime;
+    private Instant startTime;
 
     @Column(name = "START_FREQUENCY")
     private Integer startFrequency;

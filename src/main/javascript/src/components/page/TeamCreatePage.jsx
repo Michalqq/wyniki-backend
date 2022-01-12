@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Selector } from "../common/Selector";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
