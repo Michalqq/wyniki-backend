@@ -9,6 +9,7 @@ import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -78,5 +79,10 @@ public class EventController {
     public boolean createNew(@RequestBody Event event) {
         eventService.createNew(event);
         return true;
+    }
+
+    @GetMapping("/checkReferee")
+    public boolean checkReferee(@RequestParam("eventId") Long eventId, Authentication auth) {
+        return eventService.checkReferee(eventId, auth);
     }
 }

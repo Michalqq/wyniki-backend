@@ -7,6 +7,7 @@ import axios from "axios";
 import { backendUrl } from "../utils/fetchUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import authHeader from "../../service/auth-header";
 
 const DisqualificationTable = (props) => {
   const [penalties, setPenalties] = useState([]);
@@ -26,7 +27,10 @@ const DisqualificationTable = (props) => {
   const removePenalty = (penaltyId) => {
     axios
       .post(
-        `${backendUrl()}/penalty/removeDisqualification?penaltyId=${penaltyId}`
+        `${backendUrl()}/penalty/removeDisqualification?penaltyId=${penaltyId}`,
+        {
+          headers: authHeader(),
+        }
       )
       .then((res) => {
         setIsLoading(true);
@@ -84,11 +88,15 @@ const DisqualificationTable = (props) => {
                   </td>
                   <td className="text-left px-3">{penalty.name}</td>
                   <td>
-                    <FontAwesomeIcon
-                      icon={faTimesCircle}
-                      onClick={() => removePenalty(penalty.penaltyId)}
-                      title={"Wycofaj dyskwalifikacje"}
-                    />
+                    {props.referee ? (
+                      <FontAwesomeIcon
+                        icon={faTimesCircle}
+                        onClick={() => removePenalty(penalty.penaltyId)}
+                        title={"Wycofaj dyskwalifikacje"}
+                      />
+                    ) : (
+                      <></>
+                    )}
                   </td>
                 </tr>
               </>

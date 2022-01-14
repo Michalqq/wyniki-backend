@@ -10,6 +10,7 @@ import Badge from "react-bootstrap/Button";
 import { backendUrl } from "../utils/fetchUtils";
 import PenaltyTable from "../tables/PenaltyTable";
 import DisqualificationTable from "../tables/DisqualificationTable";
+import authHeader from "../../service/auth-header";
 
 const StageScorePage = (props) => {
   const location = useLocation();
@@ -18,6 +19,7 @@ const StageScorePage = (props) => {
   const GENERAL = "GENERALNA";
 
   const [scores, setScores] = useState([]);
+  const [referee, setReferee] = useState(false);
 
   const [summedScores, setSummedScores] = useState([]);
   const [psOptions, setPsOptions] = useState([]);
@@ -66,6 +68,16 @@ const StageScorePage = (props) => {
       fetchSummedScores();
     }
   };
+
+  useEffect(() => {
+    axios
+      .get(`${backendUrl()}/event/checkReferee?eventId=${eventId}`, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        setReferee(res.data);
+      });
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -230,13 +242,21 @@ const StageScorePage = (props) => {
           <div className="alert alert-secondary p-1 m-0" role="alert">
             {"Kary"}
           </div>
-          <PenaltyTable eventId={eventId} onRemove={fetchData} />
+          <PenaltyTable
+            eventId={eventId}
+            onRemove={fetchData}
+            referee={referee}
+          />
         </div>
         <div className="shadow bg-body rounded mt-4">
           <div className="alert alert-secondary p-1 m-0" role="alert">
             {`Dyskwalifikacje / Wycofania`}
           </div>
-          <DisqualificationTable eventId={eventId} onRemove={fetchData} />
+          <DisqualificationTable
+            eventId={eventId}
+            onRemove={fetchData}
+            referee={referee}
+          />
         </div>
       </div>
     </div>

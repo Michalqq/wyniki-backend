@@ -1,22 +1,34 @@
 /* eslint-disable react/display-name */
-import React, { useState, useMemo, useEffect } from "react";
-import ResultTable from "../common/table/ResultTable";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { formatTableDate } from "../utils/tableUtils";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../utils/fetchUtils";
-import { SubmitButton } from "../common/Button";
 import Button from "react-bootstrap/Button";
 import { NewEventForm } from "../event/NewEventForm";
+import { EventCard } from "../common/EventCard";
+import Card from "react-bootstrap/Card";
+import { TeamListModal } from "../team/TeamListModal";
 
 const HomePage = (props) => {
-  const [events, setEvents] = useState([]);
+  const [futureEvents, setFutureEvents] = useState([]);
+  const [archiveEvents, setArchiveEvents] = useState([]);
   const [createEvent, setCreateEvent] = useState(false);
+  const [eventToTeamList, setEventToTeamList] = useState();
+
   const navigate = useNavigate();
 
   const fetchTeams = () => {
     axios.get(`${backendUrl()}/event/getAll`).then((res) => {
-      setEvents(res.data);
+      setFutureEvents(
+        res.data.filter(
+          (x) => new Date().getTime() <= new Date(x.date).getTime()
+        )
+      );
+      setArchiveEvents(
+        res.data.filter(
+          (x) => new Date().getTime() > new Date(x.date).getTime()
+        )
+      );
     });
   };
 
@@ -24,71 +36,37 @@ const HomePage = (props) => {
     fetchTeams();
   }, []);
 
-  const columns = useMemo(
-    () => [
-      {
-        width: "10%",
-        id: "id",
-        Header: "Id",
-        accessor: (cellInfo) => cellInfo.eventId,
-        disableFilters: true,
-      },
-      {
-        width: "30%",
-        id: "name",
-        Header: "Nazwa",
-        accessor: (cellInfo) => cellInfo.name,
-        disableFilters: true,
-      },
-      {
-        width: "30%",
-        id: "date",
-        Header: "Data wydarzenia",
-        accessor: (cellInfo) => formatTableDate(cellInfo.date),
-        disableFilters: true,
-      },
-      {
-        width: "30%",
-        id: "deadlineDate",
-        Header: "Zapisy",
-        disableSortBy: true,
-        disableFilters: true,
-        accessor: (cellInfo) => cellInfo.date,
-        disableRowClick: true,
-        Cell: (row) => (
-          <SubmitButton
-            action={() => addTeamToEvent(row)}
-            label={"Zapisz się"}
-            disabled={new Date().getTime() < new Date(row.value).getTime()}
-            paddingTop={" button_in_table"}
-            small={true}
-          />
-        ),
-      },
-    ],
-    []
-  );
-
-  const onRowClick = (row) => {
-    navigate("event", { state: { eventId: row.allCells[0].value } });
-  };
-
-  const addTeamToEvent = (row) => {
-    navigate("joinToEvent", { state: { eventId: row.data[0].eventId } });
-  };
-
   return (
     <>
-      <ResultTable
-        onRowClick={onRowClick}
-        columns={columns}
-        data={events}
-        pageCount={3}
-        isLoading={false}
-        isFooter={false}
-        isHeader={true}
-        cursor={"pointer"}
-      />
+      <Card className="my-2">
+        <h3>Najbliższe wydarzenia</h3>
+      </Card>
+      <div className="row">
+        {futureEvents.map((x) => (
+          <EventCard
+            event={x}
+            onJoin={() =>
+              navigate("joinToEvent", { state: { eventId: x.eventId } })
+            }
+            onScore={() => navigate("event", { state: { eventId: x.eventId } })}
+            onTeamList={() => setEventToTeamList(x.eventId)}
+          />
+        ))}
+        <Card className="my-2">
+          <h3>Archiwalne wydarzenia</h3>
+        </Card>
+
+        {archiveEvents.map((x) => (
+          <EventCard
+            event={x}
+            onJoin={() =>
+              navigate("joinToEvent", { state: { eventId: x.eventId } })
+            }
+            onScore={() => navigate("event", { state: { eventId: x.eventId } })}
+            onTeamList={() => setEventToTeamList(x.eventId)}
+          />
+        ))}
+      </div>
       <div className="p-3 border-top">
         <Button
           className={"border-top mx-3"}
@@ -98,10 +76,14 @@ const HomePage = (props) => {
           Dodaj wydarzenie
         </Button>
       </div>
-
       <NewEventForm
         show={createEvent}
         handleClose={() => setCreateEvent(false)}
+      />
+      <TeamListModal
+        show={eventToTeamList !== undefined}
+        handleClose={() => setEventToTeamList()}
+        eventId={eventToTeamList}
       />
     </>
   );

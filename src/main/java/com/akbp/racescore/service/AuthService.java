@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,9 +43,17 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public JwtResponse authenticateUser(AuthRequest request) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+    public ResponseEntity<?> authenticateUser(AuthRequest request) {
+        if (!userRepository.existsByUsername(request.getUsername()))
+            return ResponseEntity.badRequest().body("Brak użytkownika o podanym loginie");
+
+        Authentication auth;
+        try {
+            auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        } catch (AuthenticationException e) {
+            return ResponseEntity.badRequest().body("Błędne dane logowania");
+        }
 
         SecurityContextHolder.getContext().setAuthentication(auth);
         String jwt = jwtUtils.generateJwtToken(auth);
@@ -53,7 +62,7 @@ public class AuthService {
 
         List<String> roles = userDetails.getAuthorities().stream().map(x -> x.getAuthority()).collect(Collectors.toList());
 
-        return new JwtResponse(jwt, null, userDetails.getUsername(), null, roles);
+        return ResponseEntity.ok(new JwtResponse(jwt, null, userDetails.getUsername(), null, roles));
     }
 
     public ResponseEntity<?> registerUser(AuthRequest signupRequest) {
@@ -74,6 +83,6 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(user.getUsername() + " został zarejestrowany");
+        return ResponseEntity.ok(new JwtResponse(null, null, user.getUsername(), null, user.getRoles().stream().map(x -> x.getAuthority()).collect(Collectors.toList())));
     }
 }

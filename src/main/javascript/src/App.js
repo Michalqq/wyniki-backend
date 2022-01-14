@@ -10,6 +10,7 @@ import HomePage from "./components/page/HomePage";
 import TeamCreatePage from "./components/page/TeamCreatePage";
 import { NavigationBar } from "./components/common/NavigationBar";
 import LoginPage from "./components/page/LoginPage";
+import RegisterPage from "./components/page/RegisterPage";
 
 function App() {
   const [addedNewScore, setAddedNewScore] = useState();
@@ -25,6 +26,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route
                 path="/add_score"
                 element={<AddScorePage setAddedNewScore={setAddedNewScore} />}

@@ -8,9 +8,11 @@ import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -103,6 +105,7 @@ public class EventService {
             int number = eventTeamRepository.getMaxNumberByEventId(eventId);
 
             EventTeam et = new EventTeam();
+            et.setJoinDate(Instant.now());
             et.setTeam(team);
             et.setEventId(eventId);
             et.setNumber(number + 1);
@@ -131,5 +134,13 @@ public class EventService {
 
     public void createNew(Event event) {
         eventRepository.save(event);
+    }
+
+    public boolean checkReferee(Long eventId, Authentication auth) {
+        if (auth == null)
+            return false;
+
+        Optional<Event> optionalEvent = eventRepository.checkIfUserIsReferee(eventId, auth.getName());
+        return optionalEvent.isPresent();
     }
 }

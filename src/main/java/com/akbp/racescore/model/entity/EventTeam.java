@@ -6,6 +6,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Getter
@@ -33,5 +34,8 @@ public class EventTeam {
 
     @Column(name = "ENTRY_FEE_PAID")
     private Boolean entryFeePaid;
+
+    @Column(name = "JOIN_DATE")
+    private Instant joinDate;
 
 }

@@ -6,6 +6,7 @@ import { InputLabeled } from "../common/InputLabeled";
 import { RadioButton } from "../common/Button";
 import { backendUrl } from "../utils/fetchUtils";
 import { useLocation, Link } from "react-router-dom";
+import authHeader from "../../service/auth-header";
 
 export const AddScorePage = (props) => {
   const location = useLocation();
@@ -40,7 +41,9 @@ export const AddScorePage = (props) => {
 
   const fetchPsOptions = () => {
     axios
-      .get(`${backendUrl()}/event/getPsOptions?eventId=${eventId}`)
+      .get(`${backendUrl()}/event/getPsOptions?eventId=${eventId}`, {
+        headers: authHeader(),
+      })
       .then((res) => {
         setPsOptions(res.data);
         setStage(res.data[0]?.value);
@@ -51,7 +54,10 @@ export const AddScorePage = (props) => {
     setLoadingTeams(true);
     axios
       .get(
-        `${backendUrl()}/team/getTeamOptions?stageId=${stage}&mode=${editMode}`
+        `${backendUrl()}/team/getTeamOptions?stageId=${stage}&mode=${editMode}`,
+        {
+          headers: authHeader(),
+        }
       )
       .then((res) => {
         setTeamOptions(res.data);
@@ -66,13 +72,13 @@ export const AddScorePage = (props) => {
   };
 
   const addScore = (data) => {
-    axios.post(`${backendUrl()}/score/addScore`, data).then((res) => {
-      fetchTeamsOptions();
-    });
-  };
-
-  const postPenalty = (data) => {
-    axios.post(`${backendUrl()}/score/addPenalty`, data).then((res) => {});
+    axios
+      .post(`${backendUrl()}/score/addScore`, data, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        fetchTeamsOptions();
+      });
   };
 
   useEffect(() => {
@@ -123,18 +129,6 @@ export const AddScorePage = (props) => {
     addScore(data);
     props.setAddedNewScore(data);
     resetData();
-  };
-
-  const addPenalty = () => {
-    const data = {
-      teamId: teamId,
-      stageId: stage,
-      penaltySec: penaltySec,
-      description: penaltyDesc,
-    };
-    postPenalty(data);
-    setPenaltyDesc("");
-    setPenaltySec("");
   };
 
   const checkboxChange = (e) => {

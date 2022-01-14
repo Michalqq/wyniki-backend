@@ -39,4 +39,6 @@ public class Team {
     @Column(name = "DRIVE_TYPE", nullable = false)
     private DriveType driveType;
 
+    private Long userId;
+
 }

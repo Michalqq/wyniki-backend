@@ -1,5 +1,6 @@
 package com.akbp.racescore.model.entity;
 
+import com.akbp.racescore.security.model.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,9 @@ public class Event implements Serializable {
     @Column(name = "DATE", nullable = false)
     private Instant date;
 
+    @Column(name = "SIGN_DEADLINE")
+    private Instant signDeadline;
+
     @Column(name = "admin", nullable = false)
     private Long admin;
 
@@ -44,4 +48,8 @@ public class Event implements Serializable {
     @JoinColumn(name = "EVENT_ID", nullable = false)
     @JsonIgnoreProperties("eventId")
     List<Stage> stages;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "EVENT_REFEREE", joinColumns = @JoinColumn(name = "EVENT_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
+    List<User> referee;
 }

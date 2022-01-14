@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import { backendUrl } from "../utils/fetchUtils";
 import { useLocation, Link } from "react-router-dom";
+import authHeader from "../../service/auth-header";
 
 export const AddPenaltyPage = (props) => {
   const location = useLocation();
@@ -55,9 +56,13 @@ export const AddPenaltyPage = (props) => {
   };
 
   const postPenalty = (data) => {
-    axios.post(`${backendUrl()}/penalty/addPenalty`, data).then((res) => {
-      setPenaltyOptions(res.data);
-    });
+    axios
+      .post(`${backendUrl()}/penalty/addPenalty`, data, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        setPenaltyOptions(res.data);
+      });
   };
 
   useEffect(() => {

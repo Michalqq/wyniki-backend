@@ -7,6 +7,7 @@ import axios from "axios";
 import { backendUrl } from "../utils/fetchUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import authHeader from "../../service/auth-header";
 
 const PenaltyTable = (props) => {
   const [penalties, setPenalties] = useState([]);
@@ -23,7 +24,9 @@ const PenaltyTable = (props) => {
 
   const removePenalty = (penaltyId) => {
     axios
-      .post(`${backendUrl()}/penalty/removePenalty?penaltyId=${penaltyId}`)
+      .post(`${backendUrl()}/penalty/removePenalty?penaltyId=${penaltyId}`, {
+        headers: authHeader(),
+      })
       .then((res) => {
         setIsLoading(true);
         props.onRemove();
@@ -82,11 +85,15 @@ const PenaltyTable = (props) => {
                   </td>
                   <td className="text-left px-3">{penalty.name}</td>
                   <td>
-                    <FontAwesomeIcon
-                      icon={faTimesCircle}
-                      onClick={() => removePenalty(penalty.penaltyId)}
-                      title={"Usuń kare"}
-                    />
+                    {props.referee ? (
+                      <FontAwesomeIcon
+                        icon={faTimesCircle}
+                        onClick={() => removePenalty(penalty.penaltyId)}
+                        title={"Usuń kare"}
+                      />
+                    ) : (
+                      <></>
+                    )}
                   </td>
                 </tr>
               </>

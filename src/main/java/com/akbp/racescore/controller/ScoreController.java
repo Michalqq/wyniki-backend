@@ -2,7 +2,6 @@ package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
-import com.akbp.racescore.model.dto.TeamOption;
 import com.akbp.racescore.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,7 +26,6 @@ public class ScoreController {
     public Long addScore(@RequestBody ScoreDTO score) {
         return scoreService.addScore(score);
     }
-
 
     @GetMapping("/getTeamScore")
     public StageScoreDTO getTeamScore(@RequestParam("stageId") Long stageId, @RequestParam("teamId") Long teamId) {

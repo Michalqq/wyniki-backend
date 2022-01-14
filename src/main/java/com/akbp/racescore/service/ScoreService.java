@@ -38,7 +38,6 @@ public class ScoreService {
                 .filter(y -> y.getStageId() == score.getStageId())
                 .findFirst().get();
         stageScore.setScore(score.getScore());
-        stageScore.setId(score.getStageScoreId());
         stageScoreRepository.save(stageScore);
 
         return 1L;

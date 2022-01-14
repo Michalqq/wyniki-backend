@@ -1,7 +1,6 @@
 package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.auth.AuthRequest;
-import com.akbp.racescore.model.dto.auth.JwtResponse;
 import com.akbp.racescore.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +16,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody AuthRequest request) {
-        JwtResponse response = authService.authenticateUser(request);
-        return ResponseEntity.ok(response);
+        return authService.authenticateUser(request);
     }
 
     @PostMapping("/signup")

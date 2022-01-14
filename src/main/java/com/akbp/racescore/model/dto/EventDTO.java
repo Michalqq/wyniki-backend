@@ -15,6 +15,7 @@ public class EventDTO {
     private String name;
     private String description;
     private Instant date;
+    private Instant signDeadline;
     private Long admin;
 
     public EventDTO(Event x) {
@@ -23,5 +24,6 @@ public class EventDTO {
         this.description = x.getDescription();
         this.date = x.getDate();
         this.admin = x.getAdmin();
+        this.signDeadline = x.getSignDeadline();
     }
 }
