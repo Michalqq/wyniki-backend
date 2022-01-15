@@ -41,7 +41,7 @@ public class Event implements Serializable {
 
     @LazyCollection(LazyCollectionOption.TRUE)
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "EVENT_ID", nullable = false)
+    @JoinColumn(name = "EVENT_ID", nullable = false, insertable = false, updatable = false)
     @JsonIgnoreProperties("eventId")
     List<EventTeam> eventTeams;
 

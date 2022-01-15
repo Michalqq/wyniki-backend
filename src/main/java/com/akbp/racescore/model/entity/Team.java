@@ -14,7 +14,7 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "TEAM_ID", updatable = false, nullable = false)
+    @Column(name = "TEAM_ID")
     private Long teamId;
 
     @Column(name = "DRIVER", nullable = false)
@@ -32,8 +32,11 @@ public class Team {
     @Column(name = "LPG")
     private Boolean lpg;
 
-    @ManyToOne()
-    @JoinColumn(name = "CLASS")
+    @Column(name = "CAR_CLASS")
+    private Long carClassId;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "CAR_CLASS", insertable = false, updatable = false)
     private CarClass carClass;
 
     @Column(name = "DRIVE_TYPE", nullable = false)

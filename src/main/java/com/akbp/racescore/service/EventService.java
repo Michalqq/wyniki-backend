@@ -8,6 +8,7 @@ import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
+import com.akbp.racescore.model.repository.TeamRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final EventTeamRepository eventTeamRepository;
+    private final TeamRepository teamRepository;
     private final StageScoreRepository stageScoreRepository;
     private final UserRepository userRepository;
 
@@ -36,12 +38,13 @@ public class EventService {
     public EventService(EventRepository eventRepository,
                         EventTeamRepository eventTeamRepository,
                         StageScoreRepository stageScoreRepository,
-                        UserRepository userRepository) {
+                        UserRepository userRepository,
+                        TeamRepository teamRepository) {
         this.eventRepository = eventRepository;
         this.eventTeamRepository = eventTeamRepository;
         this.stageScoreRepository = stageScoreRepository;
         this.userRepository = userRepository;
-
+        this.teamRepository = teamRepository;
     }
 
     public List<String> getStages(Long eventId) {
@@ -73,17 +76,13 @@ public class EventService {
         event.setStarted(true);
         eventRepository.save(event);
 
-        for (Stage stage : event.getStages())
-            for (EventTeam team : event.getEventTeams())
-                createEmptyEventScore(stage, team);
-
         return true;
     }
 
     private void createEmptyEventScore(Stage stage, EventTeam team) {
         StageScore stageScore = new StageScore();
         stageScore.setStageId(stage.getStageId());
-        stageScore.setTeam(team.getTeam());
+        stageScore.setTeamId(team.getTeamId());
         stageScore.setTeamNumber(team.getNumber());
         stageScore.setDisqualified(false);
 
@@ -112,12 +111,19 @@ public class EventService {
         try {
             int number = eventTeamRepository.getMaxNumberByEventId(eventId);
 
+            team = teamRepository.save(team);
+
             EventTeam et = new EventTeam();
             et.setJoinDate(Instant.now());
-            et.setTeam(team);
+            et.setTeamId(team.getTeamId());
             et.setEventId(eventId);
             et.setNumber(number + 1);
             eventTeamRepository.save(et);
+
+            Event event = eventRepository.getById(eventId);
+            for (Stage stage : event.getStages())
+                createEmptyEventScore(stage, et);
+
             return "Załoga została dodana do wydarzenia";
         } catch (Exception e) {
             return e.getMessage();
