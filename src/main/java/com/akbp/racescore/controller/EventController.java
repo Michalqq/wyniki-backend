@@ -8,6 +8,8 @@ import com.akbp.racescore.model.dto.selectors.RefereeOption;
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.service.EventService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -20,6 +22,8 @@ import java.util.List;
         produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin("*")
 public class EventController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventController.class);
 
     private static final String GENERAL = "GENERALNA";
 
@@ -37,7 +41,13 @@ public class EventController {
 
     @PostMapping("/startEvent")
     public boolean startEvent(@RequestParam("eventId") Long eventId) {
-        return eventService.startEvent(eventId);
+        boolean respone = false;
+        try {
+            respone = eventService.startEvent(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return respone;
     }
 
     @GetMapping("/getStages")
