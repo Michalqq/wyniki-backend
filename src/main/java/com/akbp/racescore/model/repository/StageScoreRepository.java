@@ -23,11 +23,11 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "ss.team_number number, team.car, team.driver, team.co_driver coDriver, team.team_name teamName, cc.name carClass " +
             "from race_score.stage_score  ss " +
             "left join race_score.team team on team.team_id = ss.team_id " +
-            "left join race_score.car_class cc on cc.car_class_id = team.class " +
+            "left join race_score.car_class cc on cc.car_class_id = team.car_class " +
             "full join race_score.penalty pen on pen.team_id = ss.team_id  and pen.stage_id = :stageId " +
             "where ss.disqualified = FALSE and ss.team_id in (select team_id from race_score.stage_score " +
             "where stage_id = :stageId and score is not null ) " +
-            "and ss.stage_id = :stageId " +
+            "and ss.stage_id = :stageId and ss.score is not null " +
             "group by ss.team_id, ss.team_number, team.car, team.driver, team.co_driver, team.team_name,  ss.score, cc.name  " +
             "order by sumScore", nativeQuery = true)
     List<StageScoreSumDTO> findScoresInStage(@Param("stageId") Long stageId);
@@ -39,7 +39,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "           and stage_id in (select stage_id from race_score.stage where event_id = :eventId)),0) as penalty " +
             "from race_score.stage_score  ss " +
             "left join race_score.team team on team.team_id = ss.team_id " +
-            "left join race_score.car_class cc on cc.car_class_id = team.class " +
+            "left join race_score.car_class cc on cc.car_class_id = team.car_class " +
             "where ss.disqualified = FALSE and ss.team_id in (select team_id from race_score.stage_score " +
             "where stage_id = :stageId and score is not null ) " +
             "and ss.stage_id in (select stage_id from race_score.stage where event_id = :eventId) " +
