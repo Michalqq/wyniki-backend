@@ -12,7 +12,7 @@
     <artifactId>race-score</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>race-score</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Race Score</description>
     <properties>
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
