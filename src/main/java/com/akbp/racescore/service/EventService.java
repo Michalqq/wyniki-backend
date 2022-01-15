@@ -140,8 +140,9 @@ public class EventService {
         eventTeamRepository.save(eventTeam);
     }
 
-    public void createNew(Event event) {
+    public boolean createNew(Event event) {
         eventRepository.save(event);
+        return true;
     }
 
     public boolean checkReferee(Long eventId, Authentication auth) {

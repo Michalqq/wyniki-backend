@@ -88,8 +88,13 @@ public class EventController {
 
     @PutMapping("createNew")
     public boolean createNew(@RequestBody Event event) {
-        eventService.createNew(event);
-        return true;
+        boolean respone = false;
+        try {
+            respone = eventService.createNew(event);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return respone;
     }
 
     @GetMapping("/checkReferee")
