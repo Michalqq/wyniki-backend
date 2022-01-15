@@ -22,11 +22,10 @@ public class EventTeam {
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "TEAM_ID",
-            nullable = false, updatable = false, insertable = false)
+    @JoinColumn(name = "TEAM_ID", nullable = false)
     private Team team;
 
-    @Column(name = "TEAM_ID", nullable = false)
+    @Column(name = "TEAM_ID", insertable = false, updatable = false)
     private Long teamId;
 
     @Column(name = "NUMBER", nullable = false)
