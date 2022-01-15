@@ -1,12 +1,15 @@
 package com.akbp.racescore.service;
 
-import com.akbp.racescore.model.dto.ClassesOption;
 import com.akbp.racescore.model.dto.EventDTO;
-import com.akbp.racescore.model.dto.PsOption;
+import com.akbp.racescore.model.dto.selectors.ClassesOption;
+import com.akbp.racescore.model.dto.selectors.PsOption;
+import com.akbp.racescore.model.dto.selectors.RefereeOption;
 import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
+import com.akbp.racescore.security.model.entity.User;
+import com.akbp.racescore.security.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -27,14 +30,17 @@ public class EventService {
     private final EventRepository eventRepository;
     private final EventTeamRepository eventTeamRepository;
     private final StageScoreRepository stageScoreRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public EventService(EventRepository eventRepository,
                         EventTeamRepository eventTeamRepository,
-                        StageScoreRepository stageScoreRepository) {
+                        StageScoreRepository stageScoreRepository,
+                        UserRepository userRepository) {
         this.eventRepository = eventRepository;
         this.eventTeamRepository = eventTeamRepository;
         this.stageScoreRepository = stageScoreRepository;
+        this.userRepository = userRepository;
 
     }
 
@@ -64,6 +70,8 @@ public class EventService {
     public boolean startEvent(Long eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         Event event = eventOptional.get();
+        event.setStarted(true);
+        eventRepository.save(event);
 
         for (Stage stage : event.getStages())
             for (EventTeam team : event.getEventTeams())
@@ -142,5 +150,10 @@ public class EventService {
 
         Optional<Event> optionalEvent = eventRepository.checkIfUserIsReferee(eventId, auth.getName());
         return optionalEvent.isPresent();
+    }
+
+    public List<RefereeOption> getRefereeOptions() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(x -> new RefereeOption(x)).collect(Collectors.toList());
     }
 }

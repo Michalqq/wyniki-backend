@@ -1,4 +1,4 @@
-package com.akbp.racescore.model.dto;
+package com.akbp.racescore.model.dto.selectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

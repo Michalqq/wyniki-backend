@@ -7,10 +7,14 @@ import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.StageScore;
 import com.akbp.racescore.model.repository.StageRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
+import com.akbp.racescore.security.model.entity.User;
+import com.akbp.racescore.security.model.repository.UserRepository;
 import com.akbp.racescore.utils.ScoreToString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,15 +25,18 @@ import java.util.stream.Collectors;
 public class ScoreService {
     private final StageRepository stageRepository;
     private final StageScoreRepository stageScoreRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public ScoreService(StageScoreRepository stageScoreRepository,
-                        StageRepository stageRepository) {
+                        StageRepository stageRepository,
+                        UserRepository userRepository) {
         this.stageScoreRepository = stageScoreRepository;
         this.stageRepository = stageRepository;
+        this.userRepository = userRepository;
     }
 
-    public Long addScore(ScoreDTO score) {
+    public Long addScore(ScoreDTO score, Authentication auth) {
         Stage stage = stageRepository.findByStageId(score.getStageId());
         Set<StageScore> stageScores = stage.getStageScores();
 
@@ -38,9 +45,22 @@ public class ScoreService {
                 .filter(y -> y.getStageId() == score.getStageId())
                 .findFirst().get();
         stageScore.setScore(score.getScore());
+        setUserMod(stageScore, auth);
+        stageScore.setDateMod(Instant.now());
         stageScoreRepository.save(stageScore);
 
         return 1L;
+    }
+
+    private void setUserMod(StageScore stageScore, Authentication auth) {
+        if (auth == null)
+            return;
+
+        User user = userRepository.findByUsername(auth.getName());
+        if (user == null)
+            return;
+
+        stageScore.setUserMod(user.getUserId());
     }
 
     public List<StageScoreDTO> getStageScores(Long stageId) {

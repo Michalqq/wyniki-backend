@@ -34,6 +34,8 @@ public class Event implements Serializable {
     @Column(name = "SIGN_DEADLINE")
     private Instant signDeadline;
 
+    private Boolean started;
+
     @Column(name = "admin", nullable = false)
     private Long admin;
 
@@ -49,7 +51,7 @@ public class Event implements Serializable {
     @JsonIgnoreProperties("eventId")
     List<Stage> stages;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "EVENT_REFEREE", joinColumns = @JoinColumn(name = "EVENT_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     List<User> referee;
 }

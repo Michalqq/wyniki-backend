@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Getter
@@ -35,4 +36,10 @@ public class StageScore {
 
     @Column(name = "DISQUALIFIED")
     private Boolean disqualified;
+
+    @Column(name = "USER_MOD")
+    private Long userMod;
+
+    @Column(name = "DATE_MOD")
+    private Instant dateMod;
 }

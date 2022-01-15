@@ -1,5 +1,7 @@
 package com.akbp.racescore.model.dto;
 
+import com.akbp.racescore.model.dto.selectors.ClassesOption;
+import com.akbp.racescore.model.dto.selectors.PsOption;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

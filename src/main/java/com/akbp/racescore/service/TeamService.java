@@ -1,6 +1,6 @@
 package com.akbp.racescore.service;
 
-import com.akbp.racescore.model.dto.TeamOption;
+import com.akbp.racescore.model.dto.selectors.TeamOption;
 import com.akbp.racescore.model.entity.StageScore;
 import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.model.repository.StageScoreRepository;

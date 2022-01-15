@@ -1,6 +1,6 @@
 package com.akbp.racescore.controller;
 
-import com.akbp.racescore.model.dto.TeamOption;
+import com.akbp.racescore.model.dto.selectors.TeamOption;
 import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;

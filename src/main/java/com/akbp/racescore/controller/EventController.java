@@ -1,9 +1,10 @@
 package com.akbp.racescore.controller;
 
-import com.akbp.racescore.model.dto.ClassesOption;
 import com.akbp.racescore.model.dto.EventDTO;
-import com.akbp.racescore.model.dto.PsOption;
 import com.akbp.racescore.model.dto.StgesAndClassesDTO;
+import com.akbp.racescore.model.dto.selectors.ClassesOption;
+import com.akbp.racescore.model.dto.selectors.PsOption;
+import com.akbp.racescore.model.dto.selectors.RefereeOption;
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.service.EventService;
@@ -84,5 +85,10 @@ public class EventController {
     @GetMapping("/checkReferee")
     public boolean checkReferee(@RequestParam("eventId") Long eventId, Authentication auth) {
         return eventService.checkReferee(eventId, auth);
+    }
+
+    @GetMapping("/getRefereeOptions")
+    public List<RefereeOption> getRefereeOptions() {
+        return eventService.getRefereeOptions();
     }
 }

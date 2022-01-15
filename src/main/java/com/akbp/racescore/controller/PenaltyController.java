@@ -1,7 +1,7 @@
 package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.PenaltyByTeamDTO;
-import com.akbp.racescore.model.dto.PenaltyOption;
+import com.akbp.racescore.model.dto.selectors.PenaltyOption;
 import com.akbp.racescore.model.entity.Penalty;
 import com.akbp.racescore.service.PenaltyService;
 import org.springframework.beans.factory.annotation.Autowired;

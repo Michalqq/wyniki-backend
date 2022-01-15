@@ -1,4 +1,4 @@
-package com.akbp.racescore.model.dto;
+package com.akbp.racescore.model.dto.selectors;
 
 public class PsOption extends Options {
     public PsOption(String label, String value, boolean defValue) {

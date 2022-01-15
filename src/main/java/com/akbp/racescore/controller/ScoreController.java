@@ -5,6 +5,7 @@ import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class ScoreController {
     }
 
     @PostMapping("/addScore")
-    public Long addScore(@RequestBody ScoreDTO score) {
-        return scoreService.addScore(score);
+    public Long addScore(@RequestBody ScoreDTO score, Authentication auth) {
+        return scoreService.addScore(score, auth);
     }
 
     @GetMapping("/getTeamScore")
