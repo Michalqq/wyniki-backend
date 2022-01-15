@@ -3,6 +3,8 @@ package com.akbp.racescore.controller;
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.service.ScoreService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,8 @@ import java.util.List;
 @CrossOrigin("*")
 public class ScoreController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreController.class);
+
     private final ScoreService scoreService;
 
     @Autowired
@@ -25,7 +29,12 @@ public class ScoreController {
 
     @PostMapping("/addScore")
     public Long addScore(@RequestBody ScoreDTO score, Authentication auth) {
-        return scoreService.addScore(score, auth);
+        try {
+            return scoreService.addScore(score, auth);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return -1L;
+        }
     }
 
     @GetMapping("/getTeamScore")

@@ -76,13 +76,21 @@ public class EventController {
 
     @PostMapping("removeTeam")
     public boolean removeTeam(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
-        eventService.removeTeam(eventId, teamId);
+        try {
+            eventService.removeTeam(eventId, teamId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
         return true;
     }
 
     @PostMapping("confirmEntryFee")
     public boolean confirmEntryFee(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
-        eventService.confirmEntryFee(eventId, teamId);
+        try {
+            eventService.confirmEntryFee(eventId, teamId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
         return true;
     }
 
