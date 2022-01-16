@@ -77,7 +77,6 @@ public class TeamService {
             Team team = teamRepository.getById(teamId);
             team.setCurrentCar(car);
             teamRepository.save(team);
-            //carRepository.save(car);
             return "Dodano samochód";
         } catch (Exception e) {
             return e.getMessage();
