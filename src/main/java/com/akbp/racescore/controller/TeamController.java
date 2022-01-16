@@ -30,7 +30,12 @@ public class TeamController {
 
     @GetMapping("/getTeam")
     public Team getTeam(Authentication auth) {
-        return teamService.getTeam(auth);
+        try {
+            return teamService.getTeam(auth);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
     }
 
     @PostMapping("/addTeam")
@@ -51,12 +56,22 @@ public class TeamController {
 
     @GetMapping("/getCar")
     public Car getCar(@RequestParam("carId") Long carId) {
-        return teamService.getCar(carId);
+        try {
+            return teamService.getCar(carId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
     }
 
     @PostMapping("/addCar")
     public String addCar(@RequestParam("teamId") Long teamId, @RequestBody Car car) {
-        return teamService.addCar(teamId, car);
+        try {
+            return teamService.addCar(teamId, car);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
     }
 
     @GetMapping("/getTeamOptionList")
