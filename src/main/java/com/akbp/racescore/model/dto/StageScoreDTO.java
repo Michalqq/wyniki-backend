@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,7 +43,7 @@ public class StageScoreDTO {
         this.driver = score.getTeam().getDriver();
         this.coDriver = score.getTeam().getCoDriver();
         this.teamName = score.getTeam().getTeamName();
-        this.car = score.getTeam().getCurrentCar().getBrand();
+        this.car = Optional.ofNullable(score.getTeam().getCurrentCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse("");
         this.className = score.getTeam().getCarClass().getName();
         this.number = score.getTeamNumber();
 
