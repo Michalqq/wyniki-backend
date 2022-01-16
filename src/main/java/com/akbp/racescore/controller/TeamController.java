@@ -1,12 +1,15 @@
 package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.selectors.TeamOption;
+import com.akbp.racescore.model.dto.selectors.TeamOptionList;
+import com.akbp.racescore.model.entity.Car;
 import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,11 @@ public class TeamController {
         this.teamService = teamService;
     }
 
+    @GetMapping("/getTeam")
+    public Team getTeam(Authentication auth) {
+        return teamService.getTeam(auth);
+    }
+
     @PostMapping("/addTeam")
     public String addTeam(@RequestParam("eventId") Long eventId, @RequestBody Team team) {
         try {
@@ -39,5 +47,20 @@ public class TeamController {
     public List<TeamOption> getTeamOptions(@RequestParam("stageId") Long stageId, @RequestParam("mode") String mode) {
         List<TeamOption> teamOptions = teamService.getTeamOptions(stageId, mode);
         return teamOptions;
+    }
+
+    @GetMapping("/getCar")
+    public Car getCar(@RequestParam("carId") Long carId) {
+        return teamService.getCar(carId);
+    }
+
+    @PostMapping("/addCar")
+    public String addCar(@RequestParam("teamId") Long teamId, @RequestBody Car car) {
+        return teamService.addCar(teamId, car);
+    }
+
+    @GetMapping("/getTeamOptionList")
+    public TeamOptionList getTeamOptionList() {
+        return teamService.getTeamOptionList();
     }
 }

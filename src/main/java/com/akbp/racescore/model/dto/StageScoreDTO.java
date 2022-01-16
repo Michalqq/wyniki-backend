@@ -41,7 +41,7 @@ public class StageScoreDTO {
         this.driver = score.getTeam().getDriver();
         this.coDriver = score.getTeam().getCoDriver();
         this.teamName = score.getTeam().getTeamName();
-        this.car = score.getTeam().getCar();
+        this.car = score.getTeam().getCurrentCar().getBrand();
         this.className = score.getTeam().getCarClass().getName();
         this.number = score.getTeamNumber();
 

@@ -75,13 +75,12 @@ public class AuthService {
         User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),
                 encoder.encode(signupRequest.getPassword()));
 
-        Set<Role> roles = new HashSet<>();
+        userRepository.save(user);
 
+        Set<Role> roles = new HashSet<>();
         Role role = roleRepository.findByRole(USER_ROLE);
         roles.add(role);
         user.setRoles(roles);
-
-        userRepository.save(user);
 
         return ResponseEntity.ok(new JwtResponse(null, null, user.getUsername(), null, user.getRoles().stream().map(x -> x.getAuthority()).collect(Collectors.toList())));
     }
