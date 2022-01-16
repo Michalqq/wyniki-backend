@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS RACE_SCORE;
 CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 
-alter table race_score.table drop table;
+alter table RACE_SCORE.team drop column car;
 
 --insert into race_score.role values (1, 'USER_ROLE');
 --insert into race_score.role values (2, 'ADMIN_ROLE');
