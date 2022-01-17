@@ -59,12 +59,9 @@ public class TeamService {
     }
 
     public String addTeam(Team team, Long eventId) {
-        try {
-            eventService.addTeamToEvent(team, eventId);
-            return "Załoga została utworzona";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+        eventService.addTeamToEvent(team, eventId);
+        return "Załoga została utworzona";
+
     }
 
     public Car getCar(Long carId) {
@@ -72,14 +69,10 @@ public class TeamService {
     }
 
     public String addCar(Long teamId, Car car) {
-        try {
-            Team team = teamRepository.getById(teamId);
-            team.setCurrentCar(car);
-            teamRepository.save(team);
-            return "Dodano samochód";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+        Team team = teamRepository.getById(teamId);
+        team.setCurrentCar(car);
+        teamRepository.save(team);
+        return "Dodano samochód";
     }
 
     public TeamOptionList getTeamOptionList() {
