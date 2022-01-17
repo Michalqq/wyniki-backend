@@ -59,7 +59,9 @@ public class EventService {
     public List<EventTeam> getTeams(Long eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-        return eventOptional.get().getEventTeams().stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList());
+        List<EventTeam> teams = eventOptional.get().getEventTeams().stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList());
+
+        return teams;
     }
 
     public List<PsOption> getPsOptions(Long eventId) {

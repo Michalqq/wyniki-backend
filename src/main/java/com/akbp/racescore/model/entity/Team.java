@@ -28,7 +28,7 @@ public class Team {
     private String teamName;
 
     @LazyCollection(LazyCollectionOption.TRUE)
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
     List<Car> cars;
 
