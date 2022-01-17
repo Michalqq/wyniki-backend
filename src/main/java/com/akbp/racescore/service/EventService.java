@@ -4,6 +4,7 @@ import com.akbp.racescore.model.dto.EventDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
+import com.akbp.racescore.model.dto.selectors.StageDTO;
 import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.EventTeamRepository;
@@ -15,7 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -91,9 +99,31 @@ public class EventService {
         stageScoreRepository.save(stageScore);
     }
 
-    public List<EventDTO> getAll() {
+    public List<EventDTO> getAll(Authentication auth) {
         List<Event> events = eventRepository.findAll();
-        return events.stream().map(x -> new EventDTO(x)).collect(Collectors.toList());
+        List<EventDTO> eventDTOS = events.stream().map(x -> new EventDTO(x)).collect(Collectors.toList());
+
+        if (auth != null)
+            return eventWithJoinedMark(eventDTOS, auth);
+
+        return eventDTOS;
+    }
+
+    private List<EventDTO> eventWithJoinedMark(List<EventDTO> eventDTOS, Authentication auth) {
+        User user = userRepository.findByUsername(auth.getName());
+        if (user == null)
+            return eventDTOS;
+
+        Team team = teamRepository.findByUserId(user.getUserId());
+        if (team == null)
+            return eventDTOS;
+
+        List<EventTeam> eventTeams = eventTeamRepository.findByTeamId(team.getTeamId());
+        for (EventTeam et : eventTeams) {
+            eventDTOS.stream().filter(event -> event.getEventId() == et.getEventId()).findAny().ifPresent(x -> x.setJoined(true));
+        }
+
+        return eventDTOS;
     }
 
     public List<ClassesOption> getClasses(Long eventId) {
@@ -144,7 +174,18 @@ public class EventService {
 
     public boolean createNew(Event event) {
         eventRepository.save(event);
+
+        List<EventTeam> eventTeams = eventTeamRepository.findByEventId(event.getEventId());
+
+        for (Stage stage : event.getStages()) {
+            eventTeams.stream().forEach(x -> createEmptyEventScoreIfNeccesarry(stage, x));
+        }
         return true;
+    }
+
+    private void createEmptyEventScoreIfNeccesarry(Stage stage, EventTeam et) {
+        if (stageScoreRepository.findByStageIdAndTeamId(stage.getStageId(), et.getTeamId()) == null)
+            createEmptyEventScore(stage, et);
     }
 
     public boolean checkReferee(Long eventId, Authentication auth) {
@@ -158,5 +199,35 @@ public class EventService {
     public List<RefereeOption> getRefereeOptions() {
         List<User> users = userRepository.findAll();
         return users.stream().map(x -> new RefereeOption(x)).collect(Collectors.toList());
+    }
+
+    public EventDTO getEvent(Long eventId) {
+        Event event = eventRepository.getById(eventId);
+        EventDTO eventDTO = new EventDTO(event);
+        eventDTO.setStages(event.getStages().stream().map(x -> new StageDTO(x)).collect(Collectors.toList()));
+        eventDTO.setReferee(event.getReferee());
+
+        return eventDTO;
+    }
+
+    public Boolean deleteEvent(Long eventId) {
+        eventRepository.deleteById(eventId);
+        return true;
+    }
+
+    public boolean saveFile(MultipartFile file, Long eventId, Long teamId) throws Exception {
+        String dir = "/teamFiles/event" + eventId + "/team" + teamId + "/";
+
+        File directory = new File(dir);
+        if (!directory.exists())
+            directory.mkdirs();
+
+        Path path = Paths.get(dir + file.getOriginalFilename());
+        try (OutputStream os = Files.newOutputStream(path)) {
+            os.write(file.getBytes());
+        } catch (IOException e) {
+            throw new Exception(e);
+        }
+        return true;
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class EventController {
     }
 
     @GetMapping("/getAll")
-    public List<EventDTO> getAll() {
-        return eventService.getAll();
+    public List<EventDTO> getAll(Authentication auth) {
+        return eventService.getAll(auth);
     }
 
     @PostMapping("/startEvent")
@@ -103,6 +104,38 @@ public class EventController {
             LOGGER.error(e.getMessage());
         }
         return respone;
+    }
+
+    @GetMapping("getEvent")
+    public EventDTO getEvent(@RequestParam Long eventId) {
+        try {
+            return eventService.getEvent(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return null;
+    }
+
+    @PostMapping("deleteEvent")
+    public Boolean deleteEvent(@RequestParam Long eventId) {
+        try {
+            return eventService.deleteEvent(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return false;
+    }
+
+    @PostMapping(value = "addEntryFeeFile")
+    public boolean addEntryFeeFile(@RequestBody MultipartFile file,
+                                   @RequestParam("eventId") Long eventId,
+                                   @RequestParam("teamId") Long teamId) {
+        try {
+            return eventService.saveFile(file, eventId, teamId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return false;
     }
 
     @GetMapping("/checkReferee")

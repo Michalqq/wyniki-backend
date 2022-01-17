@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface EventTeamRepository extends JpaRepository<EventTeam, Long> {
 
     @Query(value = "SELECT COALESCE(MAX(number),0) number FROM race_score.event_team WHERE event_id = :eventId", nativeQuery = true)
@@ -13,4 +15,8 @@ public interface EventTeamRepository extends JpaRepository<EventTeam, Long> {
     void deleteByEventIdAndTeamId(Long eventId, Long teamId);
 
     EventTeam findByEventIdAndTeamId(Long eventId, Long teamId);
+
+    List<EventTeam> findByTeamId(Long teamId);
+
+    List<EventTeam> findByEventId(Long eventId);
 }

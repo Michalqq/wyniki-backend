@@ -1,7 +1,6 @@
 package com.akbp.racescore.model.entity;
 
 import com.akbp.racescore.security.model.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
@@ -42,13 +41,11 @@ public class Event implements Serializable {
     @LazyCollection(LazyCollectionOption.TRUE)
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "EVENT_ID", nullable = false, insertable = false, updatable = false)
-    @JsonIgnoreProperties("eventId")
     List<EventTeam> eventTeams;
 
     @LazyCollection(LazyCollectionOption.TRUE)
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "EVENT_ID", nullable = false)
-    @JsonIgnoreProperties("eventId")
     List<Stage> stages;
 
     @ManyToMany(cascade = CascadeType.MERGE)
