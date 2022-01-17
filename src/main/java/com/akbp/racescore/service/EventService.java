@@ -107,27 +107,21 @@ public class EventService {
         return classesOptions;
     }
 
-    public String addTeamToEvent(Team team, Long eventId) {
-        try {
-            int number = eventTeamRepository.getMaxNumberByEventId(eventId);
+    public void addTeamToEvent(Team team, Long eventId) {
+        int number = eventTeamRepository.getMaxNumberByEventId(eventId);
 
-            team = teamRepository.save(team);
+        team = teamRepository.save(team);
 
-            EventTeam et = new EventTeam();
-            et.setJoinDate(Instant.now());
-            et.setTeamId(team.getTeamId());
-            et.setEventId(eventId);
-            et.setNumber(number + 1);
-            eventTeamRepository.save(et);
+        EventTeam et = new EventTeam();
+        et.setJoinDate(Instant.now());
+        et.setTeamId(team.getTeamId());
+        et.setEventId(eventId);
+        et.setNumber(number + 1);
+        eventTeamRepository.save(et);
 
-            Event event = eventRepository.getById(eventId);
-            for (Stage stage : event.getStages())
-                createEmptyEventScore(stage, et);
-
-            return "Załoga została dodana do wydarzenia";
-        } catch (Exception e) {
-            return e.getMessage();
-        }
+        Event event = eventRepository.getById(eventId);
+        for (Stage stage : event.getStages())
+            createEmptyEventScore(stage, et);
     }
 
     @Transactional

@@ -61,7 +61,6 @@ public class TeamService {
     public String addTeam(Team team, Long eventId) {
         try {
             eventService.addTeamToEvent(team, eventId);
-
             return "Załoga została utworzona";
         } catch (Exception e) {
             return e.getMessage();
