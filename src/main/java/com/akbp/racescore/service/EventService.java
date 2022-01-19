@@ -159,6 +159,10 @@ public class EventService {
         try {
             stageScoreRepository.removeStageScoresByTeamIdAndEventId(eventId, teamId);
             eventTeamRepository.deleteByEventIdAndTeamId(eventId, teamId);
+
+            Event event = eventRepository.getById(eventId);
+            event.getStages().stream().forEach(x -> stageScoreRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId));
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
