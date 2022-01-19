@@ -11,7 +11,9 @@ import com.akbp.racescore.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -136,6 +138,18 @@ public class EventController {
             LOGGER.error(e.getMessage());
         }
         return false;
+    }
+
+    @GetMapping("/getEntryFeeFile")
+    public ResponseEntity<byte[]> getEntryFeeFile(@RequestParam("eventId") Long eventId,
+                                                  @RequestParam("teamId") Long teamId) {
+        try {
+            return eventService.getFile(eventId, teamId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/checkReferee")

@@ -33,4 +33,8 @@ public class EventTeam {
 
     @Column(name = "JOIN_DATE")
     private Instant joinDate;
+
+    @Column(name = "ENTRY_FEE_FILE")
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] entryFeeFile;
 }

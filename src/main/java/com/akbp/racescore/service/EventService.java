@@ -13,17 +13,15 @@ import com.akbp.racescore.model.repository.TeamRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -216,18 +214,24 @@ public class EventService {
     }
 
     public boolean saveFile(MultipartFile file, Long eventId, Long teamId) throws Exception {
-        String dir = "/teamFiles/event" + eventId + "/team" + teamId + "/";
+        EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
+        eventTeam.setEntryFeeFile(file.getBytes());
+        eventTeamRepository.save(eventTeam);
 
-        File directory = new File(dir);
-        if (!directory.exists())
-            directory.mkdirs();
-
-        Path path = Paths.get(dir + file.getOriginalFilename());
-        try (OutputStream os = Files.newOutputStream(path)) {
-            os.write(file.getBytes());
-        } catch (IOException e) {
-            throw new Exception(e);
-        }
         return true;
+    }
+
+    public ResponseEntity<byte[]> getFile(Long eventId, Long teamId) {
+        EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
+
+        if (eventTeam == null)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.set("Content-Disposition", "attachment; filename=" + "potwierdzenie_wplaty_" + teamId);
+        headers.setContentLength(eventTeam.getEntryFeeFile().length);
+
+        return new ResponseEntity<>(eventTeam.getEntryFeeFile(), headers, HttpStatus.OK);
     }
 }
