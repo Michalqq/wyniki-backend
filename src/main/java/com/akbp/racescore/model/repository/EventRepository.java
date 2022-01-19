@@ -17,7 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = "select e.* from race_score.event e " +
             "left join race_score.event_referee er on er.event_Id = e.event_Id " +
-            "left join race_score.user u on u.user_id = er.user_id " +
+            "left join race_score.users u on u.user_id = er.user_id " +
             "where e.event_Id = :eventId and u.username = :username", nativeQuery = true)
     Optional<Event> checkIfUserIsReferee(@Param("eventId") Long eventId, @Param("username") String username);
 }
