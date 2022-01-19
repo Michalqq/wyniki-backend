@@ -48,7 +48,7 @@ public class Event implements Serializable {
     @JoinColumn(name = "EVENT_ID", nullable = false)
     List<Stage> stages;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "EVENT_REFEREE", joinColumns = @JoinColumn(name = "EVENT_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     List<User> referee;
 }
