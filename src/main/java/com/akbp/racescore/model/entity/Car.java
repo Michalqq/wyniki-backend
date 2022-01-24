@@ -28,7 +28,7 @@ public class Car {
     private String licensePlate;
     private String vin;
     @Column(name = "ENGINE_CAPACITY")
-    private String engineCapacity;
+    private Double engineCapacity;
     private Boolean turbo;
 
     @Column(name = "DRIVE_TYPE")

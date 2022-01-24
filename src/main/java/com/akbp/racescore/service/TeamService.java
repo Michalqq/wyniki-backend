@@ -31,17 +31,22 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
 
+    private final CarService carService;
+
     @Autowired
     public TeamService(EventService eventService,
                        StageScoreRepository stageScoreRepository,
                        CarRepository carRepository,
                        TeamRepository teamRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       CarService carService) {
         this.eventService = eventService;
         this.stageScoreRepository = stageScoreRepository;
         this.carRepository = carRepository;
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
+
+        this.carService = carService;
     }
 
     public List<TeamOption> getTeamOptions(Long stageId, String mode) {
@@ -59,6 +64,11 @@ public class TeamService {
     }
 
     public String addTeam(Team team, Long eventId) {
+        if (team.getCoDriver().isEmpty())
+            team.setCoDriver("");
+
+        carService.calculateClass(team);
+
         eventService.addTeamToEvent(team, eventId);
         return "Załoga została utworzona";
 

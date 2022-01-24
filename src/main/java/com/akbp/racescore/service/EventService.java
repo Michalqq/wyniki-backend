@@ -162,7 +162,6 @@ public class EventService {
 
             Event event = eventRepository.getById(eventId);
             event.getStages().stream().forEach(x -> stageScoreRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId));
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -237,5 +236,26 @@ public class EventService {
         headers.setContentLength(eventTeam.getEntryFeeFile().length);
 
         return new ResponseEntity<>(eventTeam.getEntryFeeFile(), headers, HttpStatus.OK);
+    }
+
+    public List<EventTeam> sortByClass(Long eventId) {
+        List<EventTeam> teams = getTeams(eventId);
+
+        int number = teams.size();
+
+        teams.sort(Comparator.comparing(x -> x.getTeam().getCarClassId()));
+        List<EventTeam> reversedTeams = new ArrayList<>();
+        for (EventTeam team : teams) {
+            team.setNumber(number--);
+            reversedTeams.add(0, team);
+        }
+
+        return reversedTeams;
+    }
+
+    public boolean saveNumbers(List<EventTeam> teams) {
+        teams.stream().forEach(x -> eventTeamRepository.save(x));
+
+        return true;
     }
 }

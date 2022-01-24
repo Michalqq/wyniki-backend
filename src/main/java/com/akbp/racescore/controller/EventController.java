@@ -77,7 +77,7 @@ public class EventController {
         return sacDTO;
     }
 
-    @PostMapping("removeTeam")
+    @PostMapping("/removeTeam")
     public boolean removeTeam(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
         try {
             eventService.removeTeam(eventId, teamId);
@@ -160,5 +160,21 @@ public class EventController {
     @GetMapping("/getRefereeOptions")
     public List<RefereeOption> getRefereeOptions() {
         return eventService.getRefereeOptions();
+    }
+
+    @GetMapping("/sortByClass")
+    public List<EventTeam> sortByClass(@RequestParam("eventId") Long eventId) {
+        return eventService.sortByClass(eventId);
+    }
+
+    @PostMapping("/saveNumbers")
+    public boolean saveNumbers(@RequestBody List<EventTeam> teams) {
+        try {
+            return eventService.saveNumbers(teams);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return false;
     }
 }
