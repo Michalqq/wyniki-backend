@@ -208,7 +208,12 @@ public class EventService {
     }
 
     private void createEmptyEventScoreIfNeccesarry(Stage stage, EventTeam et) {
-        if (stageScoreRepository.findByStageIdAndTeamId(stage.getStageId(), et.getTeamId()) == null)
+        List<StageScore> stageScores = stageScoreRepository.findByStageIdAndTeamId(stage.getStageId(), et.getTeamId());
+        if (stageScores.size() > 1)
+            stageScores.stream().filter(x -> x.getScore() == null).forEach(x -> stageScoreRepository.deleteById(x.getId()));
+
+        stageScores = stageScoreRepository.findByStageIdAndTeamId(stage.getStageId(), et.getTeamId());
+        if (stageScores.isEmpty())
             createEmptyEventScore(stage, et);
     }
 

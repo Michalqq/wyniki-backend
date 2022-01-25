@@ -3,7 +3,6 @@ package com.akbp.racescore.service;
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreSumDTO;
-import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.StageScore;
@@ -103,7 +102,12 @@ public class ScoreService {
     }
 
     public StageScoreDTO getTeamScore(Long eventId, Long stageId, Long teamId) {
-        StageScore stageScore = stageScoreRepository.findByStageIdAndTeamId(stageId, teamId);
+        List<StageScore> stageScores = stageScoreRepository.findByStageIdAndTeamId(stageId, teamId);
+        stageScores.sort(Comparator.comparingLong(x -> x.getScore()));
+        if (stageScores.size() > 1)
+            stageScores.subList(1, stageScores.size()).forEach(x -> stageScoreRepository.deleteById(x.getId()));
+
+        StageScore stageScore = stageScores.get(0);
         EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
 
         StageScoreDTO stageScoreDTO = new StageScoreDTO(stageScore, et.getCarClass().getName());
