@@ -32,7 +32,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "where ss.disqualified = FALSE and ss.team_id in (select team_id from race_score.stage_score " +
             "where stage_id = :stageId and score is not null ) " +
             "and ss.stage_id = :stageId and ss.score is not null " +
-            "group by ss.team_id, ss.team_number, c.brand, c.model, team.driver, team.co_driver, team.team_name,  ss.score, cc.name  " +
+            "group by ss.team_id, et.number, c.brand, c.model, team.driver, team.co_driver, team.team_name,  ss.score, cc.name  " +
             "order by sumScore", nativeQuery = true)
     List<StageScoreSumDTO> findScoresInStage(@Param("stageId") Long stageId);
 
@@ -52,7 +52,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "where stage_id = :stageId and score is not null ) " +
             "and ss.stage_id in (select stage_id from race_score.stage where event_id = :eventId) " +
             "and ss.stage_id <= :stageId and ss.score is not null " +
-            "group by ss.team_id, ss.team_number, c.brand, c.model, team.driver, team.co_driver, team.team_name, cc.name " +
+            "group by ss.team_id, et.number, c.brand, c.model, team.driver, team.co_driver, team.team_name, cc.name " +
             "order by sumScore", nativeQuery = true)
     List<StageScoreSumDTO> findSummedScoreByStageId(@Param("eventId") Long eventId, @Param("stageId") Long stageId);
 
