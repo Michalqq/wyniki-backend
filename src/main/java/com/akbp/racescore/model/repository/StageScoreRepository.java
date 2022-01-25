@@ -21,7 +21,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
 
     @Query(value = "select  ss.score sumScore, sum(coalesce(pen.penalty_sec, 0)) penalty, " +
             "concat(c.brand, ' ', c.model) car, " +
-            "ss.team_number number, team.driver, team.co_driver coDriver, team.team_name teamName, cc.name carClass " +
+            "et.number, team.driver, team.co_driver coDriver, team.team_name teamName, cc.name carClass " +
             "from race_score.stage_score  ss " +
             "left join race_score.team team on team.team_id = ss.team_id " +
             "left join race_score.event_team et on et.team_id = ss.team_id and et.event_id = " +
@@ -36,7 +36,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "order by sumScore", nativeQuery = true)
     List<StageScoreSumDTO> findScoresInStage(@Param("stageId") Long stageId);
 
-    @Query(value = "select sum(ss.score) sumScore, ss.team_number number, " +
+    @Query(value = "select sum(ss.score) sumScore, et.number, " +
             "concat(c.brand, ' ', c.model) car, " +
             "team.driver, team.co_driver coDriver, team.team_name teamName, cc.name carClass, " +
             "coalesce((select sum(coalesce(penalty_sec, 0)) from race_score.penalty " +
