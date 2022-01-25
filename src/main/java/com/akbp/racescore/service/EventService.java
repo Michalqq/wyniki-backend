@@ -7,10 +7,7 @@ import com.akbp.racescore.model.dto.selectors.RefereeOption;
 import com.akbp.racescore.model.dto.selectors.StageDTO;
 import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.entity.dictionary.CarClass;
-import com.akbp.racescore.model.repository.EventRepository;
-import com.akbp.racescore.model.repository.EventTeamRepository;
-import com.akbp.racescore.model.repository.StageScoreRepository;
-import com.akbp.racescore.model.repository.TeamRepository;
+import com.akbp.racescore.model.repository.*;
 import com.akbp.racescore.model.repository.dictionary.CarClassRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
@@ -42,6 +39,8 @@ public class EventService {
     private final StageScoreRepository stageScoreRepository;
     private final UserRepository userRepository;
     private final CarClassRepository carClassRepository;
+    private final EventPathsRepository eventPathsRepository;
+    private final EventClassesRepository eventClassesRepository;
 
     private final CarService carService;
 
@@ -52,13 +51,17 @@ public class EventService {
                         UserRepository userRepository,
                         TeamRepository teamRepository,
                         CarClassRepository carClassRepository,
-                        CarService carService) {
+                        CarService carService,
+                        EventPathsRepository eventPathsRepository,
+                        EventClassesRepository eventClassesRepository) {
         this.eventRepository = eventRepository;
         this.eventTeamRepository = eventTeamRepository;
         this.stageScoreRepository = stageScoreRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.carClassRepository = carClassRepository;
+        this.eventPathsRepository = eventPathsRepository;
+        this.eventClassesRepository = eventClassesRepository;
 
         this.carService = carService;
     }
@@ -157,7 +160,7 @@ public class EventService {
 
         if (et == null)
             et = new EventTeam();
-        
+
         et.setJoinDate(Instant.now());
         et.setTeamId(team.getTeamId());
         et.setEventId(eventId);
@@ -168,7 +171,7 @@ public class EventService {
         eventTeamRepository.save(et);
 
         for (Stage stage : event.getStages())
-            createEmptyEventScore(stage, et);
+            createEmptyEventScoreIfNeccesarry(stage, et);
     }
 
     @Transactional
@@ -190,14 +193,17 @@ public class EventService {
         eventTeamRepository.save(eventTeam);
     }
 
+    @Transactional
     public boolean createNew(Event event) {
+        eventPathsRepository.deleteByEventId(event.getEventId());
+        eventClassesRepository.deleteByEventId(event.getEventId());
         eventRepository.save(event);
 
         List<EventTeam> eventTeams = eventTeamRepository.findByEventId(event.getEventId());
 
-        for (Stage stage : event.getStages()) {
-            eventTeams.stream().forEach(x -> createEmptyEventScoreIfNeccesarry(stage, x));
-        }
+//        for (Stage stage : event.getStages()) {
+//            eventTeams.stream().forEach(x -> createEmptyEventScoreIfNeccesarry(stage, x));
+//        }
         return true;
     }
 
@@ -224,7 +230,6 @@ public class EventService {
         EventDTO eventDTO = new EventDTO(event);
         eventDTO.setStages(event.getStages().stream().map(x -> new StageDTO(x)).collect(Collectors.toList()));
         eventDTO.setReferee(event.getReferee());
-        eventDTO.setEventClasses(event.getEventClasses());
 
         return eventDTO;
     }

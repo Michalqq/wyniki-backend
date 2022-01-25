@@ -27,6 +27,12 @@ public class Event implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "LOGO_PATH")
+    private String logoPath;
+
+    @Column(name = "ORGANIZER")
+    private String organizer;
+
     @Column(name = "DATE", nullable = false)
     private Instant date;
 
@@ -61,6 +67,11 @@ public class Event implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "EVENT_ID", nullable = false)
     List<EventClasses> eventClasses;
+
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "EVENT_ID", nullable = false)
+    List<EventPath> eventPaths;
 
     @ManyToMany
     @JoinTable(name = "EVENT_REFEREE", joinColumns = @JoinColumn(name = "EVENT_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
