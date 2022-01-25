@@ -3,8 +3,11 @@ package com.akbp.racescore.service;
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreSumDTO;
+import com.akbp.racescore.model.entity.Event;
+import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.StageScore;
+import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.security.model.entity.User;
@@ -26,14 +29,17 @@ public class ScoreService {
     private final StageRepository stageRepository;
     private final StageScoreRepository stageScoreRepository;
     private final UserRepository userRepository;
+    private final EventTeamRepository eventTeamRepository;
 
     @Autowired
     public ScoreService(StageScoreRepository stageScoreRepository,
                         StageRepository stageRepository,
-                        UserRepository userRepository) {
+                        UserRepository userRepository,
+                        EventTeamRepository eventTeamRepository) {
         this.stageScoreRepository = stageScoreRepository;
         this.stageRepository = stageRepository;
         this.userRepository = userRepository;
+        this.eventTeamRepository = eventTeamRepository;
     }
 
     public Long addScore(ScoreDTO score, Authentication auth) {
@@ -96,9 +102,11 @@ public class ScoreService {
         return scores;
     }
 
-    public StageScoreDTO getTeamScore(Long stageId, Long teamId) {
+    public StageScoreDTO getTeamScore(Long eventId, Long stageId, Long teamId) {
         StageScore stageScore = stageScoreRepository.findByStageIdAndTeamId(stageId, teamId);
-        StageScoreDTO stageScoreDTO = new StageScoreDTO(stageScore);
+        EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
+
+        StageScoreDTO stageScoreDTO = new StageScoreDTO(stageScore, et.getCarClass().getName());
         stageScoreDTO.setScoreFromTotalScore(stageScore);
         return stageScoreDTO;
     }

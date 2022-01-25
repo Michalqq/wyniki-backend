@@ -6,10 +6,12 @@ import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
 import com.akbp.racescore.model.dto.selectors.StageDTO;
 import com.akbp.racescore.model.entity.*;
+import com.akbp.racescore.model.entity.dictionary.CarClass;
 import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.model.repository.TeamRepository;
+import com.akbp.racescore.model.repository.dictionary.CarClassRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,18 +41,26 @@ public class EventService {
     private final TeamRepository teamRepository;
     private final StageScoreRepository stageScoreRepository;
     private final UserRepository userRepository;
+    private final CarClassRepository carClassRepository;
+
+    private final CarService carService;
 
     @Autowired
     public EventService(EventRepository eventRepository,
                         EventTeamRepository eventTeamRepository,
                         StageScoreRepository stageScoreRepository,
                         UserRepository userRepository,
-                        TeamRepository teamRepository) {
+                        TeamRepository teamRepository,
+                        CarClassRepository carClassRepository,
+                        CarService carService) {
         this.eventRepository = eventRepository;
         this.eventTeamRepository = eventTeamRepository;
         this.stageScoreRepository = stageScoreRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
+        this.carClassRepository = carClassRepository;
+
+        this.carService = carService;
     }
 
     public List<String> getStages(Long eventId) {
@@ -142,14 +152,21 @@ public class EventService {
 
         team = teamRepository.save(team);
 
-        EventTeam et = new EventTeam();
+        EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, team.getTeamId());
+        Event event = eventRepository.getById(eventId);
+
+        if (et == null)
+            et = new EventTeam();
+        
         et.setJoinDate(Instant.now());
         et.setTeamId(team.getTeamId());
         et.setEventId(eventId);
         et.setNumber(number + 1);
         eventTeamRepository.save(et);
 
-        Event event = eventRepository.getById(eventId);
+        carService.calculateClass(team, et, event);
+        eventTeamRepository.save(et);
+
         for (Stage stage : event.getStages())
             createEmptyEventScore(stage, et);
     }
@@ -207,6 +224,7 @@ public class EventService {
         EventDTO eventDTO = new EventDTO(event);
         eventDTO.setStages(event.getStages().stream().map(x -> new StageDTO(x)).collect(Collectors.toList()));
         eventDTO.setReferee(event.getReferee());
+        eventDTO.setEventClasses(event.getEventClasses());
 
         return eventDTO;
     }
@@ -243,7 +261,7 @@ public class EventService {
 
         int number = teams.size();
 
-        teams.sort(Comparator.comparing(x -> x.getTeam().getCarClassId()));
+        teams.sort(Comparator.comparing(x -> x.getCarClassId()));
         List<EventTeam> reversedTeams = new ArrayList<>();
         for (EventTeam team : teams) {
             team.setNumber(number--);
@@ -257,5 +275,12 @@ public class EventService {
         teams.stream().forEach(x -> eventTeamRepository.save(x));
 
         return true;
+    }
+
+    public List<ClassesOption> getEventClassesOptions() {
+        List<CarClass> classes = carClassRepository.findAll();
+        return classes.stream()
+                .map(x -> new ClassesOption(x.getName(), String.valueOf(x.getCarClassId()), false))
+                .collect(Collectors.toList());
     }
 }

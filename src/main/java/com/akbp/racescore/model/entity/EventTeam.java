@@ -1,5 +1,6 @@
 package com.akbp.racescore.model.entity;
 
+import com.akbp.racescore.model.entity.dictionary.CarClass;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +19,7 @@ public class EventTeam {
     @Column(name = "EVENT_ID", nullable = false)
     private Long eventId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "TEAM_ID", nullable = false, insertable = false, updatable = false)
     private Team team;
 
@@ -37,4 +38,12 @@ public class EventTeam {
     @Column(name = "ENTRY_FEE_FILE")
     @Basic(fetch = FetchType.LAZY)
     private byte[] entryFeeFile;
+
+    @Column(name = "CAR_CLASS")
+    private Long carClassId;
+
+    @ManyToOne
+    @JoinColumn(name = "CAR_CLASS", insertable = false, updatable = false)
+    private CarClass carClass;
+
 }

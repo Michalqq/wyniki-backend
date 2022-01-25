@@ -1,10 +1,11 @@
 package com.akbp.racescore.service;
 
-import com.akbp.racescore.model.entity.Car;
-import com.akbp.racescore.model.entity.Team;
+import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.repository.dictionary.CarClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
 
 @Service
 public class CarService {
@@ -20,14 +21,14 @@ public class CarService {
     private static final String K4 = "K4";
     private static final String K5 = "K5";
 
-    public void calculateClass(Team team) {
+    public void calculateClass(Team team, EventTeam et, Event event) {
 
         try {
             Car car = team.getCurrentCar();
             Double engine = car.getEngineCapacity();
 
             if (team.getSportLicense()) {
-                team.setCarClassId(carClassRepository.findByName(QUEST).getCarClassId());
+                et.setCarClassId(carClassRepository.findByName(QUEST).getCarClassId());
                 return;
             }
 
@@ -36,17 +37,16 @@ public class CarService {
             if (car.getTurbo())
                 engine = engine * 1.7;
 
-            if (engine < 1251)
-                team.setCarClassId(carClassRepository.findByName(K1).getCarClassId());
-            else if (engine < 1601)
-                team.setCarClassId(carClassRepository.findByName(K2).getCarClassId());
-            else if (engine < 2001)
-                team.setCarClassId(carClassRepository.findByName(K3).getCarClassId());
-            else if (engine >= 2001)
-                team.setCarClassId(carClassRepository.findByName(K4).getCarClassId());
+            Double finalEngine = engine;
+            EventClasses eventClass = event.getEventClasses().stream()
+                    .filter(x -> !x.getCarClass().getName().equals(QUEST))
+                    .filter(x -> x.getMaxEngineCapacity() > finalEngine)
+                    .min(Comparator.comparingLong(x -> x.getCarClassId())).get();
+
+            et.setCarClassId(eventClass.getCarClassId());
 
         } catch (Exception e) {
-            team.setCarClassId(carClassRepository.findByName(OPEN).getCarClassId());
+            et.setCarClassId(carClassRepository.findByName(OPEN).getCarClassId());
         }
     }
 

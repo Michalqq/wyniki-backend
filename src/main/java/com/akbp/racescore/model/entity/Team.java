@@ -1,6 +1,5 @@
 package com.akbp.racescore.model.entity;
 
-import com.akbp.racescore.model.entity.dictionary.CarClass;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
@@ -35,12 +34,6 @@ public class Team {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "CURRENT_CAR_ID")
     private Car currentCar;
-
-    @Column(name = "CAR_CLASS")
-    private Long carClassId;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "CAR_CLASS", insertable = false, updatable = false)
-    private CarClass carClass;
 
     private Long userId;
 

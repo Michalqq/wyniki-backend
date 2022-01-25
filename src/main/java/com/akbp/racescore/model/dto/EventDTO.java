@@ -2,6 +2,7 @@ package com.akbp.racescore.model.dto;
 
 import com.akbp.racescore.model.dto.selectors.StageDTO;
 import com.akbp.racescore.model.entity.Event;
+import com.akbp.racescore.model.entity.EventClasses;
 import com.akbp.racescore.security.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class EventDTO {
 
     private List<User> referee;
     private List<StageDTO> stages;
+    private List<EventClasses> eventClasses;
 
     public EventDTO(Event x) {
         this.eventId = x.getEventId();

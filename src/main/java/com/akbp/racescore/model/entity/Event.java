@@ -35,6 +35,15 @@ public class Event implements Serializable {
 
     private Boolean started;
 
+    @Column(name = "FWD_CLASSIFICATION")
+    private Boolean fwdClassification;
+
+    @Column(name = "RWD_CLASSIFICATION")
+    private Boolean rwdClassification;
+
+    @Column(name = "AWD_CLASSIFICATION")
+    private Boolean awdClassification;
+
     @Column(name = "admin", nullable = false)
     private Long admin;
 
@@ -47,6 +56,11 @@ public class Event implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "EVENT_ID", nullable = false)
     List<Stage> stages;
+
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "EVENT_ID", nullable = false)
+    List<EventClasses> eventClasses;
 
     @ManyToMany
     @JoinTable(name = "EVENT_REFEREE", joinColumns = @JoinColumn(name = "EVENT_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))

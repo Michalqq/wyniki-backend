@@ -162,6 +162,11 @@ public class EventController {
         return eventService.getRefereeOptions();
     }
 
+    @GetMapping("/getEventClassesOptions")
+    public List<ClassesOption> getEventClassesOptions() {
+        return eventService.getEventClassesOptions();
+    }
+
     @GetMapping("/sortByClass")
     public List<EventTeam> sortByClass(@RequestParam("eventId") Long eventId) {
         return eventService.sortByClass(eventId);

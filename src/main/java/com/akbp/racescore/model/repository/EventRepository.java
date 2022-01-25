@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Long> {
     @Query(value = "select distinct(cc.name) from race_score.team t " +
             "right join race_score.event_team et on et.team_id = t.team_id " +
-            "left join race_score.car_class cc on cc.car_class_id = t.car_class " +
+            "left join race_score.car_class cc on cc.car_class_id = et.car_class " +
             "where et.event_id = :eventId", nativeQuery = true)
     List<String> findDistinctClasses(@Param("eventId") Long eventId);
 

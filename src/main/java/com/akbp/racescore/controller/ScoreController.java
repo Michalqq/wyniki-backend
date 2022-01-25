@@ -38,8 +38,8 @@ public class ScoreController {
     }
 
     @GetMapping("/getTeamScore")
-    public StageScoreDTO getTeamScore(@RequestParam("stageId") Long stageId, @RequestParam("teamId") Long teamId) {
-        return scoreService.getTeamScore(stageId, teamId);
+    public StageScoreDTO getTeamScore(@RequestParam("eventId") Long eventId, @RequestParam("stageId") Long stageId, @RequestParam("teamId") Long teamId) {
+        return scoreService.getTeamScore(eventId, stageId, teamId);
     }
 
     @GetMapping("getStageScores")
