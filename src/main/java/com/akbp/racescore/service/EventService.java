@@ -196,14 +196,14 @@ public class EventService {
     @Transactional
     public boolean createNew(Event event) {
         eventPathsRepository.deleteByEventId(event.getEventId());
-        eventClassesRepository.deleteByEventId(event.getEventId());
+        //eventClassesRepository.deleteByEventId(event.getEventId());
         eventRepository.save(event);
 
         List<EventTeam> eventTeams = eventTeamRepository.findByEventId(event.getEventId());
 
-//        for (Stage stage : event.getStages()) {
-//            eventTeams.stream().forEach(x -> createEmptyEventScoreIfNeccesarry(stage, x));
-//        }
+        for (Stage stage : event.getStages()) {
+            eventTeams.stream().forEach(x -> createEmptyEventScoreIfNeccesarry(stage, x));
+        }
         return true;
     }
 
