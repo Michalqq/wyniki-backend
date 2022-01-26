@@ -153,6 +153,13 @@ public class EventService {
 
     public void addTeamToEvent(Team team, Long eventId) {
         int number = eventTeamRepository.getMaxNumberByEventId(eventId);
+        if (team.getCurrentCar().getTeamId() == null) {
+            Car tempCar = team.getCurrentCar();
+            team.setCurrentCar(null);
+            team = teamRepository.save(team);
+            tempCar.setTeamId(team.getTeamId());
+            team.setCurrentCar(tempCar);
+        }
 
         team = teamRepository.save(team);
 
