@@ -43,6 +43,7 @@ public class EventService {
     private final EventClassesRepository eventClassesRepository;
 
     private final CarService carService;
+    private int sortIndex = 0;
 
     @Autowired
     public EventService(EventRepository eventRepository,
@@ -270,8 +271,15 @@ public class EventService {
         List<EventTeam> teams = getTeams(eventId);
 
         int number = teams.size();
+        sortIndex++;
+        if (sortIndex > 100)
+            sortIndex = 1;
 
-        teams.sort(Comparator.comparing(x -> x.getCarClassId()));
+        if (sortIndex % 2 == 0)
+            teams.sort(Comparator.comparing(EventTeam::getCarClassId).reversed());
+        else
+            teams.sort(Comparator.comparing(x -> x.getCarClassId()));
+
         List<EventTeam> reversedTeams = new ArrayList<>();
         for (EventTeam team : teams) {
             team.setNumber(number--);
@@ -281,7 +289,7 @@ public class EventService {
         return reversedTeams;
     }
 
-    public boolean saveNumbers(List<EventTeam> teams) {
+    public boolean saveNumbersAndClasses(List<EventTeam> teams) {
         teams.stream().forEach(x -> eventTeamRepository.save(x));
 
         return true;

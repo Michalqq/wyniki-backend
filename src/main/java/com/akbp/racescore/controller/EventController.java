@@ -172,10 +172,10 @@ public class EventController {
         return eventService.sortByClass(eventId);
     }
 
-    @PostMapping("/saveNumbers")
-    public boolean saveNumbers(@RequestBody List<EventTeam> teams) {
+    @PostMapping("/saveNumbersAndClasses")
+    public boolean saveNumbersAndClasses(@RequestBody List<EventTeam> teams) {
         try {
-            return eventService.saveNumbers(teams);
+            return eventService.saveNumbersAndClasses(teams);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
