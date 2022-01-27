@@ -19,4 +19,6 @@ public interface PenaltyRepository extends JpaRepository<Penalty, Long> {
             "where pen.stage_id in (select stage_id from race_score.stage where event_id = :eventId) " +
             "and pd.disqualification = :disqualification", nativeQuery = true)
     List<PenaltyDTO> findAllByEventIdAndDisqualification(@Param("eventId") Long eventId, @Param("disqualification") boolean disqualification);
+
+    void deleteByStageIdAndTeamId(Long stageId, Long teamId);
 }

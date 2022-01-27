@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -39,7 +40,12 @@ public class EventController {
 
     @GetMapping("/getAll")
     public List<EventDTO> getAll(Authentication auth) {
-        return eventService.getAll(auth);
+        try {
+            return eventService.getAll(auth);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return Collections.emptyList();
     }
 
     @PostMapping("/startEvent")
@@ -55,26 +61,46 @@ public class EventController {
 
     @GetMapping("/getStages")
     public List<String> getStages(@RequestParam("eventId") Long eventId) {
-        List<String> stages = eventService.getStages(eventId);
-        return stages;
+        try {
+            return eventService.getStages(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return Collections.emptyList();
     }
 
     @GetMapping("/getTeams")
     public List<EventTeam> getTeams(@RequestParam("eventId") Long eventId) {
-        return eventService.getTeams(eventId);
+        try {
+            return eventService.getTeams(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return Collections.emptyList();
     }
 
     @GetMapping("/getPsOptions")
     public List<PsOption> getPsOptions(@RequestParam("eventId") Long eventId) {
-        return eventService.getPsOptions(eventId);
+        try {
+            return eventService.getPsOptions(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return Collections.emptyList();
     }
 
     @GetMapping("/getStagesAndClasses")
     public StgesAndClassesDTO getStagesAndClasses(@RequestParam("eventId") Long eventId) {
-        List<PsOption> psOptions = eventService.getPsOptions(eventId);
-        List<ClassesOption> classes = eventService.getClasses(eventId);
-        StgesAndClassesDTO sacDTO = new StgesAndClassesDTO(psOptions, classes);
-        return sacDTO;
+        try {
+            List<PsOption> psOptions = eventService.getPsOptions(eventId);
+            List<ClassesOption> classes = eventService.getClasses(eventId);
+            StgesAndClassesDTO sacDTO = new StgesAndClassesDTO(psOptions, classes);
+            return sacDTO;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return null;
+
     }
 
     @PostMapping("/removeTeam")

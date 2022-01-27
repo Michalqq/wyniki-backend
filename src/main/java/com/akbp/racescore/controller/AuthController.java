@@ -36,4 +36,9 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/isMainAdmin")
+    public boolean isMainAdmin(@RequestParam String login) {
+        return login == "test" || login == "aaaa";
+    }
 }

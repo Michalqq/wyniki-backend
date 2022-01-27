@@ -13,11 +13,11 @@ CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --insert into race_score.car_class values (6, 'GOŚĆ');
 --insert into race_score.car_class values (7, 'OPEN');
 
-INSERT INTO race_score.penalty_dict values (1, 'Opona/pachołek', false, '5');
+--INSERT INTO race_score.penalty_dict values (1, 'Opona/pachołek', false, '5');
 --INSERT INTO race_score.penalty_dict values (2, 'Kara 10 sek', false, '10');
-INSERT INTO race_score.penalty_dict values (3, 'Rozbicie szykany', false, '15');
-INSERT INTO race_score.penalty_dict values (4, 'Kara 30 sek', false, '30');
+--INSERT INTO race_score.penalty_dict values (3, 'Rozbicie szykany', false, '15');
+--INSERT INTO race_score.penalty_dict values (4, 'Kara 30 sek', false, '30');
 --INSERT INTO race_score.penalty_dict values (5, 'Kara 45 sek', false, '45');
 --INSERT INTO race_score.penalty_dict values (6, 'Kara 1 min', false, '60');
 --INSERT INTO race_score.penalty_dict values (7, 'DYSKWALIFIKACJA', true, '0');
-INSERT INTO race_score.penalty_dict values (8, 'Wycofanie', true, '0');
+--INSERT INTO race_score.penalty_dict values (8, 'Wycofanie', true, '0');

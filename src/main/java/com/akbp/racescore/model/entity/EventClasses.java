@@ -20,7 +20,7 @@ public class EventClasses {
     @Column(name = "CAR_CLASS_ID")
     private Long carClassId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "CAR_CLASS_ID", insertable = false, updatable = false)
     private CarClass carClass;
 

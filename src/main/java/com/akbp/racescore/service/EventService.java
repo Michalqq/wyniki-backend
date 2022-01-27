@@ -41,6 +41,7 @@ public class EventService {
     private final CarClassRepository carClassRepository;
     private final EventPathsRepository eventPathsRepository;
     private final EventClassesRepository eventClassesRepository;
+    private final PenaltyRepository penaltyRepository;
 
     private final CarService carService;
     private int sortIndex = 0;
@@ -54,7 +55,8 @@ public class EventService {
                         CarClassRepository carClassRepository,
                         CarService carService,
                         EventPathsRepository eventPathsRepository,
-                        EventClassesRepository eventClassesRepository) {
+                        EventClassesRepository eventClassesRepository,
+                        PenaltyRepository penaltyRepository) {
         this.eventRepository = eventRepository;
         this.eventTeamRepository = eventTeamRepository;
         this.stageScoreRepository = stageScoreRepository;
@@ -63,6 +65,7 @@ public class EventService {
         this.carClassRepository = carClassRepository;
         this.eventPathsRepository = eventPathsRepository;
         this.eventClassesRepository = eventClassesRepository;
+        this.penaltyRepository = penaltyRepository;
 
         this.carService = carService;
     }
@@ -189,7 +192,10 @@ public class EventService {
             eventTeamRepository.deleteByEventIdAndTeamId(eventId, teamId);
 
             Event event = eventRepository.getById(eventId);
-            event.getStages().stream().forEach(x -> stageScoreRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId));
+            event.getStages().stream().forEach(x -> {
+                stageScoreRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId);
+                penaltyRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId);
+            });
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
