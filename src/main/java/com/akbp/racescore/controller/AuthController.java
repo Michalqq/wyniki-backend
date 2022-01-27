@@ -39,6 +39,6 @@ public class AuthController {
 
     @GetMapping("/isMainAdmin")
     public boolean isMainAdmin(@RequestParam String login) {
-        return login == "test" || login == "aaaa";
+        return login.equals("test") || login.equals("aaaa");
     }
 }
