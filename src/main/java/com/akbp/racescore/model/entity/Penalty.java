@@ -25,7 +25,7 @@ public class Penalty {
     @Column(name = "PENALTY_SEC")
     private Long penaltySec;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "PENALTY_KIND", insertable = false, updatable = false)
     private PenaltyDict penaltyDict;
 
