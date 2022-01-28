@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS RACE_SCORE;
 CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
-
-update race_score.car set engine_capacity = 1000 where engine_capacity is null;
+--
+update race_score.car set engine_capacity = 1000 where engine_capacity is empty;
 
 --insert into race_score.role values (1, 'USER_ROLE');
 --insert into race_score.role values (2, 'ADMIN_ROLE');
