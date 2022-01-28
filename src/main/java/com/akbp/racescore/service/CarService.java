@@ -1,11 +1,14 @@
 package com.akbp.racescore.service;
 
 import com.akbp.racescore.model.entity.*;
+import com.akbp.racescore.model.enums.DriveType;
 import com.akbp.racescore.model.repository.dictionary.CarClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class CarService {
@@ -31,6 +34,15 @@ public class CarService {
                 et.setCarClassId(carClassRepository.findByName(QUEST).getCarClassId());
                 return;
             }
+
+            //TODO
+            Optional<DriveType> driveTypeOpt = Stream.of(DriveType.values())
+                    .filter(v -> v.getId() == Long.valueOf(team.getCurrentCar().getDriveType())).findFirst();
+            if (driveTypeOpt.isPresent() && driveTypeOpt.get().equals(DriveType.RWD)) {
+                et.setCarClassId(carClassRepository.findByName(K5).getCarClassId());
+                return;
+            }
+            //TODO
 
             if (engine < 10)
                 engine = engine * 1000;
