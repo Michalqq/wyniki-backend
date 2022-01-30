@@ -56,7 +56,8 @@ public class TeamService {
 
         return scores.stream()
                 .sorted(Comparator.comparingLong(StageScore::getTeamNumber))
-                .map(x -> new TeamOption(x.getTeamNumber() + " - " + x.getTeam().getDriver(), x.getTeam().getTeamId().toString(), false)).collect(Collectors.toList());
+                .map(x -> new TeamOption(x.getTeamNumber() + " - " + x.getTeam().getDriver(), x.getTeam().getTeamId().toString(), false))
+                .collect(Collectors.toList());
     }
 
     public String addTeam(Team team, Long eventId) {

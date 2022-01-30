@@ -38,14 +38,14 @@ public class StageScoreDTO {
 
     private Long totalTimeWithPenalty;
 
-    public StageScoreDTO(StageScore score, String carClassName) {
+    public StageScoreDTO(StageScore score, String carClassName, Integer number) {
         this.stageScoreId = score.getId();
         this.driver = score.getTeam().getDriver();
         this.coDriver = score.getTeam().getCoDriver();
         this.teamName = score.getTeam().getTeamName();
         this.car = Optional.ofNullable(score.getTeam().getCurrentCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse("");
         this.className = carClassName;
-        this.number = score.getTeamNumber();
+        this.number = number;
 
         this.stageScore = ScoreToString.toString(score.getScore());
         this.timeTo = "-";

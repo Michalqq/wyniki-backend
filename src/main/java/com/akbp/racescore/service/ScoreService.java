@@ -4,7 +4,6 @@ import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreSumDTO;
 import com.akbp.racescore.model.entity.EventTeam;
-import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.StageScore;
 import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageRepository;
@@ -20,7 +19,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,13 +40,12 @@ public class ScoreService {
     }
 
     public Long addScore(ScoreDTO score, Authentication auth) {
-        Stage stage = stageRepository.findByStageId(score.getStageId());
-        Set<StageScore> stageScores = stage.getStageScores();
+        List<StageScore> stageScores = stageScoreRepository.findByStageIdAndTeamId(score.getStageId(), score.getTeamId());
 
-        StageScore stageScore = stageScores.stream()
-                .filter(x -> x.getTeam().getTeamId() == score.getTeamId())
-                .filter(y -> y.getStageId() == score.getStageId())
-                .findFirst().get();
+        if (stageScores.isEmpty())
+            return -1L;
+
+        StageScore stageScore = stageScores.get(0);
         stageScore.setScore(score.getScore());
         setUserMod(stageScore, auth);
         stageScore.setDateMod(Instant.now());
@@ -110,7 +107,7 @@ public class ScoreService {
         StageScore stageScore = stageScores.get(0);
         EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
 
-        StageScoreDTO stageScoreDTO = new StageScoreDTO(stageScore, et.getCarClass().getName());
+        StageScoreDTO stageScoreDTO = new StageScoreDTO(stageScore, et.getCarClass().getName(), et.getNumber());
         stageScoreDTO.setScoreFromTotalScore(stageScore);
         return stageScoreDTO;
     }
