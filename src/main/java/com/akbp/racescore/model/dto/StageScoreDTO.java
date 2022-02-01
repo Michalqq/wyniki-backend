@@ -60,6 +60,8 @@ public class StageScoreDTO {
     public StageScoreDTO(StageScoreSumDTO sssDTO) {
         this.driver = sssDTO.getDriver();
         this.coDriver = sssDTO.getCoDriver();
+        this.coClub = sssDTO.getCoClub();
+        this.club = sssDTO.getClub();
         this.teamName = sssDTO.getTeamName();
         this.car = sssDTO.getCar();
         this.className = sssDTO.getCarClass();
