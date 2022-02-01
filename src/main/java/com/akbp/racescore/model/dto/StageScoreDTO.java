@@ -22,6 +22,8 @@ public class StageScoreDTO {
     private String driver;
     private String coDriver;
     private String teamName;
+    private String club;
+    private String coClub;
     private String car;
     private String className;
 
@@ -43,6 +45,9 @@ public class StageScoreDTO {
         this.driver = score.getTeam().getDriver();
         this.coDriver = score.getTeam().getCoDriver();
         this.teamName = score.getTeam().getTeamName();
+        this.club = score.getTeam().getClub();
+        this.coClub = score.getTeam().getCoClub();
+
         this.car = Optional.ofNullable(score.getTeam().getCurrentCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse("");
         this.className = carClassName;
         this.number = number;
