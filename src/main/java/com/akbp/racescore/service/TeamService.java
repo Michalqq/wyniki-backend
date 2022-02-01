@@ -68,7 +68,7 @@ public class TeamService {
             team.setSportLicense(false);
 
         eventService.addTeamToEvent(team, eventId);
-        return "Załoga została utworzona";
+        return team.getDriver() + " zostałeś zapisany!";
 
     }
 

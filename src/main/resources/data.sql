@@ -1,9 +1,11 @@
 CREATE SCHEMA IF NOT EXISTS RACE_SCORE;
 CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --
-update race_score.car set engine_capacity = 1000 where car_id = 52;
-update race_score.car set engine_capacity = 1000 where car_id = 31;
-update race_score.car set engine_capacity = 1000 where car_id = 34;
+update race_score.team set co_driver = 'Testowy Pilot', team_name = 'Kamperbusy.pl', club= 'AK Bialskopodlaski', co_Club= 'AK Bialskopodlaski' where team_id = 91
+
+--update race_score.car set engine_capacity = 1000 where car_id = 52;
+--update race_score.car set engine_capacity = 1000 where car_id = 31;
+--update race_score.car set engine_capacity = 1000 where car_id = 34;
 
 --insert into race_score.role values (1, 'USER_ROLE');
 --insert into race_score.role values (2, 'ADMIN_ROLE');
