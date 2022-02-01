@@ -18,4 +18,8 @@ public interface StageScoreSumDTO {
 
     String getTeamName();
 
+    String getClub();
+
+    String getCoClub();
+
 }
