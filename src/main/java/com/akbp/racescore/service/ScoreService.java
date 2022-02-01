@@ -39,11 +39,11 @@ public class ScoreService {
         this.eventTeamRepository = eventTeamRepository;
     }
 
-    public Long addScore(ScoreDTO score, Authentication auth) {
+    public String addScore(ScoreDTO score, Authentication auth) {
         List<StageScore> stageScores = stageScoreRepository.findByStageIdAndTeamId(score.getStageId(), score.getTeamId());
 
         if (stageScores.isEmpty())
-            return -1L;
+            return null;
 
         StageScore stageScore = stageScores.get(0);
         stageScore.setScore(score.getScore());
@@ -51,7 +51,8 @@ public class ScoreService {
         stageScore.setDateMod(Instant.now());
         stageScoreRepository.save(stageScore);
 
-        return 1L;
+        return "Dodano wynik załogi: " + stageScore.getTeamNumber() + " - " + stageScore.getTeam().getDriver() + "\n"
+                + "Czas: " + ScoreToString.toString(stageScore.getScore());
     }
 
     private void setUserMod(StageScore stageScore, Authentication auth) {

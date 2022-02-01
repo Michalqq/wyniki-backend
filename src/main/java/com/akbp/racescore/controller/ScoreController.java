@@ -28,12 +28,12 @@ public class ScoreController {
     }
 
     @PostMapping("/addScore")
-    public Long addScore(@RequestBody ScoreDTO score, Authentication auth) {
+    public String addScore(@RequestBody ScoreDTO score, Authentication auth) {
         try {
             return scoreService.addScore(score, auth);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            return -1L;
+            return null;
         }
     }
 
