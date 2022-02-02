@@ -43,9 +43,9 @@ public class PenaltyController {
     }
 
     @PostMapping("/addPenalty")
-    public Long addPenalty(@RequestBody Penalty penalty) {
+    public Long addPenalty(@RequestBody Penalty penalty, @RequestParam Long seconds) {
         try {
-            return penaltyService.addPenalty(penalty);
+            return penaltyService.addPenalty(penalty, seconds);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return -1L;

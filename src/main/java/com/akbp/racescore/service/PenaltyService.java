@@ -34,13 +34,13 @@ public class PenaltyService {
     }
 
     @Transactional
-    public Long addPenalty(Penalty penalty) {
+    public Long addPenalty(Penalty penalty, Long seconds) {
         PenaltyDict penaltyDict = penaltyDictRepository.getById(penalty.getPenaltyKind());
         if (penaltyDict.getDisqualification())
             setDisualifiedInStageScores(penalty, true);
 
         penalty.setPenaltyDict(penaltyDict);
-        penalty.setPenaltySec(penaltyDict.getPenaltySec());
+        penalty.setPenaltySec(seconds == null ? penaltyDict.getPenaltySec() : seconds);
         penalty.setDescription(penaltyDict.getDescription() +
                 (penalty.getDescription() == null || penalty.getDescription().isEmpty()
                         ? "" : " (" + penalty.getDescription() + ")"));
@@ -81,7 +81,9 @@ public class PenaltyService {
     }
 
     public List<PenaltyOption> getPenaltyOptions() {
-        return penaltyDictRepository.findAll().stream().map(x -> new PenaltyOption(createPenaltyDesc(x), String.valueOf(x.getId()), false)).collect(Collectors.toList());
+        return penaltyDictRepository.findAllOrderById().stream()
+                .map(x -> new PenaltyOption(createPenaltyDesc(x), String.valueOf(x.getId()), false))
+                .collect(Collectors.toList());
     }
 
     private String createPenaltyDesc(PenaltyDict x) {
