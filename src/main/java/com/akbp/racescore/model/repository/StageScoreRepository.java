@@ -64,5 +64,10 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "   (select stage_id from race_score.stage where event_id = :eventId )", nativeQuery = true)
     void removeStageScoresByTeamIdAndEventId(@Param("eventId") Long eventId, @Param("teamId") Long teamId);
 
+    @Query(value = "select * from race_score.stage_score ss " +
+            "where ss.stage_id in " +
+            "   (select stage_id from race_score.stage where event_id = :eventId )", nativeQuery = true)
+    List<StageScore> findAllByEventId(@Param("eventId") Long eventId);
+
     void deleteByStageIdAndTeamId(Long eventId, Long teamId);
 }

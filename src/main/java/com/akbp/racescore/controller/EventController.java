@@ -198,9 +198,9 @@ public class EventController {
     }
 
     @PostMapping("/saveNumbersAndClasses")
-    public boolean saveNumbersAndClasses(@RequestBody List<EventTeam> teams) {
+    public boolean saveNumbersAndClasses(@RequestBody List<EventTeam> teams,@RequestParam("eventId") Long eventId) {
         try {
-            return eventService.saveNumbersAndClasses(teams);
+            return eventService.saveNumbersAndClasses(teams,eventId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

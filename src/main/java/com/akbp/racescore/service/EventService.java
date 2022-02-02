@@ -291,8 +291,19 @@ public class EventService {
         return reversedTeams;
     }
 
-    public boolean saveNumbersAndClasses(List<EventTeam> teams) {
+    public boolean saveNumbersAndClasses(List<EventTeam> teams, Long eventId) {
         teams.stream().forEach(x -> eventTeamRepository.save(x));
+
+        List<StageScore> stageScores = stageScoreRepository.findAllByEventId(eventId);
+
+        for (EventTeam eventTeam : teams) {
+            stageScores.stream()
+                    .filter(x -> x.getTeamId().equals(eventTeam.getTeamId()))
+                    .forEach(x -> {
+                        x.setTeamNumber(Integer.valueOf(eventTeam.getNumber()));
+                        stageScoreRepository.save(x);
+                    });
+        }
 
         return true;
     }
