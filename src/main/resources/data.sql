@@ -2,7 +2,7 @@ CREATE SCHEMA IF NOT EXISTS RACE_SCORE;
 CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --
 
-INSERT INTO race_score.penalty_dict values (100, 'Wpisz ręcznie', false, '0');
+--INSERT INTO race_score.penalty_dict values (100, 'Wpisz ręcznie', false, '0');
 
 --update race_score.car set engine_capacity = 1000 where car_id = 52;
 --update race_score.car set engine_capacity = 1000 where car_id = 31;

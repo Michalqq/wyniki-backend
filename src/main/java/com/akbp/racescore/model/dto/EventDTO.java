@@ -25,6 +25,7 @@ public class EventDTO {
     private Boolean joined = false;
     private String organizer;
     private String logoPath;
+    private Boolean started = false;
 
     private List<User> referee;
     private List<StageDTO> stages;
@@ -40,6 +41,7 @@ public class EventDTO {
         this.signDeadline = x.getSignDeadline();
         this.organizer = x.getOrganizer();
         this.logoPath = x.getLogoPath();
+        this.started = x.getStarted();
 
         this.eventPaths = x.getEventPaths();
         this.eventClasses = x.getEventClasses();

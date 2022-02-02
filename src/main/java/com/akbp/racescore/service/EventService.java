@@ -96,8 +96,7 @@ public class EventService {
     }
 
     public boolean startEvent(Long eventId) {
-        Optional<Event> eventOptional = eventRepository.findById(eventId);
-        Event event = eventOptional.get();
+        Event event = eventRepository.getById(eventId);
         event.setStarted(true);
         eventRepository.save(event);
 
@@ -155,17 +154,6 @@ public class EventService {
     }
 
     public void addTeamToEvent(Team team, Long eventId) {
-        int number = eventTeamRepository.getMaxNumberByEventId(eventId);
-        if (team.getCurrentCar().getTeamId() == null) {
-            Car tempCar = team.getCurrentCar();
-            team.setCurrentCar(null);
-            team = teamRepository.save(team);
-            tempCar.setTeamId(team.getTeamId());
-            team.setCurrentCar(tempCar);
-        }
-
-        team = teamRepository.save(team);
-
         EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, team.getTeamId());
         Event event = eventRepository.getById(eventId);
 
@@ -175,6 +163,7 @@ public class EventService {
         et.setJoinDate(Instant.now());
         et.setTeamId(team.getTeamId());
         et.setEventId(eventId);
+        int number = eventTeamRepository.getMaxNumberByEventId(eventId);
         et.setNumber(number + 1);
         eventTeamRepository.save(et);
 

@@ -40,7 +40,7 @@ public class PenaltyService {
             setDisualifiedInStageScores(penalty, true);
 
         penalty.setPenaltyDict(penaltyDict);
-        penalty.setPenaltySec(seconds == null ? penaltyDict.getPenaltySec() : seconds);
+        penalty.setPenaltySec(seconds == -1L ? penaltyDict.getPenaltySec() : seconds);
         penalty.setDescription(penaltyDict.getDescription() +
                 (penalty.getDescription() == null || penalty.getDescription().isEmpty()
                         ? "" : " (" + penalty.getDescription() + ")"));
@@ -81,13 +81,16 @@ public class PenaltyService {
     }
 
     public List<PenaltyOption> getPenaltyOptions() {
-        return penaltyDictRepository.findAllOrderById().stream()
+        return penaltyDictRepository.findAllByOrderById().stream()
                 .map(x -> new PenaltyOption(createPenaltyDesc(x), String.valueOf(x.getId()), false))
                 .collect(Collectors.toList());
     }
 
     private String createPenaltyDesc(PenaltyDict x) {
-        return x.getDescription() + " [" + (x.getDisqualification() ? "X" : x.getPenaltySec() + "s") + "]";
+        if (x.getId() == 100L || x.getDisqualification())
+            return x.getDescription();
+
+        return x.getDescription() + " [" + x.getPenaltySec() + "s]";
     }
 
     public boolean removeDisqualification(Long penaltyId) {

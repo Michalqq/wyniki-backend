@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PenaltyDictRepository extends JpaRepository<PenaltyDict, Long> {
 
-    List<PenaltyDict> findAllOrderById();
+    List<PenaltyDict> findAllByOrderById();
 }

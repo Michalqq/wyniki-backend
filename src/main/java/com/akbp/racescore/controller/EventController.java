@@ -50,13 +50,12 @@ public class EventController {
 
     @PostMapping("/startEvent")
     public boolean startEvent(@RequestParam("eventId") Long eventId) {
-        boolean respone = false;
         try {
-            respone = eventService.startEvent(eventId);
+            return eventService.startEvent(eventId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
-        return respone;
+        return false;
     }
 
     @GetMapping("/getStages")

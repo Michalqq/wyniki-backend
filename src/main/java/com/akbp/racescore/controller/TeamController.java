@@ -48,6 +48,15 @@ public class TeamController {
         }
     }
 
+    @PostMapping("/saveTeam")
+    public void saveTeam(@RequestBody Team team) {
+        try {
+            teamService.saveTeam(team);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+    }
+
     @GetMapping("/getTeamOptions")
     public List<TeamOption> getTeamOptions(@RequestParam("stageId") Long stageId, @RequestParam("mode") String mode) {
         List<TeamOption> teamOptions = teamService.getTeamOptions(stageId, mode);

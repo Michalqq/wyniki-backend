@@ -20,7 +20,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
     List<StageScore> findByStageIdAndDisqualifiedFalse(Long stageId);
 
     @Query(value = "select ss.score sumScore, sum(coalesce(pen.penalty_sec, 0)) penalty, " +
-            "concat(c.brand, ' ', c.model) car, " +
+            "concat(c.brand, ' ', c.model) car, c.brand, " +
             "et.number, team.driver, team.co_driver coDriver, team.team_name teamName, team.club, team.co_club coClub, cc.name carClass " +
             "from race_score.stage_score ss " +
             "left join race_score.team team on team.team_id = ss.team_id " +
@@ -37,7 +37,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
     List<StageScoreSumDTO> findScoresInStage(@Param("stageId") Long stageId);
 
     @Query(value = "select sum(ss.score) sumScore, et.number, " +
-            "concat(c.brand, ' ', c.model) car, " +
+            "concat(c.brand, ' ', c.model) car, c.brand, " +
             "team.driver, team.co_driver coDriver, team.team_name teamName, team.club, team.co_club coClub, cc.name carClass, " +
             "coalesce((select sum(coalesce(penalty_sec, 0)) from race_score.penalty " +
             "           where team_id = ss.team_id and stage_id <= :stageId " +

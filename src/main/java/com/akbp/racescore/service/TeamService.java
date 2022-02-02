@@ -60,16 +60,30 @@ public class TeamService {
                 .collect(Collectors.toList());
     }
 
-    public String addTeam(Team team, Long eventId) {
+    public Team saveTeam(Team team) {
         if (team.getCoDriver() == null || team.getCoDriver().isEmpty())
             team.setCoDriver("");
 
         if (team.getSportLicense() == null)
             team.setSportLicense(false);
 
+        if (team.getCurrentCar().getTeamId() == null) {
+            Car tempCar = team.getCurrentCar();
+            team.setCurrentCar(null);
+            team = teamRepository.save(team);
+            tempCar.setTeamId(team.getTeamId());
+            team.setCurrentCar(tempCar);
+        }
+        team = teamRepository.save(team);
+
+        return team;
+    }
+
+    public String addTeam(Team team, Long eventId) {
+        team = saveTeam(team);
+
         eventService.addTeamToEvent(team, eventId);
         return team.getDriver() + " zostałeś zapisany!";
-
     }
 
     public Car getCar(Long carId) {
