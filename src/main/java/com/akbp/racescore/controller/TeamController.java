@@ -38,6 +38,16 @@ public class TeamController {
         }
     }
 
+    @GetMapping("/getTeamByTeamId")
+    public Team getTeamByTeamId(@RequestParam("teamId") Long teamId) {
+        try {
+            return teamService.getTeamByTeamId(teamId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
+    }
+
     @PostMapping("/addTeam")
     public String addTeam(@RequestParam("eventId") Long eventId, @RequestBody Team team) {
         try {

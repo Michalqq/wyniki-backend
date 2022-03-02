@@ -132,4 +132,8 @@ public class TeamService {
 
         return team;
     }
+
+    public Team getTeamByTeamId(Long teamId) {
+        return teamRepository.findByTeamId(teamId);
+    }
 }

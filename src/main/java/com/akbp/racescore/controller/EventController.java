@@ -153,6 +153,16 @@ public class EventController {
         return false;
     }
 
+    @PostMapping("teamChecked")
+    public Boolean teamChecked(@RequestParam Long eventId, @RequestParam Long teamId, @RequestParam boolean checked) {
+        try {
+            return eventService.teamChecked(eventId, teamId, checked);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return false;
+    }
+
     @PostMapping(value = "addEntryFeeFile")
     public boolean addEntryFeeFile(@RequestBody MultipartFile file,
                                    @RequestParam("eventId") Long eventId,
@@ -198,9 +208,9 @@ public class EventController {
     }
 
     @PostMapping("/saveNumbersAndClasses")
-    public boolean saveNumbersAndClasses(@RequestBody List<EventTeam> teams,@RequestParam("eventId") Long eventId) {
+    public boolean saveNumbersAndClasses(@RequestBody List<EventTeam> teams, @RequestParam("eventId") Long eventId) {
         try {
-            return eventService.saveNumbersAndClasses(teams,eventId);
+            return eventService.saveNumbersAndClasses(teams, eventId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

@@ -32,6 +32,9 @@ public class EventTeam {
     @Column(name = "ENTRY_FEE_PAID")
     private Boolean entryFeePaid;
 
+    @Column(name = "TEAM_CHECKED")
+    private Boolean teamChecked;
+
     @Column(name = "JOIN_DATE")
     private Instant joinDate;
 

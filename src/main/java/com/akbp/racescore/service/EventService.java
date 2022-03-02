@@ -314,4 +314,15 @@ public class EventService {
                 .map(x -> new ClassesOption(x.getName(), String.valueOf(x.getCarClassId()), false))
                 .collect(Collectors.toList());
     }
+
+    public Boolean teamChecked(Long eventId, Long teamId, boolean checked) {
+        EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
+
+        if (eventTeam == null) return false;
+
+        eventTeam.setTeamChecked(checked);
+        eventTeamRepository.save(eventTeam);
+
+        return true;
+    }
 }
