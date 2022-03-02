@@ -198,7 +198,7 @@ public class EventService {
 
     @Transactional
     public boolean createNew(Event event) {
-        eventPathsRepository.deleteByEventId(event.getEventId());
+        if (event.getEventId() != null) eventPathsRepository.deleteByEventId(event.getEventId());
         //eventClassesRepository.deleteByEventId(event.getEventId());
         eventRepository.save(event);
 
