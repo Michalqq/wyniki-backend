@@ -7,6 +7,7 @@ import com.akbp.racescore.model.dto.selectors.RefereeOption;
 import com.akbp.racescore.model.dto.selectors.StageDTO;
 import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.entity.dictionary.CarClass;
+import com.akbp.racescore.model.enums.DriveType;
 import com.akbp.racescore.model.repository.*;
 import com.akbp.racescore.model.repository.dictionary.CarClassRepository;
 import com.akbp.racescore.security.model.entity.User;
@@ -143,12 +144,20 @@ public class EventService {
     public List<ClassesOption> getClasses(Long eventId) {
         List<ClassesOption> classesOptions = new ArrayList<>();
         classesOptions.add(new ClassesOption(GENERAL, "0", true));
-        List<String> test = eventRepository.findDistinctClasses(eventId);
+
+        Event event = eventRepository.getById(eventId);
 
         classesOptions.addAll(
                 eventRepository.findDistinctClasses(eventId).stream()
                         .sorted().collect(Collectors.toList()).stream()
                         .map(x -> new ClassesOption(x, x, false)).collect(Collectors.toList()));
+
+        if (Boolean.TRUE.equals(event.getAwdClassification()))
+            classesOptions.add(new ClassesOption(DriveType.AWD.getName(), DriveType.AWD.getName(), false));
+        if (Boolean.TRUE.equals(event.getRwdClassification()))
+            classesOptions.add(new ClassesOption(DriveType.RWD.getName(), DriveType.RWD.getName(), false));
+        if (Boolean.TRUE.equals(event.getFwdClassification()))
+            classesOptions.add(new ClassesOption(DriveType.FWD.getName(), DriveType.FWD.getName(), false));
 
         return classesOptions;
     }

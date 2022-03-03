@@ -1,6 +1,7 @@
 package com.akbp.racescore.model.dto;
 
 import com.akbp.racescore.model.entity.StageScore;
+import com.akbp.racescore.model.enums.DriveType;
 import com.akbp.racescore.utils.ScoreToString;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class StageScoreDTO {
     private String car;
     private String brand;
     private String className;
+    private String driveType;
 
     private String stageScore;
     private String timeTo;
@@ -69,6 +71,7 @@ public class StageScoreDTO {
         this.brand = sssDTO.getBrand();
         this.className = sssDTO.getCarClass();
         this.number = sssDTO.getNumber();
+        this.driveType = Optional.ofNullable(DriveType.getById(sssDTO.getDriveType())).map(x -> x.getName()).orElse("");
         this.totalPenalty = String.valueOf(sssDTO.getPenalty());
         this.totalTimeWithPenalty = sssDTO.getSumScore() + (sssDTO.getPenalty() * 1000);
         this.stageScore = ScoreToString.toString(sssDTO.getSumScore());

@@ -6,6 +6,8 @@ public interface StageScoreSumDTO {
 
     Long getPenalty();
 
+    Long getDriveType();
+
     Integer getNumber();
 
     String getCar();

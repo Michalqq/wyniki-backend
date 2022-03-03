@@ -15,4 +15,14 @@ public enum DriveType {
         this.id = id;
         this.name = name;
     }
+
+    public static DriveType getById(Long id) {
+        if (id == null) return null;
+
+        for (DriveType e : values()) {
+            if (e.id == (id)) return e;
+        }
+        return null;
+    }
+
 }
