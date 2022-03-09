@@ -24,6 +24,8 @@ public class PenaltyService {
     private final PenaltyDictRepository penaltyDictRepository;
     private final StageScoreRepository stageScoreRepository;
 
+    private static final Long CUSTOM_PENALTY_ID = 100L;
+
     @Autowired
     public PenaltyService(PenaltyRepository penaltyRepository,
                           PenaltyDictRepository penaltyDictRepository,
@@ -40,14 +42,21 @@ public class PenaltyService {
             setDisualifiedInStageScores(penalty, true);
 
         penalty.setPenaltyDict(penaltyDict);
-        penalty.setPenaltySec(seconds == -1L ? penaltyDict.getPenaltySec() : seconds);
-        penalty.setDescription(penaltyDict.getDescription() +
-                (penalty.getDescription() == null || penalty.getDescription().isEmpty()
-                        ? "" : " (" + penalty.getDescription() + ")"));
+        penalty.setPenaltySec(seconds == 0L ? penaltyDict.getPenaltySec() : seconds);
+        penalty.setDescription(generateDescription(penaltyDict, penalty));
 
         penaltyRepository.save(penalty);
 
         return 1L;
+    }
+
+    private String generateDescription(PenaltyDict penaltyDict, Penalty penalty) {
+        if (penaltyDict.getId() == CUSTOM_PENALTY_ID)
+            return penalty.getDescription();
+
+        return penaltyDict.getDescription() +
+                (penalty.getDescription() == null || penalty.getDescription().isEmpty()
+                        ? "" : " (" + penalty.getDescription() + ")");
     }
 
     public List<PenaltyByTeamDTO> getPenalties(Long eventId) {
