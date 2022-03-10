@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FileService {
@@ -56,7 +58,7 @@ public class FileService {
             throw e;
         }
 
-        for (EventTeam et : event.getEventTeams())
+        for (EventTeam et : event.getEventTeams().stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList()))
             createPage(doc, et, event);
 
         doc.close();
