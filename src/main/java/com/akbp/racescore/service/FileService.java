@@ -63,7 +63,7 @@ public class FileService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.set("Content-Disposition", "attachment; filename=" + "Odbior_Administracyjny_" + event.getName());
+        headers.set("Content-Disposition", "attachment; filename=" + "Odbior_Administracyjny_" + event.getEventId());
         headers.setContentLength(out.toByteArray().length);
 
         return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
