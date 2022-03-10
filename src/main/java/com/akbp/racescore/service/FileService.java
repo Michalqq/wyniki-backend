@@ -39,7 +39,7 @@ public class FileService {
     @Autowired
     private EventRepository eventRepository;
 
-    public ResponseEntity<byte[]> getEventTeamsData(Long eventId) {
+    public ResponseEntity<byte[]> getEventTeamsData(Long eventId) throws IOException {
 
         Event event = eventRepository.getById(eventId);
 
@@ -53,6 +53,7 @@ public class FileService {
             doc.setFont(font).setFontSize(10);
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
 
         for (EventTeam et : event.getEventTeams())
