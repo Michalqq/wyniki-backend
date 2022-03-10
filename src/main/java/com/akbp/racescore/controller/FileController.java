@@ -21,6 +21,7 @@ public class FileController {
 
     @GetMapping("getEventTeamsData")
     public ResponseEntity<byte[]> getEventTeamsData(Long eventId) {
+        LOGGER.info("getEventTeamsData");
         try {
             return fileService.getEventTeamsData(eventId);
         } catch (Exception e) {

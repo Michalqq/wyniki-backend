@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/score/addScore", "/event/removeTeam",
                         "/event/confirmEntryFee", "/event/deleteEvent", "/event/teamChecked", "/event/saveNumbersAndClasses",
-                        "/penalty/addPenalty", "/penalty/removePenalty", "/penalty/removeDisqualification").authenticated()
+                        "/penalty/addPenalty", "/penalty/removePenalty", "/penalty/removeDisqualification", "/files/**").authenticated()
                 .antMatchers("/**", "/auth/**", "/event/**", "/penalty/**", "/score/getStageScores", "/score/getStagesSumScores", "/team/**").permitAll()
                 .anyRequest().authenticated();
 
