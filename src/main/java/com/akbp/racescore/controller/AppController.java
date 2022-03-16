@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AppController {
 
-    @GetMapping({"/", "/test"})
+    @GetMapping({"/", "/event", "/login", "/register"})
     public String appPage(Model model) {
         model.addAttribute("version", "v1");
         model.addAttribute("time", "sd");
 
-        return "index";
+        return "app";
     }
 }

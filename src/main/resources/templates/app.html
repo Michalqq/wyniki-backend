@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <title>Race Score</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <!--    <meta name="_csrf" th:attr="content=${_csrf.token}"/>-->
     <!--    <meta name="_csrf_header" th:attr="content=${_csrf.headerName}"/>-->
-    <link href="/css/opl-online.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/race-score.css" rel="stylesheet" type="text/css"/>
 </head>
 <body class="g-gray1-bgc">
 <div>
-    <div id="react-table" style="min-height: calc(100vh - 20px)"></div>
-    <script src="/dist/app.js"></script>
-    <footer
-            class="l-full-row g-black1-bgc g-white1-c u-text-center u-box-shadow"
-            th:text="${'Race Score __ build: '+version+' from: '+time}"
-    />
+    <div id="root"></div>
+    <script src="/dist/main.js"></script>
 </div>
 </body>
 </html>
