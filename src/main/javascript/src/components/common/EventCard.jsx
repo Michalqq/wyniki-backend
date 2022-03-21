@@ -16,9 +16,9 @@ export const EventCard = ({
     <div className="col-lg-6 pb-3 u-box-shadow">
       <Card className="">
         <Card.Header className="bg-secondary text-white text-start fw-bold py-1">
-          <div class="row px-1">
-            <div class="col-11 px-0">{event?.name}</div>
-            <div class="col-1 px-0 text-end">
+          <div className="row px-1">
+            <div className="col-11 px-0">{event?.name}</div>
+            <div className="col-1 px-0 text-end">
               {onEdit !== undefined && mainAdmin && (
                 <FontAwesomeIcon
                   className={"text-white fa-lg"}
@@ -34,9 +34,9 @@ export const EventCard = ({
           <div className="position-absolute end-0 mx-3 text-end badge bg-primary text-wrap fst-italic">
             {moment(event?.date).format("dddd, DD MMM YYYY, HH:mm")}
           </div>
-          <div class="container d-flex">
+          <div className="container d-flex">
             <div
-              class="col-lg-2 px-0 align-self-center"
+              className="col-lg-2 px-0 align-self-center"
               style={{ width: "100px" }}
             >
               {event.logoPath !== undefined && event.logoPath !== null ? (
@@ -53,7 +53,7 @@ export const EventCard = ({
                 />
               )}
             </div>
-            <div class="col-lg-10 mt-3">
+            <div className="col-lg-10 mt-3">
               {event.organizer !== undefined && event.organizer !== null && (
                 <p className="m-4">{`Organizator: ${event.organizer}`}</p>
               )}
