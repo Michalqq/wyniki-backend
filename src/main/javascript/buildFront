@@ -1,1 +1,1 @@
-"node_modules/.bin/webpack" --entry ./src/index.js -o ./resources/static/dist/
+"node_modules/.bin/webpack" --entry ./src/index.js -o ./dist/
