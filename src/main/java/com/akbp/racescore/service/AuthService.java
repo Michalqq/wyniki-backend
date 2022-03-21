@@ -1,5 +1,6 @@
 package com.akbp.racescore.service;
 
+import com.akbp.racescore.email.EmailSenderImpl;
 import com.akbp.racescore.model.dto.auth.AuthRequest;
 import com.akbp.racescore.model.dto.auth.JwtResponse;
 import com.akbp.racescore.security.model.entity.Role;
@@ -43,9 +44,13 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private EmailSenderImpl emailSender;
+
     public ResponseEntity<?> authenticateUser(AuthRequest request) {
         if (!userRepository.existsByUsername(request.getUsername()))
-            return ResponseEntity.badRequest().body("Brak użytkownika o podanym loginie");
+            if (!userRepository.existsByEmail(request.getUsername()))
+                return ResponseEntity.badRequest().body("Brak użytkownika o podanym loginie lub emailu");
 
         Authentication auth;
         try {
@@ -83,5 +88,28 @@ public class AuthService {
         user.setRoles(roles);
 
         return ResponseEntity.ok(new JwtResponse(null, null, user.getUsername(), null, user.getRoles().stream().map(x -> x.getAuthority()).collect(Collectors.toList())));
+    }
+
+    public ResponseEntity<?> updatePassword(AuthRequest signupRequest) {
+        String userName = jwtUtils.getUserNameFromJwtToken(signupRequest.getToken());
+        User user = userRepository.findByUsername(userName);
+        if (user == null)
+            return ResponseEntity.badRequest().body("Nie znaleziono użytkownika na podstawie tokenu.");
+
+        user.setPassword(encoder.encode(signupRequest.getPassword()));
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new JwtResponse(null, null, user.getUsername(), null, user.getRoles().stream().map(x -> x.getAuthority()).collect(Collectors.toList())));
+    }
+
+    public ResponseEntity<?> remindPassword(String email) {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null)
+            return ResponseEntity.badRequest().body("Email nie istnieje w bazie danych.");
+
+        emailSender.sendPasswordReminderEmail(user);
+
+        return ResponseEntity.ok().body("Na podany email został wysłany link do resetowania hasła.");
     }
 }

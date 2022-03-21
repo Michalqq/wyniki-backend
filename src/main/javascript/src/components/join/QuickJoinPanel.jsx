@@ -101,7 +101,7 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
       </Modal.Header>
       <Modal.Body>
         <div className="d-flex justify-content-center text-center">
-          <form class="" novalidate onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className="row d-flex">
               <div className="col-6">
                 <InputLabeled

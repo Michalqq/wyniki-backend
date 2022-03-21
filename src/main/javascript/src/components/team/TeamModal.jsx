@@ -113,7 +113,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
         </Modal.Header>
 
         <Modal.Body className={"px-3 py-0"}>
-          <form id="teamForm" class="" novalidate onSubmit={handleSubmit}>
+          <form id="teamForm" onSubmit={handleSubmit}>
             {team === undefined && (
               <div className="text-center">
                 <Spinner animation="border" variant="secondary" size="lg" />

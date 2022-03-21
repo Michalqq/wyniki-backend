@@ -17,6 +17,16 @@ export const fetchGet = (url, handleResponse) => {
     });
 };
 
+export const fetchPost = (url, handleResponse) => {
+  axios
+    .post(url, {
+      headers: authHeader(),
+    })
+    .then((res) => {
+      handleResponse(res.data);
+    });
+};
+
 export const checkReferee = (eventId, handleResponse) => {
   fetchGet(
     `${backendUrl()}/event/checkReferee?eventId=${eventId}`,
@@ -25,17 +35,10 @@ export const checkReferee = (eventId, handleResponse) => {
 };
 
 export const fetchTeamChecked = (eventId, teamId, checked, handleResponse) => {
-  axios
-    .post(
-      `${backendUrl()}/event/teamChecked?eventId=${eventId}&teamId=${teamId}&checked=${checked}`,
-      {},
-      {
-        headers: authHeader(),
-      }
-    )
-    .then((res) => {
-      handleResponse(res.data);
-    });
+  fetchPost(
+    `${backendUrl()}/event/teamChecked?eventId=${eventId}&teamId=${teamId}&checked=${checked}`,
+    handleResponse
+  );
 };
 
 export const fetchRemoveFromEvent = (eventId, teamId, handleResponse) => {
@@ -64,4 +67,11 @@ export const fetchConfirmEntryFee = (eventId, teamId, handleResponse) => {
     .then((res) => {
       handleResponse(res.data);
     });
+};
+
+export const fetchRemindPassword = (email, handleResponse) => {
+  fetchPost(
+    `${backendUrl()}/auth/remindPassword&email=${email}`,
+    handleResponse
+  );
 };

@@ -105,7 +105,7 @@ export const CarPanelModal = ({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form class="" novalidate onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="row text-center">
             <div className="col-lg-12 pb-3">
               <Card className="">

@@ -1,5 +1,6 @@
 package com.akbp.racescore.controller;
 
+import com.akbp.racescore.email.EmailSenderImpl;
 import com.akbp.racescore.model.dto.EventDTO;
 import com.akbp.racescore.model.dto.StgesAndClassesDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
@@ -34,6 +35,9 @@ public class EventController {
     private final EventService eventService;
 
     @Autowired
+    private EmailSenderImpl emailSender;
+
+    @Autowired
     public EventController(EventService eventService) {
         this.eventService = eventService;
     }
@@ -41,6 +45,7 @@ public class EventController {
     @GetMapping("/getAll")
     public List<EventDTO> getAll(Authentication auth) {
         try {
+            emailSender.sendEmail("kraciukmichal@gmail.com", "test", "Test");
             return eventService.getAll(auth);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());

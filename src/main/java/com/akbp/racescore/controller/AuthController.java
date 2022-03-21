@@ -41,4 +41,14 @@ public class AuthController {
     public boolean isMainAdmin(@RequestParam String login) {
         return login.equals("test") || login.equals("aaaa");
     }
+
+    @PostMapping("/remindPassword")
+    public ResponseEntity<?> remindPassword(@RequestParam String email) {
+        try {
+            return authService.remindPassword(email);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
