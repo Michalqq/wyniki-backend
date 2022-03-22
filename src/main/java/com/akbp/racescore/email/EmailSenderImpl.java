@@ -41,12 +41,15 @@ public class EmailSenderImpl implements EmailSender {
 
     public boolean sendPasswordReminderEmail(User user) {
         String token = jwtUtils.generateJwtToken(user.getUsername());
-        String content = "Aby zresetować hasło kliknij w link umieszczony poniżej </br> </br> ";
+        String content = "<!DOCTYPE html> <html lang=\"en\"><head>";
+
+        content += "Aby zresetować hasło kliknij w link umieszczony poniżej <br></br> ";
 
         content += "<a href=" + appPath + "/passwordReset?" + token + ">Link do resetowania hasła</a>";
 
-        content += "</br> </br> </br> </br></br> </br></br> </br></br> </br>";
+        content += "<br></br><br></br><br></br>";
         content += "Jeśli nie prosiłeś o reset hasła zignoruj tę wiadomość.";
+        content += "</head></html>";
 
         return sendEmail(user.getEmail(), "Wyniki.online - resetowanie hasła", content);
     }
