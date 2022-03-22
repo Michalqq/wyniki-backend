@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { InputLabeled } from "../../common/InputLabeled";
 import { backendUrl } from "../../utils/fetchUtils";
+import Spinner from "react-bootstrap/Spinner";
 
 export const RegisterPage = (props) => {
   const [user, setUser] = useState({
@@ -17,20 +16,26 @@ export const RegisterPage = (props) => {
   });
   const [registred, setRegistred] = useState();
   const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
 
   const registerUser = () => {
+    setLoading(true);
     axios
       .post(`${backendUrl()}/auth/signup`, user)
       .then((res) => {
         setRegistred(res.data.username);
+        setLoading(false);
       })
       .catch((err) => {
         setError(err.response.data);
+        setLoading(false);
       });
   };
 
   const handleChange = (event) => {
     setUser({ ...user, [event.target.name]: event.target.value });
+    if (event.target.name === "password" || event.target.name === "password2")
+      setError();
   };
 
   const handleSubmit = (event) => {
@@ -60,6 +65,7 @@ export const RegisterPage = (props) => {
                     big={true}
                     value={user.username}
                     required={true}
+                    autoComplete="new-password"
                   />
                   <InputLabeled
                     label="Email"
@@ -69,6 +75,7 @@ export const RegisterPage = (props) => {
                     value={user.email}
                     required={true}
                     type={"email"}
+                    autoComplete="new-password"
                   />
                   <InputLabeled
                     label="Hasło"
@@ -78,6 +85,7 @@ export const RegisterPage = (props) => {
                     value={user.password}
                     type="password"
                     required={true}
+                    autoComplete="new-password"
                   />
                   <InputLabeled
                     label="Powtórz hasło"
@@ -92,6 +100,15 @@ export const RegisterPage = (props) => {
                     <p>{`Zarejestrowano użytkownika: ${registred}`}</p>
                   )}
                   {error && <p>{`${error}.`}</p>}
+                  {loading && (
+                    <div>
+                      <Spinner
+                        animation="border"
+                        variant="secondary"
+                        size="lg"
+                      />
+                    </div>
+                  )}
                   <Button
                     className={"px-4 mt-2"}
                     variant="success"

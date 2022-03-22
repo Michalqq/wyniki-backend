@@ -27,6 +27,16 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/updatePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody AuthRequest request) {
+        try {
+            return authService.updatePassword(request);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody AuthRequest signupRequest) {
         try {

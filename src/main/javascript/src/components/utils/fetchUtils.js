@@ -3,8 +3,8 @@ import axios from "axios";
 
 export const backendUrl = () => {
   //return "https://wyniki-backend.herokuapp.com";
-  //return "http://localhost:8080";
-  return "";
+  return "http://localhost:8080";
+  //return "";
 };
 
 export const fetchGet = (url, handleResponse) => {
@@ -24,6 +24,9 @@ export const fetchPost = (url, handleResponse) => {
     })
     .then((res) => {
       handleResponse(res.data);
+    })
+    .catch((err) => {
+      handleResponse(err.response.data);
     });
 };
 
@@ -71,7 +74,7 @@ export const fetchConfirmEntryFee = (eventId, teamId, handleResponse) => {
 
 export const fetchRemindPassword = (email, handleResponse) => {
   fetchPost(
-    `${backendUrl()}/auth/remindPassword&email=${email}`,
+    `${backendUrl()}/auth/remindPassword?email=${email}`,
     handleResponse
   );
 };

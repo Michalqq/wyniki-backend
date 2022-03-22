@@ -5,16 +5,21 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../../common/InputLabeled";
 import { backendUrl } from "../../utils/fetchUtils";
+import Spinner from "react-bootstrap/Spinner";
+import { useLocation } from "react-router-dom";
 
 export const ResetPasswordPage = (props) => {
   const [user, setUser] = useState({
+    token: useLocation().search,
     username: "",
-    passss1: "",
-    passss2: "",
+    password: "",
+    password2: "",
   });
   const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
 
   const updatePassword = () => {
+    setLoading(true);
     setError();
     axios
       .post(`${backendUrl()}/auth/updatePassword`, user)
@@ -24,9 +29,11 @@ export const ResetPasswordPage = (props) => {
         } else {
           setError(res.data);
         }
+        setLoading(false);
       })
       .catch((err) => {
         setError(err.response.data);
+        setLoading(false);
       });
   };
 
@@ -35,7 +42,7 @@ export const ResetPasswordPage = (props) => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (user.passss1 !== user.passss2) {
+    if (user.password !== user.password2) {
       setError("Wprowadź jednakowe hasła");
       return;
     }
@@ -54,23 +61,34 @@ export const ResetPasswordPage = (props) => {
                 <form onSubmit={handleSubmit}>
                   <InputLabeled
                     label="Hasło"
-                    name="passss1"
+                    name="password"
                     handleChange={handleChange}
                     big={true}
-                    value={user.passss1}
+                    value={user.password}
                     type="password"
                     required={true}
+                    autoComplete="new-password"
                   />
                   <InputLabeled
                     label="Powtórz hasło"
-                    name="passss2"
+                    name="password2"
                     handleChange={handleChange}
                     big={true}
-                    value={user.passss2}
+                    value={user.password2}
                     type="password"
                     required={true}
+                    autoComplete="new-password"
                   />
                   {error && <p>{`${error}`}</p>}
+                  {loading && (
+                    <div>
+                      <Spinner
+                        animation="border"
+                        variant="secondary"
+                        size="lg"
+                      />
+                    </div>
+                  )}
                   <Button
                     className={"px-4 mt-2"}
                     variant="success"

@@ -91,7 +91,8 @@ public class AuthService {
     }
 
     public ResponseEntity<?> updatePassword(AuthRequest signupRequest) {
-        String userName = jwtUtils.getUserNameFromJwtToken(signupRequest.getToken());
+        String token = signupRequest.getToken().substring(1);
+        String userName = jwtUtils.getUserNameFromJwtToken(token);
         User user = userRepository.findByUsername(userName);
         if (user == null)
             return ResponseEntity.badRequest().body("Nie znaleziono użytkownika na podstawie tokenu.");

@@ -16,6 +16,7 @@ export const InputLabeled = ({
   multiline,
   required,
   icon,
+  autoComplete,
 }) => {
   const [error, setError] = useState(false);
 
@@ -85,6 +86,7 @@ export const InputLabeled = ({
                     max={max}
                     type={type}
                     required
+                    autoComplete={autoComplete}
                   ></input>
                 </div>
               </>
@@ -113,6 +115,7 @@ export const InputLabeled = ({
                     disabled={disabled}
                     max={max}
                     type={type}
+                    autoComplete={autoComplete}
                   ></input>
                 </div>
               </>

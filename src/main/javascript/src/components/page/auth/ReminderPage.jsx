@@ -1,44 +1,24 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { InputLabeled } from "../../common/InputLabeled";
-import { backendUrl } from "../../utils/fetchUtils";
+import { fetchRemindPassword } from "../../utils/fetchUtils";
+import Spinner from "react-bootstrap/Spinner";
 
 export const RegisterPage = (props) => {
-  const [user, setUser] = useState({
-    username: "",
-    password: null,
-    password2: null,
-  });
-  const [registred, setRegistred] = useState();
+  const [email, setEmail] = useState();
   const [error, setError] = useState();
-
-  const registerUser = () => {
-    axios
-      .post(`${backendUrl()}/auth/signup`, user)
-      .then((res) => {
-        setRegistred(res.data.username);
-      })
-      .catch((err) => {
-        setError(err.response.data);
-      });
-  };
-
-  const handleChange = (event) => {
-    setUser({ ...user, [event.target.name]: event.target.value });
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (event) => {
+    setLoading(true);
+    setError();
     event.preventDefault();
-    if (user.password !== user.password2) {
-      setError("Wprowadź jednakowe hasła");
-      return;
-    }
-    registerUser();
+    fetchRemindPassword(email, (response) => {
+      setError(response);
+      setLoading(false);
+    });
   };
 
   return (
@@ -48,29 +28,33 @@ export const RegisterPage = (props) => {
           <div className="col-lg-4 pb-3 u-box-shadow">
             <Card className="text-center">
               <Card.Header className="bg-dark text-white">
-                Rejestracja
+                Resetowanie hasła
               </Card.Header>
               <Card.Body>
                 <form onSubmit={handleSubmit}>
                   <InputLabeled
-                    label="Hasło"
-                    name="password"
-                    handleChange={handleChange}
+                    label="Email"
+                    name="email"
+                    handleChange={(e) => {
+                      setEmail(e.target.value);
+                      setError();
+                    }}
                     big={true}
-                    value={user.password}
-                    type="password"
+                    value={email}
+                    type="email"
                     required={true}
-                  />
-                  <InputLabeled
-                    label="Powtórz hasło"
-                    name="password2"
-                    handleChange={handleChange}
-                    big={true}
-                    value={user.password2}
-                    type="password"
-                    required={true}
+                    autoComplete="new-password"
                   />
                   {error && <p>{`${error}.`}</p>}
+                  {loading && (
+                    <div>
+                      <Spinner
+                        animation="border"
+                        variant="secondary"
+                        size="lg"
+                      />
+                    </div>
+                  )}
                   <Button
                     className={"px-4 mt-2"}
                     variant="success"

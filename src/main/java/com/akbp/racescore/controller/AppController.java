@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AppController {
 
-    @GetMapping({"/", "/event", "/login", "/register"})
+    @GetMapping({"/", "/event", "/login", "/register", "/reminder", "/passwordReset"})
     public String appPage(Model model) {
         model.addAttribute("version", "v1");
         model.addAttribute("time", "sd");
