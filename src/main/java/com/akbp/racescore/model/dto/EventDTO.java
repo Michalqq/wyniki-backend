@@ -26,6 +26,9 @@ public class EventDTO {
     private String organizer;
     private String logoPath;
     private Boolean started = false;
+    private Boolean fwdClassification;
+    private Boolean rwdClassification;
+    private Boolean awdClassification;
 
     private List<User> referee;
     private List<StageDTO> stages;
@@ -42,6 +45,9 @@ public class EventDTO {
         this.organizer = x.getOrganizer();
         this.logoPath = x.getLogoPath();
         this.started = x.getStarted();
+        this.fwdClassification = x.getFwdClassification();
+        this.rwdClassification = x.getRwdClassification();
+        this.awdClassification = x.getAwdClassification();
 
         this.eventPaths = x.getEventPaths();
         this.eventClasses = x.getEventClasses();

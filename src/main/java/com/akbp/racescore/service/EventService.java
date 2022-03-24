@@ -294,6 +294,7 @@ public class EventService {
         List<EventTeam> reversedTeams = new ArrayList<>();
         for (EventTeam team : teams) {
             team.setNumber(number--);
+            team.setOrder(number--);
             reversedTeams.add(0, team);
         }
 

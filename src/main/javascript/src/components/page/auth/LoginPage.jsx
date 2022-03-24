@@ -55,7 +55,7 @@ export const LoginPage = (props) => {
               <Card.Body>
                 <form onSubmit={handleSubmit}>
                   <InputLabeled
-                    label="Login / email"
+                    label="Login"
                     name="username"
                     handleChange={handleChange}
                     big={true}

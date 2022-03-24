@@ -1,6 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS RACE_SCORE;
 CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --
+--update race_score.event_team set start_order=number
 
 --INSERT INTO race_score.penalty_dict values (100, 'Wpisz ręcznie', false, '0');
 

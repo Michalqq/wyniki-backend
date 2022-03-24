@@ -29,6 +29,12 @@ public class EventTeam {
     @Column(name = "NUMBER", nullable = false)
     private Integer number;
 
+    @Column(name = "START_ORDER")
+    private Integer order;
+
+    @Column(name = "FORCED_NUMBER")
+    private Boolean forcedNumber;
+
     @Column(name = "ENTRY_FEE_PAID")
     private Boolean entryFeePaid;
 

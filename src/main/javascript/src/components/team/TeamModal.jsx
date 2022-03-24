@@ -26,10 +26,12 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [team, setTeam] = useState(undefined);
   const [carsOption, setCarsOption] = useState([]);
   const [addCar, setAddCar] = useState();
+  const [msg, setMsg] = useState("");
 
   useEffect(() => {
     if (!show) return;
 
+    setMsg("");
     if (mode === undefined) fetchGetTeam();
     if (mode === "preview") {
       fetchTeam(myEvent?.teamId);
@@ -38,6 +40,10 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
 
     setCarsOption([]);
   }, [show]);
+
+  useEffect(() => {
+    //if (msg === "") setTimeout(() => setMsg(""), 7000);
+  }, [msg]);
 
   const fetchGetTeam = () => {
     axios
@@ -91,7 +97,35 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!validation()) return;
+
     fetchAddTeam();
+  };
+
+  const validation = () => {
+    let message = "";
+
+    console.log(team);
+
+    if (!team.currentCar) {
+      message += "\nProszę wybrać lub dodać auto";
+      setMsg(message);
+      return false;
+    }
+
+    if (new Date(team.currentCar.insuranceExpiryDate) < new Date(myEvent.date))
+      message += "\nPolisa auta będzie nieaktualna w dniu wydarzenia";
+
+    if (
+      new Date(team.currentCar.carInspectionExpiryDate) < new Date(myEvent.date)
+    )
+      message += "\nPrzegląd auta będzie nieaktualny w dniu wydarzenia";
+
+    if (message !== "") message += "\nNie można zapisać!";
+
+    setMsg(message);
+
+    return false;
   };
 
   return (
@@ -128,7 +162,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                     </Card.Header>
                     <Card.Body>
                       <div className="row d-flex">
-                        <div className="col-lg-4 px-1">
+                        <div className="col-lg-12 px-1">
                           <InputLabeled
                             label="Imie i nazwisko"
                             name="driver"
@@ -140,7 +174,9 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                             required={true}
                           />
                         </div>
-                        <div className="col-lg-4 px-1">
+                      </div>
+                      <div className="row d-flex">
+                        <div className="col-lg-6 px-1">
                           <InputLabeled
                             label="Nazwa Teamu"
                             name="teamName"
@@ -151,7 +187,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                             icon={faUserFriends}
                           />
                         </div>
-                        <div className="col-lg-4 px-1">
+                        <div className="col-lg-6 px-1">
                           <InputLabeled
                             label="Automobilklub"
                             name="club"
@@ -163,7 +199,6 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                           />
                         </div>
                       </div>
-
                       <div className="row mt-2">
                         <div className="col-lg-6 px-1">
                           <InputLabeled
@@ -381,6 +416,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
               </div>
             )}
             <div className="text-center pb-2">
+              <h5 className="text-break">{msg}</h5>
               {!disable && (
                 <Button
                   className={"m-1"}

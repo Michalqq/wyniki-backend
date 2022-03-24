@@ -25,7 +25,6 @@ import authHeader from "../../service/auth-header";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Card from "react-bootstrap/Card";
 import { Selector } from "../common/Selector";
-import { NrBadge } from "../common/NrBadge";
 import { BasicTeamDataForm } from "./BasicTeamDataForm";
 import { TeamModal } from "./TeamModal";
 import { QuickJoinPanel } from "../join/QuickJoinPanel";
@@ -49,6 +48,16 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
   const [teamToEdit, setTeamToEdit] = useState();
   const [teamToPreview, setTeamToPreview] = useState();
   const [quickJoin, setQuickJoin] = useState();
+
+  useEffect(() => {
+    if (show) {
+      fetchReferee();
+      setLoading(true);
+      setTeams([]);
+      fetchEvent();
+    }
+    fetchTeams();
+  }, [show]);
 
   const eraseTeamToRemove = () => {
     setTeamToRemove({
@@ -76,7 +85,7 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
     axios
       .get(`${backendUrl()}/event/getTeams?eventId=${eventId}`)
       .then((res) => {
-        setTeams(res.data);
+        setTeams(res.data.sort((a, b) => a.order - b.order));
         setLoading(false);
       });
   };
@@ -167,16 +176,6 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
       });
   };
 
-  useEffect(() => {
-    if (show) {
-      fetchReferee();
-      setLoading(true);
-      setTeams([]);
-      fetchEvent();
-    }
-    fetchTeams();
-  }, [show]);
-
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -184,10 +183,10 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    let index = 1;
-    items.map((x) => (x.number = index++));
+    let order = 1;
+    items.map((x) => (x.order = order++));
 
-    setTeams(items);
+    setTeams(getOrdered(items));
     setRefreshSelect(false);
   };
 
@@ -209,6 +208,45 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
         fetchTeams();
         setTeamToEdit();
       });
+  };
+
+  const numberChanged = (value, item) => {
+    const numValue = Number(value);
+
+    if (teams.find((x) => x.forcedNumber && x.number === numValue)) return;
+
+    const tempTeams = teams.filter((x) => x.id !== item.id);
+    item.number = numValue;
+    item.forcedNumber = true;
+
+    tempTeams.push(item);
+    tempTeams.sort((a, b) => a.order - b.order);
+
+    setTeams(getOrdered(tempTeams));
+  };
+
+  const getOrdered = (tempTeams) => {
+    const newTeams = [];
+    const forcedNumbers = teams
+      .filter((x) => x.forcedNumber)
+      .map((x) => x.number);
+    let index = 1;
+
+    for (let i in tempTeams) {
+      let item = tempTeams[i];
+      if (item.forcedNumber) {
+        newTeams.push(item);
+        continue;
+      }
+      if (!item.forcedNumber && !forcedNumbers.includes(index))
+        item.number = index++;
+      else {
+        while (forcedNumbers.includes(index)) index++;
+        item.number = index++;
+      }
+      newTeams.push(item);
+    }
+    return newTeams;
   };
 
   return (
@@ -262,8 +300,8 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
                     {teams?.map((item, index) => {
                       return (
                         <Draggable
-                          key={item.number}
-                          draggableId={item.number.toString()}
+                          key={item.order}
+                          draggableId={item.order.toString()}
                           index={index}
                           draggable={true}
                         >
@@ -295,7 +333,23 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
                                         />
                                       </td>
                                       <td style={{ width: "50px" }}>
-                                        <NrBadge value={item.number}></NrBadge>
+                                        {/* <NrBadge value={item.number}></NrBadge> */}
+                                        <input
+                                          style={{
+                                            width: "90%",
+                                            backgroundColor: "#ff7300",
+                                            fontWeight: item.forcedNumber
+                                              ? "700"
+                                              : "100",
+                                            borderRadius: "20px",
+                                            textAlign: "center",
+                                          }}
+                                          type="number"
+                                          value={item.number}
+                                          onChange={(e) =>
+                                            numberChanged(e.target.value, item)
+                                          }
+                                        />
                                       </td>
                                       <td style={{ width: "270px" }}>
                                         {item.team.driver +

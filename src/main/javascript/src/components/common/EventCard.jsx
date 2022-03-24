@@ -37,7 +37,7 @@ export const EventCard = ({
           <div className="container d-flex">
             <div
               className="col-lg-2 px-0 align-self-center"
-              style={{ width: "100px" }}
+              style={{ width: "90px" }}
             >
               {event.logoPath !== undefined && event.logoPath !== null ? (
                 <img
@@ -55,9 +55,9 @@ export const EventCard = ({
             </div>
             <div className="col-lg-10 mt-3">
               {event.organizer !== undefined && event.organizer !== null && (
-                <p className="m-4">{`Organizator: ${event.organizer}`}</p>
+                <p className="m-3">{`Organizator: ${event.organizer}`}</p>
               )}
-              <p className=" fw-bold fst-italic m-4">
+              <p className=" fw-bold fst-italic mt-2">
                 {`Koniec zapisów:  ${moment(event?.signDeadline).format(
                   "dddd, DD MMM YYYY, HH:mm"
                 )}`}

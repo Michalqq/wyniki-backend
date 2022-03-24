@@ -49,8 +49,7 @@ public class AuthService {
 
     public ResponseEntity<?> authenticateUser(AuthRequest request) {
         if (!userRepository.existsByUsername(request.getUsername()))
-            if (!userRepository.existsByEmail(request.getUsername()))
-                return ResponseEntity.badRequest().body("Brak użytkownika o podanym loginie lub emailu");
+            return ResponseEntity.badRequest().body("Brak użytkownika o podanym loginie");
 
         Authentication auth;
         try {
