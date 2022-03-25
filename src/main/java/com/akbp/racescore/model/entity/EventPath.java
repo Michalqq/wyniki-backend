@@ -15,9 +15,8 @@ public class EventPath {
     @Column(name = "EVENT_ID", nullable = false, insertable = false, updatable = false)
     private Long eventId;
 
-    @Column(name = "ENTRY_FEE_FILE")
-    @Basic(fetch = FetchType.LAZY)
-    private byte[] entryFeeFile;
+    @Column(name = "PATH")
+    private String path;
 
     @Column(name = "DESCRIPTION")
     private String description;
