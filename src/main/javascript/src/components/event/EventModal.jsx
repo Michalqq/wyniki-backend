@@ -140,15 +140,26 @@ export const EventModal = ({ show, handleClose, event }) => {
           className="m-0 fw-bold"
         >
           <Tab eventKey={1} title="Informacje">
-            <div className="row">
-              <div className="col-lg-6 pb-3 px-3">
-                <div className="m-2 text-center">
-                  <h3>{event?.name || ""}</h3>
-                  <h5>{`Data wydarzenia:  `}</h5>
-                  <h5 className="fw-bold">
-                    {moment(event?.date).format(" dddd, DD MMM YYYY, HH:mm")}
-                  </h5>
-                  <p className="m-3">{event?.description || ""}</p>
+            <div className="row text-center col-lg-12">
+              <div className="col-lg-4">
+                {event?.logoPath !== undefined && event?.logoPath !== null && (
+                  <div className="">
+                    <img
+                      style={{ height: "140px" }}
+                      className="img-fluid rounded float-left"
+                      src={event.logoPath}
+                      alt="Logo"
+                    ></img>
+                  </div>
+                )}
+              </div>
+              <div className="col-lg-8">
+                <h3>{event?.name || ""}</h3>
+                <h5>{`Data wydarzenia:  `}</h5>
+                <h5 className="fw-bold">
+                  {moment(event?.date).format(" dddd, DD MMM YYYY, HH:mm")}
+                </h5>
+                <div className="col-lg-10">
                   <p className="fw-bold fst-italic m-4">
                     {`Koniec zapisów:  ${moment(event?.signDeadline).format(
                       "dddd, DD MMM YYYY, HH:mm"
@@ -156,41 +167,39 @@ export const EventModal = ({ show, handleClose, event }) => {
                   </p>
                 </div>
               </div>
-              <div className="col-lg-6 pb-3 px-3">
-                <Card className="text-center">
-                  <Card.Header className="bg-dark text-white">
-                    Linki związane z wydarzeniem
-                  </Card.Header>
-                  <Card.Body>
-                    <div className="row ">
-                      <div className="col-lg-12 px-0">
-                        {event?.eventPaths?.map((path, index) => (
-                          <h6 key={index} className="my-1">
-                            <a
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href={path.path}
-                            >
-                              {path.description}
-                            </a>
-                          </h6>
-                        ))}
-                        {event?.eventFiles?.map((file, index) => (
-                          <h6 key={index} className="my-1">
-                            <a
-                              href={"www"}
-                              onClick={(e) => downloadFile(e, file)}
-                            >
-                              {file.description}
-                            </a>
-                          </h6>
-                        ))}
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </div>
+              <p style={{ whiteSpace: "pre-line" }} className="m-3">
+                {event?.description || ""}
+              </p>
             </div>
+            <Card className="text-center">
+              <Card.Header className="bg-dark text-white">
+                Do pobrania:
+              </Card.Header>
+              <Card.Body>
+                <div className="row ">
+                  <div className="col-lg-12 px-0">
+                    {event?.eventPaths?.map((path, index) => (
+                      <h6 key={index} className="my-1">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={path.path}
+                        >
+                          {path.description}
+                        </a>
+                      </h6>
+                    ))}
+                    {event?.eventFiles?.map((file, index) => (
+                      <h6 key={index} className="my-1">
+                        <a href={"www"} onClick={(e) => downloadFile(e, file)}>
+                          {file.description}
+                        </a>
+                      </h6>
+                    ))}
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
           </Tab>
           {!loggedUser ? (
             <></>

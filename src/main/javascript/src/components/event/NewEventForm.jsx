@@ -317,7 +317,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                   selected={myEvent.date}
                   calendarContainer={DatePickerContainer}
                   //placeholderText={placeholderFrom}
-                  minDate={new Date()}
+                  minDate={null}
                   maxDate={null}
                 />
               </div>
