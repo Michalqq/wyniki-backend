@@ -52,6 +52,13 @@ export const NewEventForm = ({ show, handleClose, event }) => {
     path: "",
     description: "",
   });
+  const [eventFiles, setEventFiles] = useState([]);
+  const [file, setFile] = useState({
+    eventId: event?.eventId,
+    file: "",
+    fileName: "",
+    description: "",
+  });
   const [stages, setStages] = useState([]);
   const [referee, setReferee] = useState([]);
   const [refereeOptions, setRefereeOptions] = useState([]);
@@ -98,10 +105,24 @@ export const NewEventForm = ({ show, handleClose, event }) => {
       referee: referee,
       eventClasses: eventClasses,
       eventPaths: eventPaths,
+      eventFiles: [],
     };
+
     axios.put(`${backendUrl()}/event/createNew`, data).then((res) => {
-      handleClose();
+      eventFiles.forEach((f) =>
+        axios.post(
+          `${backendUrl()}/event/addFileToEvent?fileName=${f.fileName}&desc=${
+            f.description
+          }&eventId=${res.data}`,
+          f.file,
+          {
+            headers: authHeader(),
+          }
+        )
+      );
     });
+
+    handleClose();
   };
 
   const addStage = () => {
@@ -134,6 +155,18 @@ export const NewEventForm = ({ show, handleClose, event }) => {
       path: "",
       description: "",
     });
+  };
+
+  const addFiles = () => {
+    eventFiles.push(file);
+    setFile({
+      eventId: event?.eventId,
+      file: "",
+      fileName: "",
+      description: "",
+    });
+
+    console.log(myEvent);
   };
 
   const removeFromStages = (id) => {
@@ -190,6 +223,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
           })
         );
         setEventPaths(res.data.eventPaths);
+        setEventFiles(res.data.eventFiles);
       });
   };
 
@@ -201,6 +235,14 @@ export const NewEventForm = ({ show, handleClose, event }) => {
       .then((res) => {
         handleClose();
       });
+  };
+
+  const addFile = (e) => {
+    const currentFile = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", currentFile);
+
+    setFile({ ...file, file: formData, fileName: currentFile.name });
   };
 
   const DatePickerContainer = ({ className, children }) => {
@@ -225,68 +267,79 @@ export const NewEventForm = ({ show, handleClose, event }) => {
       </Modal.Header>
       <Modal.Body>
         <div className="row u-text-center justify-content-center">
-          <div className="col-lg-4 mx-1 border-right shadow bg-white rounded">
+          <Card.Body className="py-0">
+            <div className="row d-flex">
+              <div className="col-lg-4 px-1">
+                <InputLabeled
+                  label="Nazwa"
+                  name="name"
+                  handleChange={handleChange}
+                  big={true}
+                  value={myEvent.name}
+                  multiline={2}
+                />
+              </div>
+              <div className="col-lg-8 px-1">
+                <InputLabeled
+                  label="Opis"
+                  name="description"
+                  handleChange={handleChange}
+                  big={true}
+                  value={myEvent.description}
+                  multiline={2}
+                />
+              </div>
+            </div>
+            <div className="row d-flex">
+              <div className="col-lg-3 px-1">
+                <InputLabeled
+                  label="Nazwa organizatora"
+                  name="organizer"
+                  handleChange={handleChange}
+                  big={true}
+                  value={myEvent.organizer}
+                />
+              </div>
+              <div className="col-lg-3 px-1">
+                <InputLabeled
+                  label="Ścieżka do logo wydarzenia"
+                  inputPlaceholder="http://www.akteam.pl/logo.jpg"
+                  name="logoPath"
+                  handleChange={handleChange}
+                  big={true}
+                  value={myEvent.logoPath}
+                />
+              </div>
+              <div className="col-lg-3 px-1">
+                <CustomDatePicker
+                  label={"Data wydarzenia"}
+                  onChange={(value) => setMyEvent({ ...myEvent, date: value })}
+                  selected={myEvent.date}
+                  calendarContainer={DatePickerContainer}
+                  //placeholderText={placeholderFrom}
+                  minDate={new Date()}
+                  maxDate={null}
+                />
+              </div>
+              <div className="col-lg-3 px-1">
+                <CustomDatePicker
+                  label={"Koniec zapisów"}
+                  onChange={(value) =>
+                    setMyEvent({ ...myEvent, signDeadline: value })
+                  }
+                  selected={myEvent.signDeadline}
+                  calendarContainer={DatePickerContainer}
+                  //placeholderText={placeholderFrom}
+                  minDate={new Date()}
+                  maxDate={null}
+                />
+              </div>
+            </div>
+          </Card.Body>
+          <div className="col-lg-4 py-2  border-right shadow bg-white rounded">
             <div className="col-lg-12 border-right rounded">
               <Card className="text-center">
-                <Card.Header className="bg-dark text-white">
-                  Wydarzenie
-                </Card.Header>
                 <Card.Body className="p-0">
-                  <InputLabeled
-                    label="Nazwa"
-                    name="name"
-                    handleChange={handleChange}
-                    big={true}
-                    value={myEvent.name}
-                    multiline={2}
-                  />
-                  <InputLabeled
-                    label="Opis"
-                    name="description"
-                    handleChange={handleChange}
-                    big={true}
-                    value={myEvent.description}
-                    multiline={2}
-                  />
-                  <InputLabeled
-                    label="Nazwa organizatora"
-                    name="organizer"
-                    handleChange={handleChange}
-                    big={true}
-                    value={myEvent.organizer}
-                  />
-                  <InputLabeled
-                    label="Ścieżka do logo wydarzenia"
-                    inputPlaceholder="http://www.akteam.pl/logo.jpg"
-                    name="logoPath"
-                    handleChange={handleChange}
-                    big={true}
-                    value={myEvent.logoPath}
-                  />
-                  <div className="d-flex">
-                    <CustomDatePicker
-                      label={"Data wydarzenia"}
-                      onChange={(value) =>
-                        setMyEvent({ ...myEvent, date: value })
-                      }
-                      selected={myEvent.date}
-                      calendarContainer={DatePickerContainer}
-                      //placeholderText={placeholderFrom}
-                      minDate={new Date()}
-                      maxDate={null}
-                    />
-                    <CustomDatePicker
-                      label={"Koniec zapisów"}
-                      onChange={(value) =>
-                        setMyEvent({ ...myEvent, signDeadline: value })
-                      }
-                      selected={myEvent.signDeadline}
-                      calendarContainer={DatePickerContainer}
-                      //placeholderText={placeholderFrom}
-                      minDate={new Date()}
-                      maxDate={null}
-                    />
-                  </div>
                   <Selector
                     label={"Sędziowie"}
                     options={refereeOptions}
@@ -422,7 +475,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
               </Card>
             </div>
           </div>
-          <div className="col-lg-7 mx-2 shadow mb-1 bg-white rounded">
+          <div className="col-lg-8 py-2 shadow mb-1 bg-white rounded">
             <Card>
               <Card.Header className="bg-dark text-white">
                 Odcinki PS/OS (w kolejności)
@@ -579,8 +632,70 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                   className={"px-4 my-3"}
                   variant="success"
                   onClick={addPath}
+                  disabled={path.description === "" || path.link === ""}
                 >
                   Dodaj link
+                </Button>
+              </Card.Body>
+            </Card>
+            <Card className="text-center">
+              <Card.Header className="bg-dark text-white">Pliki</Card.Header>
+              <Card.Body className="p-0">
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      <th>Plik</th>
+                      <th>Opis</th>
+                      <th className="text-end">Usuń</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {eventFiles.map((file, index) => (
+                      <tr key={index}>
+                        <td>{file.fileName}</td>
+                        <td>{file.description}</td>
+                        <td className="text-end">
+                          <FontAwesomeIcon
+                            icon={faTimesCircle}
+                            onClick={() =>
+                              setEventFiles(
+                                eventFiles.filter(
+                                  (elem) => elem.fileName !== file.fileName
+                                )
+                              )
+                            }
+                            title={"Usuń plik"}
+                            cursor={"pointer"}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                <div className="d-grid">
+                  <input
+                    type="file"
+                    name="file"
+                    accept="application/pdf,application/vnd.ms-excel"
+                    onChange={(e) => addFile(e)}
+                  />
+                  <InputLabeled
+                    label="Opis"
+                    name="description"
+                    handleChange={(e) =>
+                      setFile({ ...file, description: e.target.value })
+                    }
+                    big={true}
+                    value={file.description}
+                  />
+                </div>
+                <Button
+                  className={"px-4 my-3"}
+                  variant="success"
+                  onClick={addFiles}
+                  disabled={file.description === "" || file.fileName === ""}
+                >
+                  Dodaj plik
                 </Button>
               </Card.Body>
             </Card>

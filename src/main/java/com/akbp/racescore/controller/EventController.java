@@ -123,14 +123,28 @@ public class EventController {
     }
 
     @PutMapping("createNew")
-    public boolean createNew(@RequestBody Event event) {
-        boolean respone = false;
+    public Long createNew(@RequestBody Event event) {
+        Long respone = 0L;
         try {
             respone = eventService.createNew(event);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
         return respone;
+    }
+
+    @PostMapping("addFileToEvent")
+    public boolean addFileToEvent(@RequestBody MultipartFile file,
+                                  @RequestParam("fileName") String fileName,
+                                  @RequestParam("desc") String desc,
+                                  @RequestParam("eventId") Long eventId) {
+        try {
+            eventService.addFileToEvent(file, eventId, fileName, desc);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     @GetMapping("getEvent")
@@ -141,6 +155,17 @@ public class EventController {
             LOGGER.error(e.getMessage());
         }
         return null;
+    }
+
+    @GetMapping("/getEventFile")
+    public ResponseEntity<byte[]> getEventFile(@RequestParam("id") Long fileId) {
+        try {
+            return eventService.getEventFile(fileId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("deleteEvent")

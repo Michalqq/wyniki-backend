@@ -73,6 +73,11 @@ public class Event implements Serializable {
     @JoinColumn(name = "EVENT_ID", nullable = false)
     List<EventPath> eventPaths;
 
+    @LazyCollection(LazyCollectionOption.TRUE)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "EVENT_ID", nullable = false, insertable = false, updatable = false)
+    List<EventFile> eventFiles;
+
     @ManyToMany
     @JoinTable(name = "EVENT_REFEREE", joinColumns = @JoinColumn(name = "EVENT_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     List<User> referee;

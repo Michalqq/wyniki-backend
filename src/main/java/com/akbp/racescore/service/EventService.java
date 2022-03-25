@@ -43,6 +43,7 @@ public class EventService {
     private final EventPathsRepository eventPathsRepository;
     private final EventClassesRepository eventClassesRepository;
     private final PenaltyRepository penaltyRepository;
+    private final EventFileRepository eventFileRepository;
 
     private final CarService carService;
     private int sortIndex = 0;
@@ -57,7 +58,8 @@ public class EventService {
                         CarService carService,
                         EventPathsRepository eventPathsRepository,
                         EventClassesRepository eventClassesRepository,
-                        PenaltyRepository penaltyRepository) {
+                        PenaltyRepository penaltyRepository,
+                        EventFileRepository eventFileRepository) {
         this.eventRepository = eventRepository;
         this.eventTeamRepository = eventTeamRepository;
         this.stageScoreRepository = stageScoreRepository;
@@ -67,6 +69,7 @@ public class EventService {
         this.eventPathsRepository = eventPathsRepository;
         this.eventClassesRepository = eventClassesRepository;
         this.penaltyRepository = penaltyRepository;
+        this.eventFileRepository = eventFileRepository;
 
         this.carService = carService;
     }
@@ -206,9 +209,9 @@ public class EventService {
     }
 
     @Transactional
-    public boolean createNew(Event event) {
+    public Long createNew(Event event) {
         if (event.getEventId() != null) eventPathsRepository.deleteByEventId(event.getEventId());
-        //eventClassesRepository.deleteByEventId(event.getEventId());
+
         eventRepository.save(event);
 
         List<EventTeam> eventTeams = eventTeamRepository.findByEventId(event.getEventId());
@@ -216,7 +219,7 @@ public class EventService {
         for (Stage stage : event.getStages()) {
             eventTeams.stream().forEach(x -> createEmptyEventScoreIfNeccesarry(stage, x));
         }
-        return true;
+        return event.getEventId();
     }
 
     private void createEmptyEventScoreIfNeccesarry(Stage stage, EventTeam et) {
@@ -334,5 +337,29 @@ public class EventService {
         eventTeamRepository.save(eventTeam);
 
         return true;
+    }
+
+    public void addFileToEvent(MultipartFile file, Long eventId) {
+
+    }
+
+    public void addFileToEvent(MultipartFile file, Long eventId, String fileName, String desc) {
+        EventFile eventFile = new EventFile(file, eventId, fileName, desc);
+
+        eventFileRepository.save(eventFile);
+    }
+
+    public ResponseEntity<byte[]> getEventFile(Long fileId) {
+        EventFile eventFile = eventFileRepository.getById(fileId);
+
+        if (eventFile == null)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.set("Content-Disposition", "attachment; filename=" + eventFile.getFileName());
+        headers.setContentLength(eventFile.getFile().length);
+
+        return new ResponseEntity<>(eventFile.getFile(), headers, HttpStatus.OK);
     }
 }

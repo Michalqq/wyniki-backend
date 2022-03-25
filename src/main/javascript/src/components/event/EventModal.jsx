@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { QuickJoinPanel } from "../join/QuickJoinPanel";
 import { TeamModal } from "../team/TeamModal";
+import { download } from "../utils/fileUtils";
 
 export const EventModal = ({ show, handleClose, event }) => {
   const navigate = useNavigate();
@@ -101,6 +102,11 @@ export const EventModal = ({ show, handleClose, event }) => {
       });
   };
 
+  const downloadFile = (e, file) => {
+    e.preventDefault();
+    download(`${backendUrl()}/event/getEventFile?id=${file.id}`, file.fileName);
+  };
+
   return (
     <div>
       <Modal
@@ -168,7 +174,17 @@ export const EventModal = ({ show, handleClose, event }) => {
                               {path.description}
                             </a>
                           </h6>
-                        )) || "Organizator nie dodał linków"}
+                        ))}
+                        {event?.eventFiles?.map((file, index) => (
+                          <h6 key={index} className="my-1">
+                            <a
+                              href={"www"}
+                              onClick={(e) => downloadFile(e, file)}
+                            >
+                              {file.description}
+                            </a>
+                          </h6>
+                        ))}
                       </div>
                     </div>
                   </Card.Body>

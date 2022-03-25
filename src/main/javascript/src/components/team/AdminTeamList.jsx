@@ -28,6 +28,7 @@ import { Selector } from "../common/Selector";
 import { BasicTeamDataForm } from "./BasicTeamDataForm";
 import { TeamModal } from "./TeamModal";
 import { QuickJoinPanel } from "../join/QuickJoinPanel";
+import { download } from "../utils/fileUtils";
 
 export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
   const [teams, setTeams] = useState([]);
@@ -115,19 +116,6 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
       "dokumenty_oa_" + eventId + ".pdf"
     );
   };
-
-  function download(url, filename) {
-    fetch(url, {
-      headers: authHeader(),
-    }).then(function (t) {
-      return t.blob().then((b) => {
-        var a = document.createElement("a");
-        a.href = URL.createObjectURL(b);
-        a.setAttribute("download", filename);
-        a.click();
-      });
-    });
-  }
 
   const fetchReferee = () => {
     axios

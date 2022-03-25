@@ -3,6 +3,7 @@ package com.akbp.racescore.model.dto;
 import com.akbp.racescore.model.dto.selectors.StageDTO;
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventClasses;
+import com.akbp.racescore.model.entity.EventFile;
 import com.akbp.racescore.model.entity.EventPath;
 import com.akbp.racescore.security.model.entity.User;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,7 @@ public class EventDTO {
     private List<StageDTO> stages;
     private List<EventClasses> eventClasses;
     private List<EventPath> eventPaths;
+    private List<EventFile> eventFiles;
 
     public EventDTO(Event x) {
         this.eventId = x.getEventId();
@@ -51,5 +53,6 @@ public class EventDTO {
 
         this.eventPaths = x.getEventPaths();
         this.eventClasses = x.getEventClasses();
+        this.eventFiles = x.getEventFiles();
     }
 }
