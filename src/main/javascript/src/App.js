@@ -8,11 +8,12 @@ import AddPenaltyPage from "./components/page/AddPenaltyPage";
 import StageScorePage from "./components/page/StageScorePage";
 import HomePage from "./components/page/HomePage";
 import TeamCreatePage from "./components/page/TeamCreatePage";
-import { NavigationBar } from "./components/common/NavigationBar";
+import { Footer, NavigationBar } from "./components/common/NavigationBar";
 import LoginPage from "./components/page/auth/LoginPage";
 import RegisterPage from "./components/page/auth/RegisterPage";
 import ReminderPage from "./components/page/auth/ReminderPage";
 import ResetPasswordPage from "./components/page/auth/ResetPasswordPage";
+import MessagePage from "./components/page/MessagePage";
 
 function App() {
   const [addedNewScore, setAddedNewScore] = useState();
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/reminder" element={<ReminderPage />} />
                 <Route path="/passwordReset" element={<ResetPasswordPage />} />
+                <Route path="/message" element={<MessagePage />} />
 
                 <Route
                   path="/add_score"
@@ -53,6 +55,7 @@ function App() {
             </div>
           </div>
         </div>
+        <Footer />
       </BrowserRouter>
     </div>
   );

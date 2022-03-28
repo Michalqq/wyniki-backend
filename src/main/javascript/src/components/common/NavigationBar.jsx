@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { checkReferee } from "../utils/fetchUtils";
+import Card from "react-bootstrap/Card";
 
 export const NavigationBar = () => {
   const [referee, setReferee] = useState(false);
@@ -90,5 +91,40 @@ export const NavigationBar = () => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+  );
+};
+
+export const Footer = () => {
+  const [referee, setReferee] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  let username = sessionStorage.getItem("username");
+
+  useEffect(
+    () => {
+      if (location.state?.eventId !== undefined)
+        checkReferee(location.state?.eventId, setReferee);
+    },
+    [location.state?.eventId],
+    username
+  );
+
+  return (
+    <div className="fixed-bottom dark">
+      <Card className="">
+        <Card.Footer className="bg-dark text-white text-start py-0">
+          <div className="row" style={{ fontSize: "14px" }}>
+            <div className="col-lg-2 text-end"></div>
+            <div className="col-lg-8 text-white text-center">
+              Potrzebujesz wyniki na własną imprezę? Masz pytania, uwagi lub
+              propozycje? Znalazłeś błąd? &nbsp;
+              <Link to="message">Wyślij wiadomość</Link>
+            </div>
+            <div className="col-lg-2 text-end">Wszystkie prawa zastrzeżone</div>
+          </div>
+        </Card.Footer>
+      </Card>
+    </div>
   );
 };

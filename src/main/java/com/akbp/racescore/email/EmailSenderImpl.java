@@ -1,5 +1,6 @@
 package com.akbp.racescore.email;
 
+import com.akbp.racescore.model.dto.MsgDto;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class EmailSenderImpl implements EmailSender {
 
     public boolean sendPasswordReminderEmail(User user) {
         String token = jwtUtils.generateJwtToken(user.getUsername());
-        String content = "<!DOCTYPE html> <html lang=\"en\"><head>";
+        String content = getHtmlStart();
 
         content += "Aby zresetować hasło kliknij w link umieszczony poniżej <br></br> ";
 
@@ -49,8 +50,31 @@ public class EmailSenderImpl implements EmailSender {
 
         content += "<br></br><br></br><br></br>";
         content += "Jeśli nie prosiłeś o reset hasła zignoruj tę wiadomość.";
-        content += "</head></html>";
+        content += getHtmlEnd();
 
         return sendEmail(user.getEmail(), "Wyniki.online - resetowanie hasła", content);
+    }
+
+    public boolean sendMsg(MsgDto msg) {
+        String content = getHtmlStart();
+
+        content += msg.getMessage();
+
+        content += "<br></br>";
+        content += "Email do odpowiedzi: " + msg.getEmail();
+        content += "<br></br>";
+        content += "Telefon: " + msg.getPhone();
+
+        content += getHtmlEnd();
+
+        return sendEmail("kraciukmichal@gmail.com", msg.getTitle(), content);
+    }
+
+    private String getHtmlStart() {
+        return "<!DOCTYPE html> <html lang=\"en\"><head>";
+    }
+
+    private String getHtmlEnd() {
+        return "</head></html>";
     }
 }
