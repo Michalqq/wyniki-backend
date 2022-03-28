@@ -95,25 +95,10 @@ export const NavigationBar = () => {
 };
 
 export const Footer = () => {
-  const [referee, setReferee] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  let username = sessionStorage.getItem("username");
-
-  useEffect(
-    () => {
-      if (location.state?.eventId !== undefined)
-        checkReferee(location.state?.eventId, setReferee);
-    },
-    [location.state?.eventId],
-    username
-  );
-
   return (
-    <div className="fixed-bottom dark">
-      <Card className="">
-        <Card.Footer className="bg-dark text-white text-start py-0">
+    <div className="fixed-bottom">
+      <Card className="bg-black">
+        <Card.Footer className="text-white text-start py-0">
           <div className="row" style={{ fontSize: "14px" }}>
             <div className="col-lg-2 text-end"></div>
             <div className="col-lg-8 text-white text-center">

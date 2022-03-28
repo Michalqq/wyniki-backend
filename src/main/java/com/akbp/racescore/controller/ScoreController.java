@@ -37,6 +37,16 @@ public class ScoreController {
         }
     }
 
+    @PostMapping("/removeScore")
+    public String removeScore(@RequestBody ScoreDTO score, Authentication auth) {
+        try {
+            return scoreService.removeScore(score, auth);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return null;
+        }
+    }
+
     @GetMapping("/getTeamScore")
     public StageScoreDTO getTeamScore(@RequestParam("eventId") Long eventId, @RequestParam("stageId") Long stageId, @RequestParam("teamId") Long teamId) {
         return scoreService.getTeamScore(eventId, stageId, teamId);

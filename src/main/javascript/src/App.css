@@ -237,3 +237,7 @@
     margin-bottom: 0px;
   }
 }
+
+.bg-black {
+  background-color: black !important;
+}

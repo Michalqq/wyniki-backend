@@ -46,10 +46,7 @@ public class ScoreService {
             return null;
 
         StageScore stageScore = stageScores.get(0);
-        stageScore.setScore(score.getScore());
-        setUserMod(stageScore, auth);
-        stageScore.setDateMod(Instant.now());
-        stageScoreRepository.save(stageScore);
+        saveStageScore(stageScore, score.getScore(), auth);
 
         return "Dodano wynik załogi: " + stageScore.getTeamNumber() + " - " + stageScore.getTeam().getDriver() + "\n"
                 + "Czas: " + ScoreToString.toString(stageScore.getScore());
@@ -113,4 +110,22 @@ public class ScoreService {
         return stageScoreDTO;
     }
 
+    public String removeScore(ScoreDTO score, Authentication auth) {
+        List<StageScore> stageScores = stageScoreRepository.findByStageIdAndTeamId(score.getStageId(), score.getTeamId());
+
+        if (stageScores.isEmpty())
+            return null;
+
+        StageScore stageScore = stageScores.get(0);
+        saveStageScore(stageScore, null, auth);
+
+        return "Usunięto wynik załogi: " + stageScore.getTeamNumber() + " - " + stageScore.getTeam().getDriver();
+    }
+
+    private void saveStageScore(StageScore stageScore, Long score, Authentication auth) {
+        stageScore.setScore(score);
+        setUserMod(stageScore, auth);
+        stageScore.setDateMod(Instant.now());
+        stageScoreRepository.save(stageScore);
+    }
 }

@@ -37,6 +37,13 @@ export const checkReferee = (eventId, handleResponse) => {
   );
 };
 
+export const fetchGetScores = (stageId, handleResponse) => {
+  fetchGet(
+    `${backendUrl()}/score/getStageScores?stageId=${stageId}`,
+    handleResponse
+  );
+};
+
 export const fetchTeamChecked = (eventId, teamId, checked, handleResponse) => {
   fetchPost(
     `${backendUrl()}/event/teamChecked?eventId=${eventId}&teamId=${teamId}&checked=${checked}`,

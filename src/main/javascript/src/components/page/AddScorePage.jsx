@@ -8,6 +8,7 @@ import { backendUrl } from "../utils/fetchUtils";
 import { useLocation, useNavigate } from "react-router-dom";
 import authHeader from "../../service/auth-header";
 import Button from "react-bootstrap/Button";
+import { OkCancelModal } from "../common/Modal";
 
 export const AddScorePage = (props) => {
   const location = useLocation();
@@ -39,6 +40,7 @@ export const AddScorePage = (props) => {
   const [disable, setDisable] = useState(false);
 
   const [valid, setValid] = useState(true);
+  const [removingScore, setRemovingScore] = useState(false);
 
   const fetchPsOptions = () => {
     axios
@@ -83,6 +85,24 @@ export const AddScorePage = (props) => {
       });
   };
 
+  const removeScore = () => {
+    const data = {
+      teamId: teamId,
+      stageId: stage,
+      stageScoreId: editMode === mode[1].value ? stageScoreId : null,
+    };
+
+    axios
+      .post(`${backendUrl()}/score/removeScore`, data, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        fetchTeamsOptions();
+        setMsg(res.data);
+        setTimeout(() => setMsg(), 10000);
+      });
+  };
+
   useEffect(() => {
     if (eventId === undefined) navigate("/");
     fetchPsOptions();
@@ -98,7 +118,7 @@ export const AddScorePage = (props) => {
 
   useEffect(() => {
     if (teamId !== undefined && editMode === mode[1].value) getTeamData();
-  }, [teamId]);
+  }, [teamId, editMode]);
 
   useEffect(() => {
     if (stage !== undefined) fetchTeamsOptions();
@@ -256,12 +276,22 @@ export const AddScorePage = (props) => {
                 <div className="col-xl-12 pt-3">
                   <button
                     type="button"
-                    className="btn btn-success"
+                    className="btn btn-success mx-2"
                     onClick={addScoreClick}
                     disabled={disable}
                   >
                     Zapisz wynik
                   </button>
+                  {editMode === mode[1].value && (
+                    <button
+                      type="button"
+                      className="btn btn-danger mx-2"
+                      onClick={() => setRemovingScore(true)}
+                      disabled={disable}
+                    >
+                      Usuń wynik
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -291,6 +321,22 @@ export const AddScorePage = (props) => {
       >
         Wyniki
       </Button>
+      {removingScore && (
+        <OkCancelModal
+          show={true}
+          title={"Usuwanie załogi"}
+          text={`Czy napewno chcesz usunąć wynik załogi:  ${
+            teamOptions.find((x) => x.value === teamId)?.label
+          }`}
+          handleAccept={() => {
+            removeScore();
+            setRemovingScore(false);
+          }}
+          handleClose={() => {
+            setRemovingScore(false);
+          }}
+        />
+      )}
     </div>
   );
 };

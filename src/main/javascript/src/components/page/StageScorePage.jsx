@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { ScoreDiv, ScoreDivPenalty, TeamDiv, CarDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
-import { backendUrl, checkReferee } from "../utils/fetchUtils";
+import { backendUrl, checkReferee, fetchGetScores } from "../utils/fetchUtils";
 import PenaltyTable from "../tables/PenaltyTable";
 import DisqualificationTable from "../tables/DisqualificationTable";
 import moment from "moment";
@@ -37,12 +37,17 @@ const StageScorePage = (props) => {
   const [loading, setLoading] = useState(true);
 
   const fetchScores = () => {
-    axios
-      .get(`${backendUrl()}/score/getStageScores?stageId=${stage}`)
-      .then((res) => {
-        setScores(res.data);
-        setLoading(false);
-      });
+    fetchGetScores(stage, (data) => {
+      setScores(data);
+      setLoading(false);
+    });
+  };
+
+  const fetchScoresAndUpdate = () => {
+    fetchGetScores(stage, (data) => {
+      setScores(data);
+      fetchSummedScores();
+    });
   };
 
   const fetchSummedScores = () => {
@@ -89,6 +94,10 @@ const StageScorePage = (props) => {
     if (eventId === undefined) navigate("/");
     checkReferee(eventId, setReferee);
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => fetchScoresAndUpdate(), 1000 * 20);
+  }, [scores]);
 
   useEffect(() => {
     fetchData();
@@ -209,9 +218,11 @@ const StageScorePage = (props) => {
             <Selector
               label={"PS"}
               options={psOptions}
+              value={sessionStorage.getItem("scoreStageId")}
               handleChange={(value) => {
                 setStage(value);
                 setStageName(psOptions.find((e) => e.value === value).label);
+                sessionStorage.setItem("scoreStageId", value);
               }}
               isValid={true}
             />

@@ -177,6 +177,10 @@ public class EventService {
         et.setEventId(eventId);
         int number = eventTeamRepository.getMaxNumberByEventId(eventId);
         et.setNumber(number + 1);
+
+        int order = eventTeamRepository.getMaxStartOrderByEventId(eventId);
+        et.setOrder(order + 1);
+
         eventTeamRepository.save(et);
 
         carService.calculateClass(team, et, event);
