@@ -28,6 +28,7 @@ export const NavigationBar = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/">Lista wydarzeń</Nav.Link>
+            <Nav.Link href="/message">Kontakt</Nav.Link>
 
             {referee && location.state?.eventId !== undefined && (
               <NavDropdown title="Administrator" id="basic-nav-dropdown">
@@ -98,12 +99,11 @@ export const Footer = () => {
   return (
     <div className="fixed-bottom">
       <Card className="bg-black">
-        <Card.Footer className="text-white text-start py-0">
-          <div className="row" style={{ fontSize: "14px" }}>
+        <Card.Footer className="text-white text-start py-1">
+          <div className="row" style={{ fontSize: "12px" }}>
             <div className="col-lg-2 text-end"></div>
             <div className="col-lg-8 text-white text-center">
-              Potrzebujesz wyniki na własną imprezę? Masz pytania, uwagi lub
-              propozycje? Znalazłeś błąd? &nbsp;
+              Potrzebujesz wyniki na własną imprezę? &nbsp;
               <Link to="message">Wyślij wiadomość</Link>
             </div>
             <div className="col-lg-2 text-end">Wszystkie prawa zastrzeżone</div>
