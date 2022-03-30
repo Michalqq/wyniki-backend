@@ -360,7 +360,7 @@ public class EventService {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.set("Content-Disposition", "attachment; filename=" + eventFile.getFileName());
         headers.setContentLength(eventFile.getFile().length);
 
