@@ -201,7 +201,7 @@ export const CarPanelModal = ({
                           name="turbo"
                           type={"radio"}
                           id={`inline-1`}
-                          defaultChecked={car.turbo}
+                          checked={car.turbo}
                           onClick={() => setCar({ ...car, turbo: true })}
                           disabled={disabled}
                         />
@@ -211,7 +211,7 @@ export const CarPanelModal = ({
                           name="turbo"
                           type={"radio"}
                           id={`inline-2`}
-                          defaultChecked={!car.turbo}
+                          checked={!car.turbo}
                           onClick={() => setCar({ ...car, turbo: false })}
                           disabled={disabled}
                         />
@@ -224,6 +224,7 @@ export const CarPanelModal = ({
                         handleChange={(value) =>
                           setCar({ ...car, driveType: value })
                         }
+                        value={car.driveType}
                         isValid={true}
                         disabled={disabled}
                       />
@@ -235,6 +236,7 @@ export const CarPanelModal = ({
                         handleChange={(value) =>
                           setCar({ ...car, petrol: value })
                         }
+                        value={car.petrol}
                         isValid={true}
                         disabled={disabled}
                       />

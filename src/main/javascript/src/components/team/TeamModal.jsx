@@ -41,10 +41,6 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
     setCarsOption([]);
   }, [show]);
 
-  useEffect(() => {
-    //if (msg === "") setTimeout(() => setMsg(""), 7000);
-  }, [msg]);
-
   const fetchGetTeam = () => {
     axios
       .get(`${backendUrl()}/team/getTeam`, {
@@ -105,28 +101,33 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const validation = () => {
     let message = "";
 
-    console.log(team);
-
     if (!team.currentCar) {
       message += "\nProszę wybrać lub dodać auto";
       setMsg(message);
       return false;
     }
 
-    if (new Date(team.currentCar.insuranceExpiryDate) < new Date(myEvent.date))
+    if (
+      new Date(team.currentCar.insuranceExpiryDate).getTime() <
+      new Date(myEvent.date).getTime()
+    )
       message += "\nPolisa auta będzie nieaktualna w dniu wydarzenia";
 
     if (
-      new Date(team.currentCar.carInspectionExpiryDate) < new Date(myEvent.date)
+      new Date(team.currentCar.carInspectionExpiryDate).getTime() <
+      new Date(myEvent.date).getTime()
     )
       message += "\nPrzegląd auta będzie nieaktualny w dniu wydarzenia";
 
     if (message !== "") message += "\nNie można zapisać!";
 
     setMsg(message);
-
-    return false;
+    return message === "";
   };
+
+  useEffect(() => {
+    setTimeout(() => setMsg(""), 8000);
+  }, [msg]);
 
   return (
     <div>
@@ -416,7 +417,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
               </div>
             )}
             <div className="text-center pb-2">
-              <h5 className="text-break">{msg}</h5>
+              <h5 style={{ whiteSpace: "pre-line" }}>{msg}</h5>
               {!disable && (
                 <Button
                   className={"m-1"}
