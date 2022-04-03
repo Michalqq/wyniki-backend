@@ -95,9 +95,9 @@ const StageScorePage = (props) => {
     checkReferee(eventId, setReferee);
   }, []);
 
-  useEffect(() => {
-    setTimeout(() => fetchScoresAndUpdate(), 1000 * 20);
-  }, [scores]);
+  // useEffect(() => {
+  //   setTimeout(() => fetchScoresAndUpdate(), 1000 * 20);
+  // }, [scores]);
 
   useEffect(() => {
     fetchData();
