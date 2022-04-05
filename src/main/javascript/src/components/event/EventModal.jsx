@@ -268,7 +268,7 @@ export const EventModal = ({ show, handleClose, event }) => {
                       ? setFillTeam(true)
                       : navigate(`login?${event.eventId}`);
                   }}
-                  disabled={event?.started}
+                  //disabled={event?.started}
                 >
                   {notJoined ? "Zapisz się" : "Edytuj dane"}
                 </Button>

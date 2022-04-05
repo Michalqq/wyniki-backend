@@ -9,6 +9,7 @@ import {
   backendUrl,
   fetchConfirmEntryFee,
   fetchRemoveFromEvent,
+  fetchSaveTeam,
 } from "../utils/fetchUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -186,16 +187,12 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
     setTeams(teams);
   };
 
-  const fetchSaveTeam = (team) => {
+  const saveTeam = (team) => {
     setLoading(true);
-    axios
-      .post(`${backendUrl()}/team/saveTeam`, team, {
-        headers: authHeader(),
-      })
-      .then(() => {
-        fetchTeams();
-        setTeamToEdit();
-      });
+    fetchSaveTeam(team, () => {
+      fetchTeams();
+      setTeamToEdit();
+    });
   };
 
   const numberChanged = (value, item) => {
@@ -529,7 +526,7 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
             show={true}
             myTeam={teamToEdit}
             eventId={eventId}
-            onSave={(team) => fetchSaveTeam(team)}
+            onSave={(team) => saveTeam(team)}
             okBtnLabel={"Zapisz zmiany"}
             handleClose={() => setTeamToEdit()}
             title={"Edycja danych załogi"}

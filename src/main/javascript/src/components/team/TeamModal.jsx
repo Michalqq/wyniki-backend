@@ -5,7 +5,11 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
-import { backendUrl, fetchTeamChecked } from "../utils/fetchUtils";
+import {
+  backendUrl,
+  fetchSaveTeam,
+  fetchTeamChecked,
+} from "../utils/fetchUtils";
 import { MyDatePicker } from "../common/DateInput";
 import { CarPanelModal } from "./CarPanelModal";
 import Spinner from "react-bootstrap/Spinner";
@@ -20,6 +24,7 @@ import {
   faPhoneAlt,
   faCarCrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { getCarLogo } from "../utils/car";
 
 export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [disable, setDisable] = useState(false);
@@ -363,16 +368,20 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                     <Card.Header className="bg-dark text-white pt-1 pb-0">
                       {team.currentCar !== undefined &&
                       team.currentCar !== null ? (
-                        <h5>{`Samochód: ${team.currentCar.brand} ${team.currentCar.model} ${team.currentCar.licensePlate}`}</h5>
+                        <h5>{`Samochód:`}</h5>
                       ) : (
-                        "Dodaj samochód"
+                        <h5>{`Dodaj samochód:`}</h5>
                       )}
                     </Card.Header>
                     <Card.Body>
+                      <div className="d-flex justify-content-center pb-2">
+                        {getCarLogo(team.currentCar?.brand, 35)}
+                        <h5 className="px-2">{`${team.currentCar.brand} ${team.currentCar.model} ${team.currentCar.licensePlate}`}</h5>
+                      </div>
                       {!disable && (
                         <>
                           <Selector
-                            label={"Samochody"}
+                            label={"Twoje auta"}
                             options={carsOption}
                             handleChange={(value) => {
                               setTeam({
@@ -388,7 +397,10 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                           <Button
                             className="m-1"
                             variant="primary"
-                            onClick={() => setAddCar(true)}
+                            onClick={() => {
+                              fetchSaveTeam(team);
+                              setAddCar(true);
+                            }}
                           >
                             Dodaj samochód
                           </Button>
@@ -401,7 +413,6 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                           </Button>
                         </>
                       )}
-
                       {disable && (
                         <Button
                           className="m-1"
@@ -418,12 +429,17 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
             )}
             <div className="text-center pb-2">
               <h5 style={{ whiteSpace: "pre-line" }}>{msg}</h5>
+              <h6 style={{ whiteSpace: "pre-line" }}>
+                Uzupełnij profil danymi osobowymi oraz dodaj auto, po zapisaniu
+                będziesz mógł zapisywać się na kolejne imprezy jednym
+                kliknięciem.
+              </h6>
               {!disable && (
                 <Button
                   className={"m-1"}
                   variant="success"
                   type="submit"
-                  disabled={myEvent?.started}
+                  //disabled={myEvent?.started}
                 >
                   Zapisz się
                 </Button>
@@ -475,7 +491,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
         show={addCar}
         handleClose={() => {
           setAddCar(false);
-          fetchGetTeam();
+          fetchTeam(team?.teamId);
         }}
         teamId={team?.teamId}
         carToEdit={addCar}

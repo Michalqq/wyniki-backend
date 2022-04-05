@@ -67,7 +67,7 @@ public class TeamService {
         if (team.getSportLicense() == null)
             team.setSportLicense(false);
 
-        if (team.getCurrentCar().getTeamId() == null) {
+        if (team.getCurrentCar() != null && team.getCurrentCar().getTeamId() == null) {
             Car tempCar = team.getCurrentCar();
             team.setCurrentCar(null);
             team = teamRepository.save(team);

@@ -282,6 +282,9 @@ export const CarPanelModal = ({
             </div>
           </div>
           <div className="text-center">
+            <p className="m-0">
+              Wprowadzone dane zostaną przekazane organizatorowi wydarzenia.
+            </p>
             {!disabled && (
               <Button className={"m-1"} variant="success" type="submit">
                 {carToEdit !== true ? "Zapisz zmiany" : "Dodaj samochód"}

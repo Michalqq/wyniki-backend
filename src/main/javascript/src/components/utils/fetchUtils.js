@@ -17,17 +17,21 @@ export const fetchGet = (url, handleResponse) => {
     });
 };
 
-export const fetchPost = (url, handleResponse) => {
+export const fetchPost = (url, data, handleResponse) => {
   axios
-    .post(url, {
+    .post(url, data, {
       headers: authHeader(),
     })
     .then((res) => {
       handleResponse(res.data);
     })
     .catch((err) => {
-      handleResponse(err.response.data);
+      if (err.response?.data) handleResponse(err.response.data);
     });
+};
+
+export const fetchSaveTeam = (team, handleResponse) => {
+  fetchPost(`${backendUrl()}/team/saveTeam`, team, handleResponse);
 };
 
 export const checkReferee = (eventId, handleResponse) => {
@@ -47,6 +51,7 @@ export const fetchGetScores = (stageId, handleResponse) => {
 export const fetchTeamChecked = (eventId, teamId, checked, handleResponse) => {
   fetchPost(
     `${backendUrl()}/event/teamChecked?eventId=${eventId}&teamId=${teamId}&checked=${checked}`,
+    null,
     handleResponse
   );
 };
@@ -82,6 +87,7 @@ export const fetchConfirmEntryFee = (eventId, teamId, handleResponse) => {
 export const fetchRemindPassword = (email, handleResponse) => {
   fetchPost(
     `${backendUrl()}/auth/remindPassword?email=${email}`,
+    null,
     handleResponse
   );
 };
