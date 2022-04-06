@@ -9,6 +9,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
 @Service
 public class ScoreExporter {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreExporter.class);
+
     @Autowired
     private EventRepository eventRepository;
     @Autowired
@@ -38,6 +42,7 @@ public class ScoreExporter {
         Event event = eventRepository.getById(eventId);
 
         List<StageScore> scores = stageScoreRepository.findByStageIdIn(event.getStages().stream().map(x -> x.getStageId()).collect(Collectors.toList()));
+        LOGGER.info(scores.toString());
 
         ByteArrayOutputStream out = getOutputStream(event.getEventTeams(), scores, event.getStages());
 
@@ -84,8 +89,8 @@ public class ScoreExporter {
         AtomicInteger index = new AtomicInteger(4);
         stages.stream()
                 .forEach(x -> {
-                    header.createCell(index.getAndIncrement()).setCellValue(x.getName() + " - wynik");
-                    header.createCell(index.getAndIncrement()).setCellValue(x.getName() + " - kary");
+                    header.createCell(index.getAndIncrement()).setCellValue(x.getName() + ": wynik");
+                    header.createCell(index.getAndIncrement()).setCellValue(x.getName() + ": kary");
                 });
 
         header.createCell(index.getAndIncrement()).setCellValue("Suma");
@@ -97,6 +102,7 @@ public class ScoreExporter {
         Row row = sheet.createRow(index);
 
         scores = scores.stream().sorted(Comparator.comparing(x -> x.getStageId())).collect(Collectors.toList());
+        LOGGER.info(scores.toString());
 
         row.createCell(0).setCellValue(index - 1);
         row.createCell(1).setCellValue(et.getTeam().getDriver());
@@ -115,6 +121,8 @@ public class ScoreExporter {
     }
 
     private void setScore(Row row, AtomicInteger index2, StageScore x) {
+        LOGGER.info(x.toString());
+
         row.createCell(index2.getAndIncrement()).setCellValue(Boolean.TRUE.equals(x.getDisqualified()) ?
                 "NU" : getScore(x.getScore()));
 
