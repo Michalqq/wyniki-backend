@@ -106,16 +106,16 @@ public class ScoreExporter {
         AtomicInteger index2 = new AtomicInteger(4);
         scores.stream().forEach(x -> setScore(row, index2, x));
 
-        Long sum = scores.stream().mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum();
+        Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum();
 
         row.createCell(index2.getAndIncrement()).setCellValue(ScoreToString.toString(sum));
         row.createCell(index2.getAndIncrement()).setCellValue(sum / 1000.0);
 
-        row.createCell(index2.getAndIncrement()).setCellValue(scores.stream().filter(x -> x.getScore() == null || x.getDisqualified()).findAny().isPresent() ? "NIE" : "TAK");
+        row.createCell(index2.getAndIncrement()).setCellValue(scores.stream().filter(x -> x.getScore() == null || Boolean.TRUE.equals(x.getDisqualified())).findAny().isPresent() ? "NIE" : "TAK");
     }
 
     private void setScore(Row row, AtomicInteger index2, StageScore x) {
-        row.createCell(index2.getAndIncrement()).setCellValue(x.getDisqualified() ?
+        row.createCell(index2.getAndIncrement()).setCellValue(Boolean.TRUE.equals(x.getDisqualified()) ?
                 "NU" : getScore(x.getScore()));
 
         List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(x.getStageId(), x.getTeamId());
