@@ -73,7 +73,7 @@ public class ScoreExporter {
 
         AtomicInteger index = new AtomicInteger(1);
         eventTeams.stream().forEach(x ->
-                createScoreRow(sheet, x, scores.stream().filter(y -> y.getTeamId() == x.getTeamId()).collect(Collectors.toList()), index.getAndIncrement()));
+                createScoreRow(sheet, x, scores.stream().filter(y -> y.getTeam().getTeamId() == x.getTeam().getTeamId()).collect(Collectors.toList()), index.getAndIncrement()));
 
         return workbook;
     }
@@ -121,8 +121,6 @@ public class ScoreExporter {
     }
 
     private void setScore(Row row, AtomicInteger index2, StageScore x) {
-        LOGGER.info(x.toString());
-
         row.createCell(index2.getAndIncrement()).setCellValue(Boolean.TRUE.equals(x.getDisqualified()) ?
                 "NU" : getScore(x.getScore()));
 
