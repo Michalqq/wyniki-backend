@@ -42,7 +42,6 @@ public class FileService {
     private EventRepository eventRepository;
 
     public ResponseEntity<byte[]> getEventTeamsData(Long eventId) throws IOException {
-
         Event event = eventRepository.getById(eventId);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();

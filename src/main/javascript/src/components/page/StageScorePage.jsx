@@ -12,6 +12,7 @@ import DisqualificationTable from "../tables/DisqualificationTable";
 import moment from "moment";
 import { NrBadge } from "../common/NrBadge";
 import Button from "react-bootstrap/Button";
+import { download } from "../utils/fileUtils";
 
 const StageScorePage = (props) => {
   const location = useLocation();
@@ -88,6 +89,13 @@ const StageScorePage = (props) => {
       fetchSummedScores();
       fetchEvent();
     }
+  };
+
+  const getScoresFile = () => {
+    download(
+      `${backendUrl()}/file/getScoresFile?eventId=${eventId}`,
+      "wyniki_" + event.name + ".xlsx"
+    );
   };
 
   useEffect(() => {
@@ -346,6 +354,15 @@ const StageScorePage = (props) => {
               onRemove={fetchData}
               referee={referee}
             />
+          </div>
+          <div className="justify-content-center">
+            <Button
+              className={"m-1"}
+              variant="secondary"
+              onClick={() => getScoresFile()}
+            >
+              Generuj plik z zestawieniem wyników
+            </Button>
           </div>
         </div>
       </div>

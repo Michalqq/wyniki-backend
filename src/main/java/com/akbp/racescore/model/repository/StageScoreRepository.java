@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
 
+    List<StageScore> findByStageIdIn(List<Long> stagesId);
+
     List<StageScore> findByStageIdAndTeamId(Long stageId, Long teamId);
 
     List<StageScore> findByStageIdAndScoreIsNullAndDisqualifiedFalse(Long stageId);

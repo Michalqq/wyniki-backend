@@ -20,5 +20,7 @@ public interface PenaltyRepository extends JpaRepository<Penalty, Long> {
             "and pd.disqualification = :disqualification", nativeQuery = true)
     List<PenaltyDTO> findAllByEventIdAndDisqualification(@Param("eventId") Long eventId, @Param("disqualification") boolean disqualification);
 
+    List<Penalty> findByStageIdAndTeamId(Long stageId, Long teamId);
+
     void deleteByStageIdAndTeamId(Long stageId, Long teamId);
 }
