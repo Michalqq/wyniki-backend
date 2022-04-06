@@ -50,6 +50,7 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
   const [teamToEdit, setTeamToEdit] = useState();
   const [teamToPreview, setTeamToPreview] = useState();
   const [quickJoin, setQuickJoin] = useState();
+  const [doSort, setDoSort] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -139,7 +140,7 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
   const sortByClass = () => {
     setRefreshSelect(true);
     axios
-      .get(`${backendUrl()}/event/sortByClass?eventId=${eventId}`, {
+      .post(`${backendUrl()}/event/sortByClass`, teams, {
         headers: authHeader(),
       })
       .then((res) => {
@@ -196,13 +197,26 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
   };
 
   const numberChanged = (value, item) => {
-    const numValue = Number(value);
+    setSortedTeam(item, Number(value));
+  };
 
-    if (teams.find((x) => x.forcedNumber && x.number === numValue)) return;
+  const checkRepeated = (value, item) => {
+    const numValue = Number(value);
+    if (
+      teams.find(
+        (x) => x.id !== item.id && x.forcedNumber && x.number === numValue
+      )
+    )
+      setSortedTeam(item, "");
+    // else setSortedTeam(item, Number(value));
+  };
+
+  const setSortedTeam = (item, numValue) => {
+    if (numValue === 0) numValue = " ";
 
     const tempTeams = teams.filter((x) => x.id !== item.id);
     item.number = numValue;
-    item.forcedNumber = true;
+    item.forcedNumber = numValue !== "";
 
     tempTeams.push(item);
     tempTeams.sort((a, b) => a.order - b.order);
@@ -258,7 +272,7 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
         {!loading && teams?.length > 0 && (
           <>
             <table>
-              <th className="d-table-row fs-6">
+              <th className="">
                 <td style={{ width: "70px" }}>Edycja</td>
                 <td style={{ width: "60px" }}>Nr</td>
                 <td style={{ width: "350px" }}>Kierowca</td>
@@ -271,210 +285,230 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
                 <td style={{ width: "80px" }}>Usuń załogę</td>
               </th>
             </table>
-            <DragDropContext
-              onDragStart={() => setRefreshSelect(true)}
-              onDragEnd={handleOnDragEnd}
-            >
-              <Droppable droppableId="selectedCases">
-                {(provided) => (
-                  <ol
-                    className="selectedCases fw-bold"
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                  >
-                    {teams?.map((item, index) => {
-                      return (
-                        <Draggable
-                          key={item.order}
-                          draggableId={item.order.toString()}
-                          index={index}
-                          draggable={true}
-                        >
-                          {(provided) => (
-                            <li
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <Card className="my-1">
-                                <Card.Body className="p-0">
-                                  <table className="m-0">
-                                    <th className="d-table-row fw-normal align-middle">
-                                      <td
-                                        className={
-                                          item.teamChecked && item.entryFeePaid
-                                            ? "bg-success"
-                                            : ""
-                                        }
-                                        style={{ width: "30px" }}
-                                      >
-                                        <FontAwesomeIcon
-                                          icon={faUserEdit}
-                                          onClick={() =>
-                                            setTeamToEdit(item.team)
+            <div style={{ overflowX: "scroll" }}>
+              <DragDropContext
+                onDragStart={() => setRefreshSelect(true)}
+                onDragEnd={handleOnDragEnd}
+              >
+                <Droppable droppableId="selectedCases">
+                  {(provided) => (
+                    <ol
+                      className="selectedCases fw-bold"
+                      style={{ minWidth: "600px" }}
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                    >
+                      {teams?.map((item, index) => {
+                        return (
+                          <Draggable
+                            key={item.order}
+                            draggableId={item.order.toString()}
+                            index={index}
+                            draggable={true}
+                          >
+                            {(provided) => (
+                              <li
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <Card className="my-1">
+                                  <Card.Body className="p-0">
+                                    <table className="m-0">
+                                      <th className="d-table-row fw-normal align-middle">
+                                        <td
+                                          className={
+                                            item.teamChecked &&
+                                            item.entryFeePaid
+                                              ? "bg-success"
+                                              : ""
                                           }
-                                          title={"Edytuj dane"}
-                                          cursor={"pointer"}
-                                        />
-                                      </td>
-                                      <td style={{ width: "50px" }}>
-                                        {/* <NrBadge value={item.number}></NrBadge> */}
-                                        <input
-                                          style={{
-                                            width: "90%",
-                                            backgroundColor: "#ff7300",
-                                            fontWeight: item.forcedNumber
-                                              ? "700"
-                                              : "100",
-                                            borderRadius: "20px",
-                                            textAlign: "center",
-                                          }}
-                                          type="number"
-                                          value={item.number}
-                                          onChange={(e) =>
-                                            numberChanged(e.target.value, item)
-                                          }
-                                        />
-                                      </td>
-                                      <td style={{ width: "270px" }}>
-                                        {item.team.driver +
-                                          (item.team?.coDriver === null ||
-                                          item.team.coDriver === ""
-                                            ? ""
-                                            : " / " + item.team?.coDriver)}
-                                      </td>
-                                      <td style={{ width: "270px" }}>
-                                        {(item.team.currentCar?.brand || "") +
-                                          " " +
-                                          (item.team.currentCar?.model || "")}
-                                      </td>
-                                      <td
-                                        style={{
-                                          width: "100px",
-                                          display: "flex",
-                                        }}
-                                      >
-                                        {item.carClassId}
-                                        {!refreshSelect && (
-                                          <Selector
-                                            className={"m-0 p-0"}
-                                            options={eventClasses}
-                                            handleChange={(value) => {
-                                              changeCarClass(item.id, value);
-                                            }}
-                                            isValid={true}
-                                            value={item.carClassId}
-                                          />
-                                        )}
-                                        {refreshSelect && (
-                                          <Selector
-                                            className={"m-0 p-0"}
-                                            options={eventClasses}
-                                            handleChange={(value) => {
-                                              changeCarClass(item.id, value);
-                                            }}
-                                            isValid={true}
-                                            skipDefault={true}
-                                          />
-                                        )}
-                                      </td>
-                                      <td
-                                        style={{
-                                          width: "90px",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        {item.entryFeePaid ? (
+                                          style={{ width: "20px" }}
+                                        >
                                           <FontAwesomeIcon
-                                            className={"text-success"}
-                                            icon={faDollarSign}
-                                          />
-                                        ) : (
-                                          <FontAwesomeIcon
-                                            className={"text-danger"}
-                                            icon={faExclamation}
-                                          />
-                                        )}
-                                      </td>
-                                      <td style={{ width: "90px" }}>
-                                        <FontAwesomeIcon
-                                          icon={faCoins}
-                                          onClick={() =>
-                                            setTeamToEntryFee(
-                                              getDriverAndTeamId(item.team)
-                                            )
-                                          }
-                                          title={"Potwierdź wpisowe"}
-                                          cursor={"pointer"}
-                                        />
-                                      </td>
-                                      <td style={{ width: "90px" }}>
-                                        {item.entryFeeFile !== null ? (
-                                          <FontAwesomeIcon
-                                            icon={faDownload}
+                                            icon={faUserEdit}
                                             onClick={() =>
-                                              fetchEntryFeeFile(
-                                                item.team.teamId,
-                                                item.team.driver
+                                              setTeamToEdit(item.team)
+                                            }
+                                            title={"Edytuj dane"}
+                                            cursor={"pointer"}
+                                          />
+                                        </td>
+                                        <td style={{ width: "55px" }}>
+                                          {/* <NrBadge value={item.number}></NrBadge> */}
+                                          <input
+                                            style={{
+                                              width: "90%",
+                                              backgroundColor: "#ffad4f",
+                                              fontWeight: item.forcedNumber
+                                                ? "700"
+                                                : "100",
+                                              borderRadius: "20px",
+                                              textAlign: "center",
+                                            }}
+                                            type="number"
+                                            value={item.number}
+                                            onChange={(e) =>
+                                              numberChanged(
+                                                e.target.value,
+                                                item
                                               )
                                             }
-                                            title={"Pobierz plik"}
-                                            cursor={"pointer"}
-                                          />
-                                        ) : (
-                                          <></>
-                                        )}
-                                      </td>
-                                      <td style={{ width: "80px" }}>
-                                        {item.teamChecked ? (
-                                          <FontAwesomeIcon
-                                            className={"text-success"}
-                                            icon={faClipboard}
-                                            onClick={() =>
-                                              setTeamToPreview(item.team.teamId)
+                                            onBlur={(e) =>
+                                              checkRepeated(
+                                                e.target.value,
+                                                item
+                                              )
                                             }
-                                            title={"Podgląd danych"}
-                                            cursor={"pointer"}
                                           />
-                                        ) : (
+                                        </td>
+                                        <td style={{ width: "270px" }}>
+                                          {item.team.driver +
+                                            (item.team?.coDriver === null ||
+                                            item.team.coDriver === ""
+                                              ? ""
+                                              : " / " + item.team?.coDriver)}
+                                        </td>
+                                        <td style={{ width: "270px" }}>
+                                          {(item.team.currentCar?.brand || "") +
+                                            " " +
+                                            (item.team.currentCar?.model || "")}
+                                        </td>
+                                        <td
+                                          style={{
+                                            width: "100px",
+                                            display: "flex",
+                                          }}
+                                        >
+                                          {item.carClassId}
+                                          {!refreshSelect && (
+                                            <Selector
+                                              className={"m-0 p-0"}
+                                              options={eventClasses}
+                                              handleChange={(value) => {
+                                                changeCarClass(item.id, value);
+                                              }}
+                                              isValid={true}
+                                              value={item.carClassId}
+                                            />
+                                          )}
+                                          {refreshSelect && (
+                                            <Selector
+                                              className={"m-0 p-0"}
+                                              options={eventClasses}
+                                              handleChange={(value) => {
+                                                changeCarClass(item.id, value);
+                                              }}
+                                              isValid={true}
+                                              skipDefault={true}
+                                            />
+                                          )}
+                                        </td>
+                                        <td
+                                          style={{
+                                            width: "90px",
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          {item.entryFeePaid ? (
+                                            <FontAwesomeIcon
+                                              className={"text-success"}
+                                              icon={faDollarSign}
+                                            />
+                                          ) : (
+                                            <FontAwesomeIcon
+                                              className={"text-danger"}
+                                              icon={faExclamation}
+                                            />
+                                          )}
+                                        </td>
+                                        <td style={{ width: "90px" }}>
                                           <FontAwesomeIcon
-                                            icon={faClipboard}
+                                            icon={faCoins}
                                             onClick={() =>
-                                              setTeamToPreview(item.team.teamId)
+                                              setTeamToEntryFee(
+                                                getDriverAndTeamId(item.team)
+                                              )
                                             }
-                                            title={"Podgląd danych"}
+                                            title={"Potwierdź wpisowe"}
                                             cursor={"pointer"}
                                           />
-                                        )}
-                                      </td>
-                                      <td
-                                        style={{ width: "60px", color: "red" }}
-                                      >
-                                        <FontAwesomeIcon
-                                          icon={faTimesCircle}
-                                          onClick={() =>
-                                            setTeamToRemove(
-                                              getDriverAndTeamId(item.team)
-                                            )
-                                          }
-                                          title={"Usuń załoge"}
-                                          cursor={"pointer"}
-                                        />
-                                      </td>
-                                    </th>
-                                  </table>
-                                </Card.Body>
-                              </Card>
-                            </li>
-                          )}
-                        </Draggable>
-                      );
-                    })}
-                    {provided.placeholder}
-                  </ol>
-                )}
-              </Droppable>
-            </DragDropContext>
+                                        </td>
+                                        <td style={{ width: "90px" }}>
+                                          {item.entryFeeFile !== null ? (
+                                            <FontAwesomeIcon
+                                              icon={faDownload}
+                                              onClick={() =>
+                                                fetchEntryFeeFile(
+                                                  item.team.teamId,
+                                                  item.team.driver
+                                                )
+                                              }
+                                              title={"Pobierz plik"}
+                                              cursor={"pointer"}
+                                            />
+                                          ) : (
+                                            <></>
+                                          )}
+                                        </td>
+                                        <td style={{ width: "80px" }}>
+                                          {item.teamChecked ? (
+                                            <FontAwesomeIcon
+                                              className={"text-success"}
+                                              icon={faClipboard}
+                                              onClick={() =>
+                                                setTeamToPreview(
+                                                  item.team.teamId
+                                                )
+                                              }
+                                              title={"Podgląd danych"}
+                                              cursor={"pointer"}
+                                            />
+                                          ) : (
+                                            <FontAwesomeIcon
+                                              icon={faClipboard}
+                                              onClick={() =>
+                                                setTeamToPreview(
+                                                  item.team.teamId
+                                                )
+                                              }
+                                              title={"Podgląd danych"}
+                                              cursor={"pointer"}
+                                            />
+                                          )}
+                                        </td>
+                                        <td
+                                          style={{
+                                            width: "60px",
+                                            color: "red",
+                                          }}
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faTimesCircle}
+                                            onClick={() =>
+                                              setTeamToRemove(
+                                                getDriverAndTeamId(item.team)
+                                              )
+                                            }
+                                            title={"Usuń załoge"}
+                                            cursor={"pointer"}
+                                          />
+                                        </td>
+                                      </th>
+                                    </table>
+                                  </Card.Body>
+                                </Card>
+                              </li>
+                            )}
+                          </Draggable>
+                        );
+                      })}
+                      {provided.placeholder}
+                    </ol>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
           </>
         )}
         {teamToRemove.teamId !== null && (
@@ -532,6 +566,18 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
             title={"Edycja danych załogi"}
           />
         )}
+        {doSort && (
+          <OkCancelModal
+            show={true}
+            title={"Sortowanie"}
+            text={`Czy chcesz posortować zawodników? Pamiętaj, że zresetuje to numery które nie zostały wpisane ręcznie (nie-pogrubione). Jeśli chcesz nadać komuś numer na stałe edytuj wartość na liście.`}
+            handleAccept={() => {
+              sortByClass();
+              setDoSort(false);
+            }}
+            handleClose={() => setDoSort(false)}
+          />
+        )}
         {teamToPreview && (
           <TeamModal
             show={true}
@@ -556,7 +602,11 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
           eventId={eventId}
         />
         <div className="text-center">
-          <Button className={"m-1"} variant="primary" onClick={sortByClass}>
+          <Button
+            className={"m-1"}
+            variant="primary"
+            onClick={() => setDoSort(true)}
+          >
             Sortuj wstępnie wg. klas
           </Button>
           <Button
@@ -565,13 +615,6 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
             onClick={() => fetchOaDocuments()}
           >
             Pobierz dokumenty OA
-          </Button>
-          <Button
-            className={"m-1"}
-            variant="success"
-            onClick={saveNumbersAndClasses}
-          >
-            Zapisz klasy i kolejność załóg
           </Button>
           <p>{msg}</p>
         </div>
@@ -597,6 +640,13 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
               Zamknij liste / Rozpocznij wydarzenie
             </Button>
           )} */}
+          <Button
+            className={"m-2"}
+            variant="success"
+            onClick={saveNumbersAndClasses}
+          >
+            Zapisz klasy i kolejność załóg
+          </Button>
           <Button className={"m-2"} variant="secondary" onClick={handleClose}>
             Wyjdź
           </Button>

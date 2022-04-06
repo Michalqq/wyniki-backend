@@ -3,6 +3,11 @@
   font-size: calc(10px + 1vmin);
 }
 
+body,
+.btn {
+  font-size: calc(9px + 1vmin) !important;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -109,16 +114,16 @@
 }
 
 .font14 {
-  font-size: 14px;
+  font-size: calc(11px + 0.4vmin);
 }
 .font13 {
-  font-size: 13px;
+  font-size: calc(10px + 0.4vmin);
 }
 .font12 {
-  font-size: 12px;
+  font-size: calc(9px + 0.4vmin);
 }
 .font11 {
-  font-size: 11px;
+  font-size: calc(7px + 0.4vmin);
 }
 
 .text-left {

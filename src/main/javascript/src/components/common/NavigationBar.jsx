@@ -50,15 +50,6 @@ export const NavigationBar = () => {
                 >
                   Dodaj kary
                 </NavDropdown.Item>
-                <NavDropdown.Item
-                  onClick={() =>
-                    navigate(`drivers`, {
-                      state: { eventId: location.state.eventId },
-                    })
-                  }
-                >
-                  Lista startowa
-                </NavDropdown.Item>
               </NavDropdown>
             )}
           </Nav>

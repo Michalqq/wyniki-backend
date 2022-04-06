@@ -103,7 +103,7 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
         <div className="d-flex justify-content-center text-center">
           <form onSubmit={handleSubmit}>
             <div className="row d-flex">
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Imie i nazwisko kierowcy"
                   name="driver"
@@ -116,7 +116,7 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
                   icon={faUserAstronaut}
                 />
               </div>
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Imie i nazwisko pilota"
                   name="coDriver"
@@ -130,7 +130,7 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
               </div>
             </div>
             <div className="row d-flex">
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Marka samochodu"
                   name="carBrand"
@@ -146,7 +146,7 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
                   icon={faCar}
                 />
               </div>
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Model samochodu"
                   name="carModel"
@@ -164,7 +164,7 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
               </div>
             </div>
             <div className="row d-flex">
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Pojemność silnika [cm3]"
                   name="engineCapacity"
@@ -183,7 +183,7 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
                   onlyNumber={true}
                 />
               </div>
-              <div className="col-6">
+              <div className="col-lg-6">
                 <Selector
                   label={"Rodzaj napędu"}
                   options={options?.driveTypeOption}

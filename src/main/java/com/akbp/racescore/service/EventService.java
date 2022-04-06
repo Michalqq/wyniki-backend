@@ -208,7 +208,7 @@ public class EventService {
 
     public void confirmEntryFee(Long eventId, Long teamId) {
         EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
-        eventTeam.setEntryFeePaid(true);
+        eventTeam.setEntryFeePaid(!eventTeam.getEntryFeePaid());
         eventTeamRepository.save(eventTeam);
     }
 
@@ -285,10 +285,10 @@ public class EventService {
         return new ResponseEntity<>(eventTeam.getEntryFeeFile(), headers, HttpStatus.OK);
     }
 
-    public List<EventTeam> sortByClass(Long eventId) {
-        List<EventTeam> teams = getTeams(eventId);
+    public List<EventTeam> sortByClass(List<EventTeam> teams) {
+        List<Integer> forcedNumber = teams.stream().filter(x -> Boolean.TRUE.equals(x.getForcedNumber())).map(x -> x.getNumber()).collect(Collectors.toList());
+        int number = teams.stream().filter(x -> !Boolean.TRUE.equals(x.getForcedNumber())).mapToInt(x -> x.getNumber()).min().orElse(teams.size());
 
-        int number = teams.size();
         sortIndex++;
         if (sortIndex > 100)
             sortIndex = 1;
@@ -299,10 +299,16 @@ public class EventService {
             teams.sort(Comparator.comparing(x -> x.getCarClassId()));
 
         List<EventTeam> reversedTeams = new ArrayList<>();
+        int order = number;
         for (EventTeam team : teams) {
-            team.setNumber(number--);
-            team.setOrder(number--);
-            reversedTeams.add(0, team);
+            while (forcedNumber.contains(number))
+                number++;
+
+            team.setOrder(order++);
+            if (!Boolean.TRUE.equals(team.getForcedNumber()))
+                team.setNumber(number++);
+
+            reversedTeams.add(team);
         }
 
         return reversedTeams;

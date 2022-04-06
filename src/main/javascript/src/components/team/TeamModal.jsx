@@ -32,6 +32,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [carsOption, setCarsOption] = useState([]);
   const [addCar, setAddCar] = useState();
   const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!show) return;
@@ -82,6 +83,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   }, [team]);
 
   const fetchAddTeam = () => {
+    setLoading(true);
     axios
       .post(`${backendUrl()}/team/addTeam?eventId=${myEvent.eventId}`, team, {
         headers: authHeader(),
@@ -126,7 +128,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
 
     if (message !== "") message += "\nNie można zapisać!";
 
-    setMsg(message);
+    setMsg(message.startsWith("\n") ? message.substring(1) : message);
     return message === "";
   };
 
@@ -427,13 +429,18 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                 </div>
               </div>
             )}
-            <div className="text-center pb-2">
-              <h5 style={{ whiteSpace: "pre-line" }}>{msg}</h5>
+            <div className="text-center my-0">
+              <h6 style={{ whiteSpace: "pre-line" }}>{msg}</h6>
               <h6 style={{ whiteSpace: "pre-line" }}>
                 Uzupełnij profil danymi osobowymi oraz dodaj auto, po zapisaniu
                 będziesz mógł zapisywać się na kolejne imprezy jednym
                 kliknięciem.
               </h6>
+              {loading && (
+                <div className="text-center">
+                  <Spinner animation="border" variant="secondary" size="lg" />
+                </div>
+              )}
               {!disable && (
                 <Button
                   className={"m-1"}

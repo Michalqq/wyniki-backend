@@ -262,6 +262,15 @@ const StageScorePage = (props) => {
             )}
           </div>
         </div>
+        <div className="justify-content-center">
+          <Button
+            className={"m-1"}
+            variant="primary"
+            onClick={() => fetchData()}
+          >
+            Odśwież
+          </Button>
+        </div>
       </div>
       <div className="row">
         <div className="col-xl-6 px-1">

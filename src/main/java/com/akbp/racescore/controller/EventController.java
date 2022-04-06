@@ -227,9 +227,9 @@ public class EventController {
         return eventService.getEventClassesOptions();
     }
 
-    @GetMapping("/sortByClass")
-    public List<EventTeam> sortByClass(@RequestParam("eventId") Long eventId) {
-        return eventService.sortByClass(eventId);
+    @PostMapping("/sortByClass")
+    public List<EventTeam> sortByClass(@RequestBody List<EventTeam> teams) {
+        return eventService.sortByClass(teams);
     }
 
     @PostMapping("/saveNumbersAndClasses")

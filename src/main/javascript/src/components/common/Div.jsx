@@ -11,13 +11,13 @@ export const TeamDiv = ({ team }) => {
         <h6 className="text-left font14 fw-bolder fst-italic m-0">
           {team.driver}
         </h6>
-        <p className="text-left font12 p-0 div-club">
+        <p className="text-left font12 p-0 div-club align-self-center">
           {getWithBracketIfNotEmpty(team.club)}
         </p>
       </div>
       <div className="d-flex" style={{ flexWrap: "wrap" }}>
         <p className="text-left font13 fw-bolder m-0 p-0">{team.coDriver}</p>
-        <p className="text-left font12 p-0 div-club">
+        <p className="text-left font12 p-0 div-club align-self-center">
           {getWithBracketIfNotEmpty(team.coClub)}
         </p>
       </div>
@@ -36,7 +36,7 @@ export const CarDiv = ({ line1, line2, carBrand, driveType }) => {
 
   return (
     <div className="col-12 d-flex">
-      <div className="col-xl-3 col-4 py-2">
+      <div className="col-xl-3 col-4 py-2 align-self-center">
         <img
           className="img-fluid"
           style={{ height: "23px" }}
@@ -45,7 +45,7 @@ export const CarDiv = ({ line1, line2, carBrand, driveType }) => {
         ></img>
       </div>
       <div className="col-xl-9 col-7">
-        <h6 className="font13  m-0">{line1}</h6>
+        <h6 className="font13 fw-bolder m-0">{line1}</h6>
         {driveType && <p className="font12 m-0 p-0">{driveType}</p>}
         <p className="font12 m-0 p-0 fw-bolder">{line2}</p>
       </div>
