@@ -378,7 +378,9 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                     <Card.Body>
                       <div className="d-flex justify-content-center pb-2">
                         {getCarLogo(team.currentCar?.brand, 35)}
-                        <h5 className="px-2">{`${team.currentCar.brand} ${team.currentCar.model} ${team.currentCar.licensePlate}`}</h5>
+                        {team.currentCar && (
+                          <h5 className="px-2">{`${team.currentCar?.brand} ${team.currentCar?.model} ${team.currentCar?.licensePlate}`}</h5>
+                        )}
                       </div>
                       {!disable && (
                         <>
