@@ -23,7 +23,9 @@ export const NavigationBar = () => {
   return (
     <Navbar bg="primary gradient" expand="lg">
       <Container>
-        <Navbar.Brand href="/">Wyniki motorsportowe on-line</Navbar.Brand>
+        <Navbar.Brand className="nav_bar" href="/">
+          Wyniki motorsportowe online AKBP
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
