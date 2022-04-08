@@ -208,7 +208,8 @@ public class EventService {
 
     public void confirmEntryFee(Long eventId, Long teamId) {
         EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
-        eventTeam.setEntryFeePaid(!eventTeam.getEntryFeePaid());
+        boolean entryFeePaid = eventTeam.getEntryFeePaid() == null ? false : eventTeam.getEntryFeePaid();
+        eventTeam.setEntryFeePaid(!entryFeePaid);
         eventTeamRepository.save(eventTeam);
     }
 
