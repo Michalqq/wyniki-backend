@@ -147,6 +147,17 @@ public class EventController {
         return true;
     }
 
+    @PostMapping("removeFileFromEvent")
+    public boolean removeFileFromEvent(@RequestParam("fileId") Long fileId,
+                                       @RequestParam("eventId") Long eventId) {
+        try {
+            return eventService.removeFile(fileId, eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return false;
+        }
+    }
+
     @GetMapping("getEvent")
     public EventDTO getEvent(@RequestParam Long eventId) {
         try {

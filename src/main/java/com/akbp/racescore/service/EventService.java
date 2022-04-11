@@ -350,8 +350,12 @@ public class EventService {
         return true;
     }
 
-    public void addFileToEvent(MultipartFile file, Long eventId) {
+    public boolean removeFile(Long fileId, Long eventId) {
+        EventFile eventFile = eventFileRepository.findByIdAndEventId(fileId, eventId);
+        if (eventFile == null) return false;
 
+        eventFileRepository.delete(eventFile);
+        return true;
     }
 
     public void addFileToEvent(MultipartFile file, Long eventId, String fileName, String desc) {

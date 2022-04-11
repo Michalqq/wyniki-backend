@@ -125,6 +125,19 @@ export const NewEventForm = ({ show, handleClose, event }) => {
     handleClose();
   };
 
+  const removeFile = (fileId) => {
+    if (!fileId) return;
+
+    axios.post(
+      `${backendUrl()}/event/removeFileFromEvent?fileId=${fileId}&eventId=${
+        myEvent.eventId
+      }`,
+      {
+        headers: authHeader(),
+      }
+    );
+  };
+
   const addStage = () => {
     stages.push(stage);
     setStages(stages);
@@ -165,8 +178,6 @@ export const NewEventForm = ({ show, handleClose, event }) => {
       fileName: "",
       description: "",
     });
-
-    console.log(myEvent);
   };
 
   const removeFromStages = (id) => {
@@ -657,13 +668,14 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                         <td className="text-end">
                           <FontAwesomeIcon
                             icon={faTimesCircle}
-                            onClick={() =>
+                            onClick={() => {
+                              removeFile(file.id);
                               setEventFiles(
                                 eventFiles.filter(
                                   (elem) => elem.fileName !== file.fileName
                                 )
-                              )
-                            }
+                              );
+                            }}
                             title={"Usuń plik"}
                             cursor={"pointer"}
                           />
