@@ -14,6 +14,7 @@ import RegisterPage from "./components/page/auth/RegisterPage";
 import ReminderPage from "./components/page/auth/ReminderPage";
 import ResetPasswordPage from "./components/page/auth/ResetPasswordPage";
 import MessagePage from "./components/page/MessagePage";
+import { TeamPanel } from "./components/team/TeamPanel";
 
 function App() {
   const [addedNewScore, setAddedNewScore] = useState();
@@ -51,6 +52,7 @@ function App() {
                 />
                 <Route path="/drivers" element={<DriverListPage />} />
                 <Route path="/joinToEvent" element={<TeamCreatePage />} />
+                <Route path="/teamPanel" element={<TeamPanel />} />
               </Routes>
             </div>
           </div>

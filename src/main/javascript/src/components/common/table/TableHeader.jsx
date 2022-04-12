@@ -33,10 +33,12 @@ const TableHeader = ({ isHeader, headerGroups }) => {
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     className="flex align-items-end justify-content-center h6 l-row g-brand2-c table-column-header"
                   >
-                    <span className="flex">
+                    <span className="font13 flex">
                       {column.Header != null && column.render("Header")}
                     </span>
-                    <span className="g-gray4-c">{getSortIcon(column)}</span>
+                    <span className="font13 g-gray4-c">
+                      {getSortIcon(column)}
+                    </span>
                   </div>
                   <div className="flex align-items-end">
                     {column.canFilter ? column.render("Filter") : null}

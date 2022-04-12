@@ -38,7 +38,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
     if (!show) return;
 
     setMsg("");
-    if (mode === undefined) fetchGetTeam();
+    if (mode === undefined || mode === "teamPanel") fetchGetTeam();
     if (mode === "preview") {
       fetchTeam(myEvent?.teamId);
       setDisable(true);
@@ -100,9 +100,16 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (mode === "teamPanel") return saveTeamData();
+
     if (!validation()) return;
 
     fetchAddTeam();
+  };
+  const saveTeamData = () => {
+    fetchSaveTeam(team, () => {
+      setMsg("Twoje dane zostały zapisane");
+    });
   };
 
   const validation = () => {
@@ -433,11 +440,13 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
             )}
             <div className="text-center my-0">
               <h6 style={{ whiteSpace: "pre-line" }}>{msg}</h6>
-              <h6 style={{ whiteSpace: "pre-line" }}>
-                Uzupełnij profil danymi osobowymi oraz dodaj auto, po zapisaniu
-                będziesz mógł zapisywać się na kolejne imprezy jednym
-                kliknięciem.
-              </h6>
+              {mode !== "teamPanel" && (
+                <h6 style={{ whiteSpace: "pre-line" }}>
+                  Uzupełnij profil danymi osobowymi oraz dodaj auto, po
+                  zapisaniu będziesz mógł zapisywać się na kolejne imprezy
+                  jednym kliknięciem.
+                </h6>
+              )}
               {loading && (
                 <div className="text-center">
                   <Spinner animation="border" variant="secondary" size="lg" />
@@ -450,7 +459,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                   type="submit"
                   //disabled={myEvent?.started}
                 >
-                  Zapisz się
+                  {mode === "teamPanel" ? "Zapisz zmiany" : "Zapisz się"}
                 </Button>
               )}
               {disable && (

@@ -64,12 +64,9 @@ export const NavigationBar = () => {
             )}
             {sessionStorage.getItem("username") !== null && (
               <>
-                <Navbar.Brand
-                  className="mx-5"
-                  href="/"
-                >{`Użytkownik: ${sessionStorage.getItem(
+                <Nav.Link href="/teamPanel">{`Panel zawodnika - ${sessionStorage.getItem(
                   "username"
-                )}`}</Navbar.Brand>
+                )}`}</Nav.Link>
 
                 <Nav.Link
                   onClick={() => {

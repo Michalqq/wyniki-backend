@@ -44,6 +44,8 @@ public class EmailSenderImpl implements EmailSender {
         String token = jwtUtils.generateJwtToken(user.getUsername());
         String content = getHtmlStart();
 
+        content += "Twój login to: " + user.getUserId();
+        content += " <br></br> ";
         content += "Aby zresetować hasło kliknij w link umieszczony poniżej <br></br> ";
 
         content += "<a href=" + appPath + "/passwordReset?" + token + ">Link do resetowania hasła</a>";

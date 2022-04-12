@@ -10,6 +10,8 @@ import ResultTable from "../common/table/ResultTable";
 import authHeader from "../../service/auth-header";
 import { NrBadge } from "../common/NrBadge";
 import { CarDiv, TeamDiv } from "../common/Div";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faQuestion } from "@fortawesome/free-solid-svg-icons";
 
 export const TeamListModal = ({ show, handleClose, eventId, started }) => {
   const [teams, setTeams] = useState([]);
@@ -23,6 +25,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
       .get(`${backendUrl()}/event/getTeams?eventId=${eventId}`)
       .then((res) => {
         setTeams(res.data);
+        console.log(res.data);
         setLoading(false);
       });
   };
@@ -43,7 +46,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
   const columns = useMemo(
     () => [
       {
-        width: "5%",
+        width: "2%",
         id: "index",
         Header: "L.p.",
         accessor: (cellInfo) => cellInfo.number,
@@ -67,7 +70,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         Cell: (row) => <TeamDiv team={row.value}></TeamDiv>,
       },
       {
-        width: "12%",
+        width: "20%",
         id: "car",
         Header: "Samochód",
         accessor: (cellInfo) => cellInfo.team.currentCar,
@@ -83,18 +86,31 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
       },
       {
         width: "12%",
-        id: "carClass",
-        Header: "Klasa",
-        accessor: (cellInfo) => cellInfo.carClass.name,
-        disableFilters: true,
-      },
-      {
-        width: "12%",
         id: "engine",
         Header: "Silnik",
         accessor: (cellInfo) =>
-          cellInfo.team.currentCar?.engineCapacity || "" + " cm3",
+          cellInfo.team.currentCar?.engineCapacity + " cm3",
         disableFilters: true,
+      },
+      {
+        width: "5%",
+        id: "entryFee",
+        Header: "Potwierdzony",
+        accessor: (cellInfo) => cellInfo.entryFeePaid,
+        disableFilters: true,
+        Cell: (row) => {
+          console.log(row);
+          return (
+            <FontAwesomeIcon
+              icon={row.value ? faCheck : faQuestion}
+              style={{ color: row.value ? "green" : "black" }}
+              title={
+                row.value ? "Potwierdzony" : "Dodaj potwierdzenie przelewu"
+              }
+              cursor={"pointer"}
+            />
+          );
+        },
       },
     ],
     []
