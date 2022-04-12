@@ -251,3 +251,7 @@ body,
 .bg-black {
   background-color: black !important;
 }
+
+.btn-close {
+  background-color: white !important;
+}
