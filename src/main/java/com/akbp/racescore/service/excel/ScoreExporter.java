@@ -123,7 +123,7 @@ public class ScoreExporter {
         if (optionalEventTeam.isEmpty()) return;
 
         EventTeam et = optionalEventTeam.get();
-        createScoreRow(sheet, et, scores.stream().filter(y -> y.getTeamId() == et.getTeamId()).collect(Collectors.toList()), index.getAndIncrement(), true);
+        createScoreRow(sheet, et, scores.stream().filter(y -> y.getTeamId().compareTo(et.getTeamId()) == 0).collect(Collectors.toList()), index.getAndIncrement(), true);
         eventTeams.remove(et);
     }
 
