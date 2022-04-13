@@ -111,10 +111,10 @@ public class ScoreExporter {
     private void setColumnWidth(Sheet sheet) {
         sheet.setColumnWidth(0, 4 * 256);
         sheet.setColumnWidth(1, 4 * 256);
-        sheet.setColumnWidth(2, 15 * 256);
-        sheet.setColumnWidth(3, 15 * 256);
-        sheet.setColumnWidth(4, 15 * 256);
-        sheet.setColumnWidth(5, 15 * 256);
+        sheet.setColumnWidth(2, 17 * 256);
+        sheet.setColumnWidth(3, 17 * 256);
+        sheet.setColumnWidth(4, 17 * 256);
+        sheet.setColumnWidth(5, 17 * 256);
         sheet.setColumnWidth(6, 8 * 256);
     }
 
@@ -149,14 +149,14 @@ public class ScoreExporter {
         header.createCell(index.get()).setCellValue("Suma kar");
         sheet.setColumnWidth(index.getAndIncrement(), 13 * 256);
         header.createCell(index.get()).setCellValue("");
-        sheet.setColumnWidth(index.getAndIncrement(), 3 * 256);
+        sheet.setColumnWidth(index.getAndIncrement(), 2 * 256);
 
         header.createCell(index.get()).setCellValue("Wynik suma");
         sheet.setColumnWidth(index.getAndIncrement(), 13 * 256);
         header.createCell(index.get()).setCellValue("");
-        sheet.setColumnWidth(index.getAndIncrement(), 3 * 256);
+        sheet.setColumnWidth(index.getAndIncrement(), 2 * 256);
         header.createCell(index.get()).setCellValue("Suma w minutach");
-        sheet.setColumnWidth(index.getAndIncrement(), 15 * 256);
+        sheet.setColumnWidth(index.getAndIncrement(), 18 * 256);
 
         setStyle(index.get(), header, getHeaderStyle());
 
