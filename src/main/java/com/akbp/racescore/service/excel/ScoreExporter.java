@@ -96,7 +96,7 @@ public class ScoreExporter {
         if (tempEventTeams.size() > 0) {
             createTitle(sheet, "Nie klasyfikowani", index);
             tempEventTeams.stream().forEach(x ->
-                    createScoreRow(sheet, x, scores.stream().filter(y -> y.getTeam().getTeamId() == x.getTeam().getTeamId()).collect(Collectors.toList()), index.getAndIncrement(), false));
+                    createScoreRow(sheet, x, scores.stream().filter(y -> y.getTeamNumber() == x.getNumber()).collect(Collectors.toList()), index.getAndIncrement(), false));
         }
     }
 
