@@ -28,6 +28,7 @@ import { getCarLogo } from "../utils/car";
 
 export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [disable, setDisable] = useState(false);
+  const [addingToEvent, setAddingToEvent] = useState(false);
   const [team, setTeam] = useState(undefined);
   const [carsOption, setCarsOption] = useState([]);
   const [addCar, setAddCar] = useState();
@@ -83,6 +84,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   }, [team]);
 
   const fetchAddTeam = () => {
+    setAddingToEvent(true);
     setLoading(true);
     axios
       .post(`${backendUrl()}/team/addTeam?eventId=${myEvent.eventId}`, team, {
@@ -418,7 +420,10 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                           <Button
                             className="m-1"
                             variant="secondary"
-                            onClick={() => setAddCar(team.currentCar)}
+                            onClick={() => {
+                              fetchSaveTeam(team);
+                              setAddCar(team.currentCar);
+                            }}
                           >
                             Edytuj
                           </Button>
@@ -457,7 +462,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                   className={"m-1"}
                   variant="success"
                   type="submit"
-                  //disabled={myEvent?.started}
+                  disabled={addingToEvent}
                 >
                   {mode === "teamPanel" ? "Zapisz zmiany" : "Zapisz się"}
                 </Button>
