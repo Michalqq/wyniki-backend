@@ -1,12 +1,17 @@
 CREATE SCHEMA IF NOT EXISTS RACE_SCORE;
 CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 
-delete from race_score.users where user_id = 93;
+delete from race_score.event_team where id = 175;
 
---
+delete from race_score.stage_score where id = 939;
+delete from race_score.stage_score where id = 940;
+delete from race_score.stage_score where id = 942;
+delete from race_score.stage_score where id = 945;
+
+--delete from race_score.users where user_id = 93;
+
 --update race_score.event_team set start_order=number;
 --ALTER TABLE  race_score.event ALTER COLUMN description TYPE varchar(1500);
-
 
 --INSERT INTO race_score.penalty_dict values (100, 'Wpisz ręcznie', false, '0');
 
