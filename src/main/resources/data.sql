@@ -1,12 +1,12 @@
 CREATE SCHEMA IF NOT EXISTS RACE_SCORE;
 CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 
-delete from race_score.event_team where id = 175;
-
-delete from race_score.stage_score where id = 939;
-delete from race_score.stage_score where id = 940;
-delete from race_score.stage_score where id = 942;
-delete from race_score.stage_score where id = 945;
+--delete from race_score.event_team where id = 175;
+--
+--delete from race_score.stage_score where id = 939;
+--delete from race_score.stage_score where id = 940;
+--delete from race_score.stage_score where id = 942;
+--delete from race_score.stage_score where id = 945;
 
 --delete from race_score.users where user_id = 93;
 
