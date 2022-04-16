@@ -92,7 +92,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         disableFilters: true,
       },
       {
-        width: "15%",
+        width: "13%",
         id: "entryFee",
         Header: "Potwierdz.",
         accessor: (cellInfo) => cellInfo.entryFeePaid,
