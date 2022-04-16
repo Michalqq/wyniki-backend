@@ -7,7 +7,6 @@ import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { backendUrl } from "../utils/fetchUtils";
 import ResultTable from "../common/table/ResultTable";
-import authHeader from "../../service/auth-header";
 import { NrBadge } from "../common/NrBadge";
 import { CarDiv, TeamDiv } from "../common/Div";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -46,15 +45,15 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
   const columns = useMemo(
     () => [
       {
-        width: "10%",
+        width: "8%",
         id: "index",
-        Header: "L.p.",
+        Header: "L.p",
         accessor: (cellInfo) => cellInfo.number,
         disableFilters: true,
         Cell: (row) => <> {row.row.index + 1}</>,
       },
       {
-        width: "10%",
+        width: "9%",
         id: "#",
         Header: "#Nr",
         accessor: (cellInfo) => cellInfo.number,
