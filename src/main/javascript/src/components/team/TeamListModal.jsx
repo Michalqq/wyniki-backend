@@ -46,7 +46,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
   const columns = useMemo(
     () => [
       {
-        width: "2%",
+        width: "10%",
         id: "index",
         Header: "L.p.",
         accessor: (cellInfo) => cellInfo.number,
@@ -54,7 +54,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         Cell: (row) => <> {row.row.index + 1}</>,
       },
       {
-        width: "3%",
+        width: "10%",
         id: "#",
         Header: "#Nr",
         accessor: (cellInfo) => cellInfo.number,
@@ -62,7 +62,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         Cell: (row) => <NrBadge value={row.value}></NrBadge>,
       },
       {
-        width: "20%",
+        width: "30%",
         id: "team",
         Header: "Załoga",
         accessor: (cellInfo) => cellInfo.team,
@@ -70,7 +70,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         Cell: (row) => <TeamDiv team={row.value}></TeamDiv>,
       },
       {
-        width: "20%",
+        width: "30%",
         id: "car",
         Header: "Samochód",
         accessor: (cellInfo) => cellInfo.team.currentCar,
@@ -85,7 +85,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         ),
       },
       {
-        width: "12%",
+        width: "10%",
         id: "engine",
         Header: "Silnik",
         accessor: (cellInfo) =>
@@ -93,9 +93,9 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         disableFilters: true,
       },
       {
-        width: "5%",
+        width: "15%",
         id: "entryFee",
-        Header: "Potwierdzony",
+        Header: "Potwierdz.",
         accessor: (cellInfo) => cellInfo.entryFeePaid,
         disableFilters: true,
         Cell: (row) => {

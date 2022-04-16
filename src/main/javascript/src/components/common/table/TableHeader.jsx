@@ -26,6 +26,7 @@ const TableHeader = ({ isHeader, headerGroups }) => {
                 className="p-1"
                 style={{
                   width: column.width,
+                  wordBreak: "break-word",
                 }}
               >
                 <div className="flex flex-column">
