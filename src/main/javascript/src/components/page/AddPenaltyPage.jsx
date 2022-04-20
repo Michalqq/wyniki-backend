@@ -95,7 +95,10 @@ export const AddPenaltyPage = (props) => {
   }, [stage]);
 
   useEffect(() => {
-    if (teamOptions.length > 0) setTeamId(teamOptions[0].value);
+    if (teamOptions.length === 0) return;
+
+    const selectedTeam = teamOptions.find((x) => x.value === teamId);
+    setTeamId(selectedTeam ? selectedTeam?.value : teamOptions[0].value);
   }, [teamOptions]);
 
   useEffect(() => {
@@ -144,6 +147,7 @@ export const AddPenaltyPage = (props) => {
             <Selector
               label={"Załoga"}
               options={teamOptions}
+              value={teamId}
               handleChange={(value) => setTeamId(value)}
               isValid={true}
               isLoading={loadingTeams}

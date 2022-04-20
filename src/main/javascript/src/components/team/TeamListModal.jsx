@@ -24,7 +24,6 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
       .get(`${backendUrl()}/event/getTeams?eventId=${eventId}`)
       .then((res) => {
         setTeams(res.data);
-        console.log(res.data);
         setLoading(false);
       });
   };
@@ -98,7 +97,6 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         accessor: (cellInfo) => cellInfo.entryFeePaid,
         disableFilters: true,
         Cell: (row) => {
-          console.log(row);
           return (
             <FontAwesomeIcon
               icon={row.value ? faCheck : faQuestion}

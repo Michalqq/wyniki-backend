@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import DriverListPage from "./components/page/DriverListPage";
 import AddScorePage from "./components/page/AddScorePage";
 import AddPenaltyPage from "./components/page/AddPenaltyPage";
 import StageScorePage from "./components/page/StageScorePage";
@@ -17,8 +16,6 @@ import MessagePage from "./components/page/MessagePage";
 import { TeamPanel } from "./components/team/TeamPanel";
 
 function App() {
-  const [addedNewScore, setAddedNewScore] = useState();
-
   return (
     <div>
       {/* <header className="App-header">RACE SCORE</header> */}
@@ -36,21 +33,9 @@ function App() {
                 <Route path="/passwordReset" element={<ResetPasswordPage />} />
                 <Route path="/message" element={<MessagePage />} />
 
-                <Route
-                  path="/add_score"
-                  element={<AddScorePage setAddedNewScore={setAddedNewScore} />}
-                />
-                <Route
-                  path="/add_penalty"
-                  element={
-                    <AddPenaltyPage setAddedNewScore={setAddedNewScore} />
-                  }
-                />
-                <Route
-                  path="/event"
-                  element={<StageScorePage addedNewScore={addedNewScore} />}
-                />
-                <Route path="/drivers" element={<DriverListPage />} />
+                <Route path="/add_score" element={<AddScorePage />} />
+                <Route path="/add_penalty" element={<AddPenaltyPage />} />
+                <Route path="/event" element={<StageScorePage />} />
                 <Route path="/joinToEvent" element={<TeamCreatePage />} />
                 <Route path="/teamPanel" element={<TeamPanel />} />
               </Routes>

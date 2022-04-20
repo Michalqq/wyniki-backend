@@ -114,12 +114,12 @@ const StageScorePage = (props) => {
   useEffect(() => {
     fetchPsOptions();
     fetchData();
-  }, [props.addedNewScore]);
+  }, []);
 
   const columns = useMemo(
     () => [
       {
-        width: "1%",
+        width: "5%",
         id: "place",
         Header: "P.",
         accessor: (cellInfo) => cellInfo.place,
@@ -128,7 +128,7 @@ const StageScorePage = (props) => {
         Cell: (row) => <> {row.row.index + 1}</>,
       },
       {
-        width: "1%",
+        width: "7%",
         id: "nr",
         Header: "Nr",
         accessor: (cellInfo) => cellInfo.number,
@@ -137,7 +137,7 @@ const StageScorePage = (props) => {
         Cell: (row) => <NrBadge value={row.value}></NrBadge>,
       },
       {
-        width: "40%",
+        width: "30%",
         id: "team",
         Header: "Załoga",
         disableFilters: true,
@@ -160,7 +160,7 @@ const StageScorePage = (props) => {
         ),
       },
       {
-        width: "13%",
+        width: "15%",
         id: "score",
         Header: "Czas/ kary",
         accessor: (cellInfo) => cellInfo.stageScore,
@@ -266,6 +266,13 @@ const StageScorePage = (props) => {
                 >
                   Dodaj kare
                 </Button>
+                <Button
+                  className={"m-1"}
+                  variant="secondary"
+                  onClick={() => getScoresFile()}
+                >
+                  Generuj plik z zestawieniem wyników
+                </Button>
               </>
             )}
           </div>
@@ -354,15 +361,6 @@ const StageScorePage = (props) => {
               onRemove={fetchData}
               referee={referee}
             />
-          </div>
-          <div className="justify-content-center">
-            <Button
-              className={"m-1"}
-              variant="secondary"
-              onClick={() => getScoresFile()}
-            >
-              Generuj plik z zestawieniem wyników
-            </Button>
           </div>
         </div>
       </div>

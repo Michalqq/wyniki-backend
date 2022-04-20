@@ -10,6 +10,7 @@ import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
 import { Selector } from "../common/Selector";
 import {
+  faBuilding,
   faCar,
   faCarAlt,
   faUserAstronaut,
@@ -126,6 +127,32 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
                   value={team.coDriver}
                   big={true}
                   icon={faUserClock}
+                />
+              </div>
+            </div>
+            <div className="row d-flex">
+              <div className="col-lg-6">
+                <InputLabeled
+                  label="Automobilklub kierowcy"
+                  name="club"
+                  handleChange={(e) =>
+                    setTeam({ ...team, club: e.target.value })
+                  }
+                  value={team.club}
+                  big={true}
+                  icon={faBuilding}
+                />
+              </div>
+              <div className="col-lg-6">
+                <InputLabeled
+                  label="Automobilklub pilota"
+                  name="coClub"
+                  handleChange={(e) =>
+                    setTeam({ ...team, coClub: e.target.value })
+                  }
+                  value={team.coClub}
+                  big={true}
+                  icon={faBuilding}
                 />
               </div>
             </div>

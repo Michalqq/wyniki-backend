@@ -197,7 +197,7 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
   };
 
   const numberChanged = (value, item) => {
-    setSortedTeam(item, Number(value));
+    setSortedTeam(item, value !== "" ? Number(value) : " ");
   };
 
   const checkRepeated = (value, item) => {
@@ -212,8 +212,6 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
   };
 
   const setSortedTeam = (item, numValue) => {
-    if (numValue === 0) numValue = " ";
-
     const tempTeams = teams.filter((x) => x.id !== item.id);
     item.number = numValue;
     item.forcedNumber = numValue !== "";

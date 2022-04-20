@@ -6,12 +6,6 @@ export const TeamPanel = () => {
   const navigate = useNavigate();
 
   return (
-    <TeamModal
-      show={true}
-      handleClose={() => navigate(-1)}
-      handleOk={() => console.log()}
-      mode="teamPanel"
-      //   myEvent={event}
-    />
+    <TeamModal show={true} handleClose={() => navigate(-1)} mode="teamPanel" />
   );
 };
