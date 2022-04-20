@@ -57,17 +57,15 @@ export const EventCard = ({
               {event.organizer !== undefined && event.organizer !== null && (
                 <p className="m-3">{`Organizator: ${event.organizer}`}</p>
               )}
-              {new Date(event?.signDeadline) > new Date() ? (
-                <p className=" fw-bold fst-italic mt-2">
-                  {`Koniec zapisów:  ${moment(event?.signDeadline).format(
-                    "dddd, DD MMM YYYY, HH:mm"
-                  )}`}
-                </p>
-              ) : (
-                <p className=" fw-bold fst-italic mt-2">
-                  {"Wydarzenie zakończone"}
-                </p>
-              )}
+              <p className="fw-bold fst-italic mt-2">
+                {`Koniec zapisów:  ${moment(event?.signDeadline).format(
+                  "dddd, DD MMM YYYY, HH:mm"
+                )}`}
+              </p>
+              {new Date(event?.signDeadline) < new Date() &&
+                new Date(event?.date) > new Date() && (
+                  <p className="">{"Zapisy zamknięte"}</p>
+                )}
               {event.joined && (
                 <div className="d-inline-flex">
                   <FontAwesomeIcon
