@@ -194,6 +194,7 @@ export const BasicTeamDataForm = ({
                       },
                     })
                   }
+                  value={team.currentCar?.driveType}
                   isValid={true}
                 />
               </div>
@@ -209,8 +210,7 @@ export const BasicTeamDataForm = ({
                   name="turbo"
                   type={"radio"}
                   id={`inline-1`}
-                  default={team.currentCar?.turbo}
-                  readOnly
+                  checked={team.currentCar?.turbo}
                   onClick={() =>
                     setTeam({
                       ...team,
@@ -225,7 +225,6 @@ export const BasicTeamDataForm = ({
                   type={"radio"}
                   id={`inline-2`}
                   checked={!team.currentCar?.turbo}
-                  readOnly
                   onClick={() =>
                     setTeam({
                       ...team,
