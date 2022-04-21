@@ -272,7 +272,7 @@ export const EventModal = ({ show, handleClose, event }) => {
                       ? setFillTeam(true)
                       : navigate(`login?${event.eventId}`);
                   }}
-                  disabled={signDeadlined}
+                  disabled={signDeadlined && notJoined}
                 >
                   {notJoined ? "Zapisz się" : "Edytuj dane"}
                 </Button>
