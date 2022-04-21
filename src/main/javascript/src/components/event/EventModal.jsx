@@ -42,6 +42,10 @@ export const EventModal = ({ show, handleClose, event }) => {
     setMyEvent(event);
   }, [show]);
 
+  const signDeadlined = event
+    ? new Date().getTime() > new Date(event.signDeadline).getTime()
+    : false;
+
   const fetchGetTeam = () => {
     axios
       .get(`${backendUrl()}/team/getTeam`, {
@@ -268,7 +272,7 @@ export const EventModal = ({ show, handleClose, event }) => {
                       ? setFillTeam(true)
                       : navigate(`login?${event.eventId}`);
                   }}
-                  //disabled={event?.started}
+                  disabled={signDeadlined}
                 >
                   {notJoined ? "Zapisz się" : "Edytuj dane"}
                 </Button>
@@ -295,6 +299,7 @@ export const EventModal = ({ show, handleClose, event }) => {
                     className={"mx-3"}
                     variant="danger"
                     onClick={() => doRemoveFromEvent()}
+                    disabled={signDeadlined}
                   >
                     Wypisz się
                   </Button>

@@ -9,10 +9,12 @@ import { Selector } from "../common/Selector";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import {
+  faBuilding,
   faCar,
   faCarAlt,
   faUserAstronaut,
   faUserClock,
+  faUserFriends,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const BasicTeamDataForm = ({
@@ -58,7 +60,7 @@ export const BasicTeamDataForm = ({
         <div className="d-flex justify-content-center text-center">
           <form onSubmit={handleSubmit}>
             <div className="row d-flex">
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Imie i nazwisko kierowcy"
                   name="driver"
@@ -71,7 +73,7 @@ export const BasicTeamDataForm = ({
                   icon={faUserAstronaut}
                 />
               </div>
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Imie i nazwisko pilota"
                   name="coDriver"
@@ -85,7 +87,48 @@ export const BasicTeamDataForm = ({
               </div>
             </div>
             <div className="row d-flex">
-              <div className="col-6">
+              <div className="col-lg-6">
+                <InputLabeled
+                  label="Automobilklub kierowcy"
+                  name="club"
+                  handleChange={(e) =>
+                    setTeam({ ...team, club: e.target.value })
+                  }
+                  value={team.club}
+                  big={true}
+                  icon={faBuilding}
+                />
+              </div>
+              <div className="col-lg-6">
+                <InputLabeled
+                  label="Automobilklub pilota"
+                  name="coClub"
+                  handleChange={(e) =>
+                    setTeam({ ...team, coClub: e.target.value })
+                  }
+                  value={team.coClub}
+                  big={true}
+                  icon={faBuilding}
+                />
+              </div>
+            </div>
+            <div className="row d-flex">
+              <div className="col-lg-12">
+                <InputLabeled
+                  label="Nazwa Teamu"
+                  name="teamName"
+                  handleChange={(e) =>
+                    setTeam({ ...team, teamName: e.target.value })
+                  }
+                  value={team.teamName}
+                  big={true}
+                  icon={faUserFriends}
+                />
+              </div>
+            </div>
+
+            <div className="row d-flex">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Marka samochodu"
                   name="carBrand"
@@ -101,7 +144,7 @@ export const BasicTeamDataForm = ({
                   icon={faCar}
                 />
               </div>
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Model samochodu"
                   name="carModel"
@@ -119,7 +162,7 @@ export const BasicTeamDataForm = ({
               </div>
             </div>
             <div className="row d-flex">
-              <div className="col-6">
+              <div className="col-lg-6">
                 <InputLabeled
                   label="Pojemność silnika [cm3]"
                   name="engineCapacity"
@@ -138,7 +181,7 @@ export const BasicTeamDataForm = ({
                   onlyNumber={true}
                 />
               </div>
-              <div className="col-6">
+              <div className="col-lg-6">
                 <Selector
                   label={"Rodzaj napędu"}
                   options={options?.driveTypeOption}

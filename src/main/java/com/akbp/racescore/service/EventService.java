@@ -136,9 +136,9 @@ public class EventService {
         if (team == null)
             return eventDTOS;
 
-        List<EventTeam> eventTeams = eventTeamRepository.findByTeamId(team.getTeamId());
-        for (EventTeam et : eventTeams) {
-            eventDTOS.stream().filter(event -> event.getEventId() == et.getEventId()).findAny().ifPresent(x -> x.setJoined(true));
+        for (EventDTO eventDTO : eventDTOS) {
+            EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventDTO.getEventId(), team.getTeamId());
+            eventDTO.setJoined(et != null);
         }
 
         return eventDTOS;

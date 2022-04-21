@@ -12,6 +12,9 @@ export const EventCard = ({
   onEdit,
   mainAdmin,
 }) => {
+  const eventDeadlined =
+    new Date().getTime() > new Date(event.signDeadline).getTime();
+
   return (
     <div className="col-lg-6 pb-3 u-box-shadow">
       <Card className="">
@@ -81,16 +84,20 @@ export const EventCard = ({
         <Card.Footer className="text-start py-0">
           <div className="row my-2">
             <div className="col-6 px-0">
-              {new Date().getTime() <=
-                new Date(event.signDeadline).getTime() && (
-                <Button
-                  className={"start-0 py-1 px-1"}
-                  variant="success"
-                  onClick={onJoin}
-                >
-                  {event.joined ? "Moje zgłoszenie" : "Info / Zgłoszenia"}
-                </Button>
-              )}
+              {/* {new Date().getTime() <=
+                new Date(event.signDeadline).getTime() && ( */}
+              <Button
+                className={"start-0 py-1 px-1"}
+                variant="success"
+                onClick={onJoin}
+              >
+                {eventDeadlined
+                  ? "Informacje"
+                  : event.joined
+                  ? "Moje zgłoszenie"
+                  : "Info / Zgłoszenia"}
+              </Button>
+              {/* )} */}
             </div>
             <div className="col-6 px-0 d-flex justify-content-end">
               <Button
