@@ -119,6 +119,12 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
     );
   };
 
+  const fetchBkDocuments = () => {
+    download(
+      `${backendUrl()}/file/getBkFiles?eventId=${eventId}`,
+      "dokumenty_bk_" + eventId + ".pdf"
+    );
+  };
   const fetchReferee = () => {
     axios
       .get(`${backendUrl()}/event/checkReferee?eventId=${eventId}`, {
@@ -613,6 +619,13 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
             onClick={() => fetchOaDocuments()}
           >
             Pobierz dokumenty OA
+          </Button>{" "}
+          <Button
+            className={"m-1"}
+            variant="primary"
+            onClick={() => fetchBkDocuments()}
+          >
+            Pobierz dokumenty BK
           </Button>
           <p>{msg}</p>
         </div>

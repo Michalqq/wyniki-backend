@@ -12,6 +12,7 @@ import com.akbp.racescore.model.repository.*;
 import com.akbp.racescore.model.repository.dictionary.CarClassRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
+import com.akbp.racescore.service.pdf.BkPdfCreatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,8 @@ public class EventService {
     private final PenaltyRepository penaltyRepository;
     private final EventFileRepository eventFileRepository;
 
+    private final BkPdfCreatorService bkPdfCreatorService;
+
     private final CarService carService;
     private int sortIndex = 0;
 
@@ -59,7 +62,8 @@ public class EventService {
                         EventPathsRepository eventPathsRepository,
                         EventClassesRepository eventClassesRepository,
                         PenaltyRepository penaltyRepository,
-                        EventFileRepository eventFileRepository) {
+                        EventFileRepository eventFileRepository,
+                        BkPdfCreatorService bkPdfCreatorService) {
         this.eventRepository = eventRepository;
         this.eventTeamRepository = eventTeamRepository;
         this.stageScoreRepository = stageScoreRepository;
@@ -70,6 +74,8 @@ public class EventService {
         this.eventClassesRepository = eventClassesRepository;
         this.penaltyRepository = penaltyRepository;
         this.eventFileRepository = eventFileRepository;
+
+        this.bkPdfCreatorService = bkPdfCreatorService;
 
         this.carService = carService;
     }
