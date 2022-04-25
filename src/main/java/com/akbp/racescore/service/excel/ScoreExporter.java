@@ -1,11 +1,13 @@
 package com.akbp.racescore.service.excel;
 
+import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreSumDTO;
 import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.entity.dictionary.CarClass;
 import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.PenaltyRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
+import com.akbp.racescore.service.ScoreService;
 import com.akbp.racescore.utils.ScoreToString;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,6 +32,8 @@ public class ScoreExporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScoreExporter.class);
 
     private Workbook workbook;
+    @Autowired
+    private ScoreService scoreService;
     @Autowired
     private EventRepository eventRepository;
     @Autowired
@@ -89,8 +93,10 @@ public class ScoreExporter {
         Stage lastStage = stages.get(stages.size() - 1);
 
         List<StageScoreSumDTO> sumScoreDto = stageScoreRepository.findSummedScoreByStageId(lastStage.getEventId(), lastStage.getStageId());
+        List<StageScoreDTO> scoresDto = scoreService.calculateTime(sumScoreDto);
+
         List<EventTeam> tempEventTeams = new ArrayList<>(eventTeams);
-        sumScoreDto.forEach(x -> createFinishedTeamScoreRow(sheet, x, tempEventTeams, scores, index));
+        scoresDto.forEach(x -> createFinishedTeamScoreRow(sheet, x, tempEventTeams, scores, index));
         sheet.createRow(index.getAndIncrement());
 
         if (tempEventTeams.size() > 0) {
@@ -118,8 +124,8 @@ public class ScoreExporter {
         sheet.setColumnWidth(6, 8 * 256);
     }
 
-    private void createFinishedTeamScoreRow(Sheet sheet, StageScoreSumDTO stageScoreSumDTO, List<EventTeam> eventTeams, List<StageScore> scores, AtomicInteger index) {
-        Optional<EventTeam> optionalEventTeam = eventTeams.stream().filter(x -> x.getNumber() == stageScoreSumDTO.getNumber()).findFirst();
+    private void createFinishedTeamScoreRow(Sheet sheet, StageScoreDTO stageScoreDTO, List<EventTeam> eventTeams, List<StageScore> scores, AtomicInteger index) {
+        Optional<EventTeam> optionalEventTeam = eventTeams.stream().filter(x -> x.getNumber() == stageScoreDTO.getNumber()).findFirst();
         if (optionalEventTeam.isEmpty()) return;
 
         EventTeam et = optionalEventTeam.get();
@@ -181,9 +187,9 @@ public class ScoreExporter {
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
 
         scores.stream().forEach(x -> setScore(row, index2, x));
-        setPenaltiesSum(row, index2, scores);
+        Long penalties = setPenaltiesSum(row, index2, scores);
 
-        Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum();
+        Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(ScoreToString.toString(sum));
@@ -243,13 +249,18 @@ public class ScoreExporter {
                 "NU" : getScore(x.getScore()));
     }
 
-    private void setPenaltiesSum(Row row, AtomicInteger index2, List<StageScore> scores) {
-        if (scores.isEmpty()) return;
+    private Long setPenaltiesSum(Row row, AtomicInteger index2, List<StageScore> scores) {
+        if (scores.isEmpty()) return 0L;
 
+        Long penaltiesSum = 0L;
         List<Penalty> penalties = penaltyRepository.findByStageIdInAndTeamId(scores.stream().map(x -> x.getStageId()).collect(Collectors.toList()), scores.get(0).getTeamId());
-        if (!penalties.isEmpty())
-            row.createCell(index2.get()).setCellValue(penalties.stream().mapToLong(y -> y.getPenaltySec()).sum() + " sek");
+        if (!penalties.isEmpty()) {
+            penaltiesSum = penalties.stream().mapToLong(y -> y.getPenaltySec()).sum();
+            row.createCell(index2.get()).setCellValue(penaltiesSum + " sek");
+        }
         index2.getAndIncrement();
+
+        return penaltiesSum;
     }
 
     private String getScore(Long score) {

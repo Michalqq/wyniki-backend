@@ -73,7 +73,7 @@ public class ScoreService {
         return calculateTime(scoresDTOS);
     }
 
-    private List<StageScoreDTO> calculateTime(List<StageScoreSumDTO> scoresDTOS) {
+    public List<StageScoreDTO> calculateTime(List<StageScoreSumDTO> scoresDTOS) {
         List<StageScoreDTO> scores = scoresDTOS.stream().map(x -> new StageScoreDTO(x)).collect(Collectors.toList());
         scores = scores.stream().sorted(Comparator.comparingLong(x -> x.getTotalTimeWithPenalty())).collect(Collectors.toList());
         if (scores.isEmpty())
