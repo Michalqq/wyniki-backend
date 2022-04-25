@@ -1,1 +1,1 @@
-"node_modules/.bin/webpack" --entry ./src/index.js -o ./dist/  --mode production
+"node_modules/.bin/webpack" --entry ./src/index.js -o ../../main/resources/static/dist  --mode production
