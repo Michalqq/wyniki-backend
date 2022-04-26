@@ -206,7 +206,7 @@ public class OaDocumentPdfCreatorService {
     }
 
     private Paragraph createTitle(Event event) {
-        Paragraph p = new Paragraph(event.getName() + "\n").setFontSize(14).setTextAlignment(TextAlignment.CENTER);
+        Paragraph p = new Paragraph(event.getName() + "\n").setFontSize(14).setPaddingLeft(80).setPaddingRight(80).setTextAlignment(TextAlignment.CENTER);
         p.setMarginTop(-40);
         p.add(fromInstant(event.getDate()) + "\n");
         p.add("Organizator: " + event.getOrganizer());
