@@ -1,8 +1,8 @@
 package com.akbp.racescore.controller;
 
-import com.akbp.racescore.service.FileService;
-import com.akbp.racescore.service.excel.ScoreExporter;
-import com.akbp.racescore.service.pdf.BkPdfCreatorService;
+import com.akbp.racescore.service.fileGenerator.OaDocumentPdfCreatorService;
+import com.akbp.racescore.service.fileGenerator.ScoreToExcelExporterService;
+import com.akbp.racescore.service.fileGenerator.BkPdfCreatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +19,9 @@ public class FileController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileController.class);
     @Autowired
-    private FileService fileService;
+    private OaDocumentPdfCreatorService fileService;
     @Autowired
-    private ScoreExporter scoreExporter;
+    private ScoreToExcelExporterService scoreExporter;
     @Autowired
     private BkPdfCreatorService bkPdfCreatorService;
 
@@ -53,7 +53,7 @@ public class FileController {
     public ResponseEntity<byte[]> getBkFiles(Long eventId) {
         LOGGER.info("getBkFiles");
         try {
-            return bkPdfCreatorService.createBkForEvent(eventId);
+            return bkPdfCreatorService.getBkFiles(eventId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

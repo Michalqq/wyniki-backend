@@ -1,4 +1,4 @@
-package com.akbp.racescore.service;
+package com.akbp.racescore.service.fileGenerator;
 
 import com.akbp.racescore.model.entity.Car;
 import com.akbp.racescore.model.entity.Event;
@@ -7,6 +7,7 @@ import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.model.repository.EventRepository;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
+import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -17,6 +18,7 @@ import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class FileService {
+public class OaDocumentPdfCreatorService {
 
     @Autowired
     private EventRepository eventRepository;
@@ -49,7 +51,7 @@ public class FileService {
         PdfDocument pdf = new PdfDocument(writer);
         Document doc = new Document(pdf);
         try {
-            FontProgram fontProgram = FontProgramFactory.createFont();
+            FontProgram fontProgram = FontProgramFactory.createFont(StandardFonts.HELVETICA);
             PdfFont font = PdfFontFactory.createFont(fontProgram, "CP1250");
             doc.setFont(font).setFontSize(10);
         } catch (IOException e) {
@@ -71,20 +73,41 @@ public class FileService {
     }
 
     private void createPage(Document doc, EventTeam et, Event event) {
+        doc.add(createNumberBox(et.getNumber()));
         doc.add(createTitle(event));
-        doc.add(createPersonalDataTable(et.getTeam()));
+        doc.add(new Paragraph("Dane zawodników:"));
+        Table personalDataTable = createPersonalDataTable(et.getTeam());
+        doc.add(personalDataTable);
+        personalDataTable.complete();
         doc.add(new Paragraph("\n\n Dane samochodu:"));
-        doc.add(createCarDataTable(et.getTeam().getCurrentCar()));
+        Table carDataTable = createCarDataTable(et.getTeam().getCurrentCar());
+        doc.add(carDataTable);
+        carDataTable.complete();
         doc.add(createApprovalParagraph(event));
         doc.add(createSignSpace());
         doc.add(new AreaBreak());
     }
 
+    private Table createNumberBox(Integer number) {
+        Table box = new Table(1).setHorizontalAlignment(HorizontalAlignment.RIGHT);
+        box.addCell("Numer startowy");
+
+        Paragraph p = new Paragraph(number.toString()).setFontSize(18).setTextAlignment(TextAlignment.CENTER);
+
+        box.getCell(0, 0).setMarginLeft(500)
+                .setPaddingBottom(20).setPadding(5)
+                .setTextAlignment(TextAlignment.RIGHT)
+                .add(p);
+
+        return box;
+    }
+
     private Table createPersonalDataTable(Team team) {
-        Table table = new Table(3).setWidth(500);
+        float[] columnWidths = new float[]{13f, 20f, 20f};
+        Table table = new Table(columnWidths, true);
 
         table.addCell("            ");
-        table.addCell("Kierowca    ").setBold();
+        table.addCell("Kierowca    ");
         table.addCell("Pilot       ");
 
         table.addCell("Imię i nazwisko").setProperty(8, false);
@@ -119,11 +142,23 @@ public class FileService {
         table.addCell(Boolean.TRUE.equals(team.getSportLicense()) ? "TAK" : "NIE");
         table.addCell(Boolean.TRUE.equals(team.getCoSportLicense()) ? "TAK" : "NIE");
 
+        setBold(table);
+
         return table;
     }
 
+    private void setBold(Table table) {
+        table.getCell(0, 1).setBold();
+        table.getCell(0, 2).setBold();
+
+        for (int i = 0; i < 9; i++) {
+            table.getCell(i, 0).setBold();
+        }
+    }
+
     private Table createCarDataTable(Car car) {
-        Table table = new Table(4).setWidth(500);
+        float[] columnWidths = new float[]{15f, 15f, 15f, 15f};
+        Table table = new Table(columnWidths, true);
 
         if (car == null) return table;
 
@@ -132,7 +167,7 @@ public class FileService {
         table.addCell("Model");
         table.addCell(Optional.ofNullable(car.getModel()).orElse(""));
         table.addCell("Nr rej.");
-        table.addCell(Optional.ofNullable(car.getLicensePlate()).orElse(""));
+        table.addCell(Optional.ofNullable(car.getLicensePlate().toUpperCase()).orElse(""));
         table.addCell("Rok produkcji");
         table.addCell(Optional.ofNullable(car.getYear()).orElse(""));
         table.addCell("Pojemność skokowa");
@@ -141,7 +176,7 @@ public class FileService {
         table.addCell(Boolean.TRUE.equals(car.getTurbo()) ? "TAK" : "NIE");
 
         table.addCell("Nr VIN");
-        Cell vin = new Cell(1, 3).add(new Paragraph(Optional.ofNullable(car.getVin()).orElse("")));
+        Cell vin = new Cell(1, 3).add(new Paragraph(Optional.ofNullable(car.getVin().toUpperCase()).orElse("")));
         table.addCell(vin);
 
         table.addCell("Data ważności przeglądu");
@@ -153,15 +188,29 @@ public class FileService {
         Cell insurance = new Cell(1, 3).add(new Paragraph(Optional.ofNullable(car.getInsurance()).orElse("")));
         table.addCell(insurance);
 
+        setCarTableBold(table);
+
         return table;
     }
 
-    private Paragraph createTitle(Event event) {
+    private void setCarTableBold(Table table) {
+        for (int i = 0; i < 6; i++) {
+            Cell cell = table.getCell(i, 0);
+            if (cell != null)
+                cell.setBold();
 
+            Cell cell2 = table.getCell(i, 2);
+            if (cell2 != null)
+                cell2.setBold();
+        }
+    }
+
+    private Paragraph createTitle(Event event) {
         Paragraph p = new Paragraph(event.getName() + "\n").setFontSize(14).setTextAlignment(TextAlignment.CENTER);
+        p.setMarginTop(-40);
         p.add(fromInstant(event.getDate()) + "\n");
         p.add("Organizator: " + event.getOrganizer());
-        p.add("\n\n\n");
+        p.add("\n\n");
 
         return p;
     }

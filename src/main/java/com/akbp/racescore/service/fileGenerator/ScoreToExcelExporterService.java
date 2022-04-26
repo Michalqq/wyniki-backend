@@ -1,4 +1,4 @@
-package com.akbp.racescore.service.excel;
+package com.akbp.racescore.service.fileGenerator;
 
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreSumDTO;
@@ -27,9 +27,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
-public class ScoreExporter {
+public class ScoreToExcelExporterService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreExporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScoreToExcelExporterService.class);
 
     private Workbook workbook;
     @Autowired

@@ -12,7 +12,7 @@ import com.akbp.racescore.model.repository.*;
 import com.akbp.racescore.model.repository.dictionary.CarClassRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
-import com.akbp.racescore.service.pdf.BkPdfCreatorService;
+import com.akbp.racescore.service.fileGenerator.BkPdfCreatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

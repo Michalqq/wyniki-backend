@@ -1,4 +1,4 @@
-package com.akbp.racescore.service.pdf;
+package com.akbp.racescore.service.fileGenerator;
 
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
@@ -31,6 +31,8 @@ public class BkPdfCreatorService {
     private final float NAME_ROW_Y = 730;
     private final float NAME_ROW_2_Y = 725;
 
+    private final float DRIVING_LICENSE_Y = 588;
+
     private final float CAR_1_Y = 690;
     private final float CAR_2_Y = 670;
     private final float CAR_3_Y = 650;
@@ -41,26 +43,40 @@ public class BkPdfCreatorService {
     private final float NUMBER_X = 30;
     private final float CLASS_X = 80;
     private final float DRIVER_X = 125;
-    private final float CO_DRIVER_X = 265;
+    private final float CO_DRIVER_X = 262;
     private final float EVENT_X = 400;
 
-    private final String BK_FORM_PATH = "src/main/resources/bk_template/BK.pdf";
-    private final String BK_FOR_EVENT_FORM_PATH = "src/main/resources/bk_template/BK_FOR_EVENT.pdf";
-    private final String BK_FOR_EVENT_FILLED_PATH = "src/main/resources/bk_template/BK_FOR_EVENT_FILLED.pdf";
+    private final float DRIVING_LICENSE_X = 270;
+
+    private final String BK_FORM_PATH = "src/main/resources/bk_template/BK.fileGenerator";
+    private final String BK_FOR_EVENT_FORM_PATH = "src/main/resources/bk_template/BK_FOR_EVENT.fileGenerator";
 
     @Autowired
     private EventRepository eventRepository;
 
-    public ResponseEntity<byte[]> createBkForEvent(Long eventId) {
+    public ResponseEntity<byte[]> getBkFiles(Long eventId) {
         Event event = eventRepository.getById(eventId);
         LOGGER.info("createBkForEvent " + eventId);
 
+        byte[] file = createBkForEvent(event);
+
+        if (file == null)
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.set("Content-Disposition", "attachment; filename=" + "dokumenty_oa_bk" + event.getEventId() + ".fileGenerator");
+        headers.setContentLength(file.length);
+
+        return new ResponseEntity<>(file, headers, HttpStatus.OK);
+    }
+
+    private byte[] createBkForEvent(Event event) {
         List<EventTeam> teams = event.getEventTeams();
-        byte[] output = null;
 
         try {
             createPagesForTeams(teams);
-            output = getPdf(event, teams);
+            return getPdf(event, teams);
         } catch (IOException e) {
             LOGGER.error("IOException" + e.getMessage());
             e.printStackTrace();
@@ -68,13 +84,7 @@ public class BkPdfCreatorService {
             LOGGER.error("DocumentException" + e.getMessage());
             e.printStackTrace();
         }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.set("Content-Disposition", "attachment; filename=" + "dokumenty_oa_bk" + event.getEventId() + ".pdf");
-        headers.setContentLength(output.length);
-
-        return new ResponseEntity<>(output, headers, HttpStatus.OK);
+        return null;
     }
 
     private void createPagesForTeams(List<EventTeam> eventTeams) throws IOException, DocumentException {
@@ -134,11 +144,23 @@ public class BkPdfCreatorService {
         over.showText(engine.substring(0, engine.indexOf('.')));
 
         over.setTextMatrix(CAR_2_X, CAR_1_Y);
-        over.showText(team.getCurrentCar().getLicensePlate());
+        over.showText(team.getCurrentCar().getLicensePlate().toUpperCase());
         over.setTextMatrix(CAR_2_X, CAR_2_Y);
-        over.showText(team.getCurrentCar().getVin());
+        over.showText(team.getCurrentCar().getVin().toUpperCase());
 
         fillTurboInfo(over, team.getCurrentCar().getTurbo());
+
+        over.setFontAndSize(bf, 10);
+        over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y);
+        over.showText(team.getDrivingLicense());
+
+        over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y - 19);
+        over.showText(team.getCoDrivingLicense());
+
+        over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y - 58);
+        over.showText(team.getCurrentCar().getInsurance());
+        over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y - 76);
+        over.showText(team.getCurrentCar().getInsurance());
 
         over.endText();
     }
