@@ -31,7 +31,13 @@ import { TeamModal } from "./TeamModal";
 import { QuickJoinPanel } from "../join/QuickJoinPanel";
 import { download } from "../utils/fileUtils";
 
-export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
+export const AdminTeamList = ({
+  show,
+  handleClose,
+  eventId,
+  eventName,
+  started,
+}) => {
   const [teams, setTeams] = useState([]);
   const [startEvent, setStartEvent] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -115,14 +121,14 @@ export const AdminTeamList = ({ show, handleClose, eventId, started }) => {
   const fetchOaDocuments = () => {
     download(
       `${backendUrl()}/file/getEventTeamsData?eventId=${eventId}`,
-      "dokumenty_oa_" + eventId + ".pdf"
+      "dokumenty_oa_" + eventName + ".pdf"
     );
   };
 
   const fetchBkDocuments = () => {
     download(
       `${backendUrl()}/file/getBkFiles?eventId=${eventId}`,
-      "dokumenty_bk_" + eventId + ".pdf"
+      "dokumenty_bk_" + eventName + ".pdf"
     );
   };
   const fetchReferee = () => {

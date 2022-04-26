@@ -166,6 +166,7 @@ const HomePage = (props) => {
             fetchEvents();
           }}
           eventId={eventToTeamList?.eventId}
+          eventName={eventToTeamList?.name}
           started={eventToTeamList?.started}
         />
       )}

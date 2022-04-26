@@ -167,7 +167,7 @@ public class OaDocumentPdfCreatorService {
         table.addCell("Model");
         table.addCell(Optional.ofNullable(car.getModel()).orElse(""));
         table.addCell("Nr rej.");
-        table.addCell(Optional.ofNullable(car.getLicensePlate().toUpperCase()).orElse(""));
+        table.addCell(Optional.ofNullable(car.getLicensePlate()).map(x -> x.toUpperCase()).orElse(""));
         table.addCell("Rok produkcji");
         table.addCell(Optional.ofNullable(car.getYear()).orElse(""));
         table.addCell("Pojemność skokowa");
@@ -176,7 +176,7 @@ public class OaDocumentPdfCreatorService {
         table.addCell(Boolean.TRUE.equals(car.getTurbo()) ? "TAK" : "NIE");
 
         table.addCell("Nr VIN");
-        Cell vin = new Cell(1, 3).add(new Paragraph(Optional.ofNullable(car.getVin().toUpperCase()).orElse("")));
+        Cell vin = new Cell(1, 3).add(new Paragraph(Optional.ofNullable(car.getVin()).map(x -> x.toUpperCase()).orElse("")));
         table.addCell(vin);
 
         table.addCell("Data ważności przeglądu");

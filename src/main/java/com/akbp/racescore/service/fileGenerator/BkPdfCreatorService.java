@@ -48,8 +48,8 @@ public class BkPdfCreatorService {
 
     private final float DRIVING_LICENSE_X = 270;
 
-    private final String BK_FORM_PATH = "src/main/resources/bk_template/BK.fileGenerator";
-    private final String BK_FOR_EVENT_FORM_PATH = "src/main/resources/bk_template/BK_FOR_EVENT.fileGenerator";
+    private final String BK_FORM_PATH = "src/main/resources/bk_template/BK.pdf";
+    private final String BK_FOR_EVENT_FORM_PATH = "src/main/resources/bk_template/BK_FOR_EVENT.pdf";
 
     @Autowired
     private EventRepository eventRepository;
