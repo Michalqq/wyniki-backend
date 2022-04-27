@@ -90,13 +90,15 @@ export const Footer = () => {
     <div className="fixed-bottom">
       <Card className="bg-black">
         <Card.Footer className="text-white text-start py-0">
-          <div className="row font_11">
-            <div className="col-lg-2 text-end"></div>
-            <div className="col-lg-8 text-white text-center">
+          <div className="row font12">
+            <div className="col-lg-3 text-end"></div>
+            <div className="col-lg-6 text-white text-center">
               Potrzebujesz wyniki na własną imprezę? &nbsp;
               <Link to="message">Wyślij wiadomość</Link>
             </div>
-            <div className="col-lg-2 text-end">Wszystkie prawa zastrzeżone</div>
+            <div className="col-lg-3 text-center">
+              Wszystkie prawa zastrzeżone
+            </div>
           </div>
         </Card.Footer>
       </Card>
