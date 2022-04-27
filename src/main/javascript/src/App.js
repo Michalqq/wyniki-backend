@@ -3,7 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Footer, NavigationBar } from "./components/common/NavigationBar";
 import { TeamPanel } from "./components/team/TeamPanel";
-import { Spinner } from "react-bootstrap";
+import Spinner from "react-bootstrap/Spinner";
 
 const AddScorePage = lazy(() => import("./components/page/AddScorePage"));
 const AddPenaltyPage = lazy(() => import("./components/page/AddPenaltyPage"));

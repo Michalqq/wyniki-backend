@@ -1,3 +1,5 @@
+const CompressionPlugin = require("compression-webpack-plugin");
+
 module.exports = {
   devtool: "source-map",
   module: {
@@ -16,9 +18,25 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new CompressionPlugin({
+      test: /\.js(\?.*)?$/i,
+      algorithm: "gzip",
+    }),
+  ],
+  performance: {
+    hints: "warning",
+    // Calculates sizes of gziped bundles.
+    assetFilter: function (assetFilename) {
+      return assetFilename.endsWith(".js.gz");
+    },
+  },
   resolve: {
     extensions: [".ts", ".js", ".jsx", ".css"],
     modules: ["node_modules", "src/main/javascript"],
   },
   mode: "development",
+  optimization: {
+    usedExports: true,
+  },
 };
