@@ -59,6 +59,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
     fileName: "",
     description: "",
   });
+  const [logoFile, setLogoFile] = useState();
   const [stages, setStages] = useState([]);
   const [referee, setReferee] = useState([]);
   const [refereeOptions, setRefereeOptions] = useState([]);
@@ -120,6 +121,15 @@ export const NewEventForm = ({ show, handleClose, event }) => {
           }
         )
       );
+      console.log(logoFile);
+      if (logoFile)
+        axios.post(
+          `${backendUrl()}/event/addLogoFile?eventId=${res.data}`,
+          logoFile,
+          {
+            headers: authHeader(),
+          }
+        );
     });
 
     handleClose();
@@ -254,6 +264,14 @@ export const NewEventForm = ({ show, handleClose, event }) => {
     formData.append("file", currentFile);
 
     setFile({ ...file, file: formData, fileName: currentFile.name });
+  };
+
+  const addLogoFile = (e) => {
+    const currentFile = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", currentFile);
+
+    setLogoFile(formData);
   };
 
   const DatePickerContainer = ({ className, children }) => {
@@ -481,6 +499,19 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                         fwdClassification: e.target.checked,
                       })
                     }
+                  />
+                </Card.Body>
+              </Card>
+              <Card className="text-center">
+                <Card.Header className="bg-dark text-white">
+                  Plik z logo wydarzenia
+                </Card.Header>
+                <Card.Body className="p-1">
+                  <input
+                    type="file"
+                    name="logoPathFile"
+                    accept="image/png, image/gif, image/jpeg"
+                    onChange={(e) => addLogoFile(e)}
                   />
                 </Card.Body>
               </Card>

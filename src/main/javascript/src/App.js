@@ -23,7 +23,7 @@ function App() {
       <BrowserRouter>
         <NavigationBar />
         <div className="App container">
-          <div className="shadow bg-body rounded pb-3">
+          <div className="shadow bg-body rounded pb-5">
             <div className="p-0">
               <Routes>
                 <Route path="/" element={<HomePage />} />

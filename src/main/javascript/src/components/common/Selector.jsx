@@ -48,7 +48,10 @@ export const Selector = (props) => {
     <>
       <div className="form-group py-0">
         {props.label && (
-          <span className="input-group-text py-0 justify-content-center" id="">
+          <span
+            className="font14 input-group-text py-0 justify-content-center"
+            id=""
+          >
             {props.label}
           </span>
         )}

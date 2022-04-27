@@ -114,16 +114,16 @@ body,
 }
 
 .font14 {
-  font-size: calc(11px + 0.4vmin);
+  font-size: calc(11px + 0.4vmin) !important;
 }
 .font13 {
-  font-size: calc(10px + 0.4vmin);
+  font-size: calc(10px + 0.4vmin) !important;
 }
 .font12 {
-  font-size: calc(9px + 0.4vmin);
+  font-size: calc(9px + 0.4vmin) !important;
 }
 .font11 {
-  font-size: calc(7px + 0.4vmin);
+  font-size: calc(7px + 0.4vmin) !important;
 }
 
 .text-left {

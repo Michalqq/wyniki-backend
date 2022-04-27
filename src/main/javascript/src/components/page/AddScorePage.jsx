@@ -196,7 +196,7 @@ export const AddScorePage = (props) => {
     <div className="u-text-center">
       <div className="u-box-shadow">
         <div className="col-xl-12">
-          <h5 className="pb-1 mb-1 border-bottom">Dodaj wynik:</h5>
+          <h5 className="pb-1 mb-0 border-bottom">Dodaj wynik:</h5>
         </div>
 
         <div className="row justify-content-center">
@@ -217,8 +217,7 @@ export const AddScorePage = (props) => {
                 name={"editMode"}
               />
             </div>
-
-            <div className="pb-1" />
+            <div className="pb-0" />
             <Selector
               label={"Odcinek PS"}
               options={psOptions}
@@ -242,7 +241,7 @@ export const AddScorePage = (props) => {
           <div className="col-lg-4 pb-1 border-bottom">
             <div className="row">
               <div className="col-xl-12">
-                <h5>Czas</h5>
+                <h5 className="mb-0">Czas</h5>
                 <div className="inline-flex">
                   <InputLabeled
                     label="Minuty"
@@ -276,10 +275,10 @@ export const AddScorePage = (props) => {
                 </div>
                 <div className="col-xl-12 pt-1 fw-bolder">{msg}</div>
                 <div className="col-xl-12 pt-1 fw-bolder">{valid}</div>
-                <div className="col-xl-12 pt-3">
+                <div className="col-xl-12 pt-2">
                   <button
                     type="button"
-                    className="btn btn-success mx-2"
+                    className="btn btn-success mx-2 py-1"
                     onClick={addScoreClick}
                     disabled={disable}
                   >

@@ -51,7 +51,7 @@ export const InputLabeled = ({
   return (
     <div className="form-group py-1">
       <span
-        className={"input-group-text py-0 " + (big ? "" : "my-input")}
+        className={"font14 input-group-text py-0 " + (big ? "" : "my-input")}
         id=""
       >
         {label}

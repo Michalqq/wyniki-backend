@@ -191,7 +191,7 @@ export const AddPenaltyPage = (props) => {
             <div className="col-xl-12 pt-1">
               <button
                 type="button"
-                className="btn btn-success"
+                className="btn btn-success mx-2 py-1"
                 onClick={addPenalty}
                 disabled={disable || teamId === undefined}
               >

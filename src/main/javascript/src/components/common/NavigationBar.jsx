@@ -89,8 +89,8 @@ export const Footer = () => {
   return (
     <div className="fixed-bottom">
       <Card className="bg-black">
-        <Card.Footer className="text-white text-start py-1">
-          <div className="row" style={{ fontSize: "12px" }}>
+        <Card.Footer className="text-white text-start py-0">
+          <div className="row font_11">
             <div className="col-lg-2 text-end"></div>
             <div className="col-lg-8 text-white text-center">
               Potrzebujesz wyniki na własną imprezę? &nbsp;
