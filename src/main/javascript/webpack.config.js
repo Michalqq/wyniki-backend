@@ -21,7 +21,6 @@ module.exports = {
   plugins: [
     new CompressionPlugin({
       test: /\.js(\?.*)?$/i,
-      algorithm: "gzip",
     }),
   ],
   performance: {
