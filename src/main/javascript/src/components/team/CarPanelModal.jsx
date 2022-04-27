@@ -5,7 +5,6 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
 import { backendUrl } from "../utils/fetchUtils";
 import { MyDatePicker } from "../common/DateInput";

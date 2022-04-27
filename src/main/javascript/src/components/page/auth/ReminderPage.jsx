@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../../common/InputLabeled";
 import { fetchRemindPassword } from "../../utils/fetchUtils";
 import Spinner from "react-bootstrap/Spinner";

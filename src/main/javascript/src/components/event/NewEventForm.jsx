@@ -5,7 +5,6 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
 import { CustomDatePicker, TimePicker } from "../common/DateInput";
 import { CalendarContainer } from "react-datepicker";

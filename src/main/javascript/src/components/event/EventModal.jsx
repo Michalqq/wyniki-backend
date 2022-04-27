@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { backendUrl, fetchRemoveFromEvent } from "../utils/fetchUtils";
 import { useNavigate } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";

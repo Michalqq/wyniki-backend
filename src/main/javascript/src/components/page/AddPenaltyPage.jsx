@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Selector } from "../common/Selector";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
-
 import { backendUrl } from "../utils/fetchUtils";
 import { useLocation, useNavigate } from "react-router-dom";
 import authHeader from "../../service/auth-header";

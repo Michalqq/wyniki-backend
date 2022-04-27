@@ -12,7 +12,6 @@ import { LoadingTable } from "./LoadingTable";
 import TableHeader from "./TableHeader";
 import TableFooter from "./TableFooter";
 import EmptyDataRow from "./EmptyDataRow";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const DefaultColumnFilter = ({ column: { filterValue, setFilter } }) => {
   /* eslint-disable no-unused-vars */

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Spinner from "react-bootstrap/Spinner";
 import { InputLabeled } from "../common/InputLabeled";
 import { backendUrl } from "../utils/fetchUtils";

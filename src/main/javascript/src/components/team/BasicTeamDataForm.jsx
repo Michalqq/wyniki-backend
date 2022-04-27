@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { backendUrl } from "../utils/fetchUtils";
 import { InputLabeled } from "../common/InputLabeled";
 import Form from "react-bootstrap/Form";

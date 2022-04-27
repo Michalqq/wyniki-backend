@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
 import { backendUrl } from "../utils/fetchUtils";
 import { useLocation } from "react-router-dom";

@@ -1,3 +1,6 @@
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
 module.exports = {
   devtool: "source-map",
   module: {
@@ -11,15 +14,15 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/i,
+        test: /\.css$/,
         use: ["style-loader", "css-loader"],
       },
     ],
   },
-  plugins: [],
+  plugins: [new BundleAnalyzerPlugin()],
   resolve: {
     extensions: [".ts", ".js", ".jsx", ".css"],
     modules: ["node_modules", "src/main/javascript"],
   },
-  mode: "development",
+  mode: "production",
 };

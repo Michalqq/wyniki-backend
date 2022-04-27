@@ -4,7 +4,6 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
-import "bootstrap/dist/css/bootstrap.min.css";
 import {
   backendUrl,
   fetchConfirmEntryFee,

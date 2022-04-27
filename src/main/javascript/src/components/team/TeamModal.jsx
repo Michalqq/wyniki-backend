@@ -3,7 +3,6 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { InputLabeled } from "../common/InputLabeled";
 import {
   backendUrl,

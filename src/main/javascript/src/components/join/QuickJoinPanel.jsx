@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { backendUrl } from "../utils/fetchUtils";
 import authHeader from "../../service/auth-header";
 import { InputLabeled } from "../common/InputLabeled";
