@@ -1,5 +1,8 @@
 const CompressionPlugin = require("compression-webpack-plugin");
 
+const WebpackBundleAnalyzer =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
 module.exports = {
   devtool: "source-map",
   module: {
@@ -19,9 +22,9 @@ module.exports = {
     ],
   },
   plugins: [
-    new CompressionPlugin({
-      test: /\.js(\?.*)?$/i,
-    }),
+    // new CompressionPlugin({
+    //   test: /\.js(\?.*)?$/i,
+    // }),
   ],
   performance: {
     hints: "warning",
@@ -36,6 +39,14 @@ module.exports = {
   },
   mode: "development",
   optimization: {
-    usedExports: true,
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/, ///< put all used node_modules modules in this chunk
+          name: "vendor", ///< name of bundle
+          chunks: "all", ///< type of code to put in this bundle
+        },
+      },
+    },
   },
 };
