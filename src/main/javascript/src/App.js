@@ -1,15 +1,14 @@
 import React, { Suspense, lazy } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import AddScorePage from "./components/page/AddScorePage";
-import AddPenaltyPage from "./components/page/AddPenaltyPage";
-import StageScorePage from "./components/page/StageScorePage";
-import TeamCreatePage from "./components/page/TeamCreatePage";
 import { Footer, NavigationBar } from "./components/common/NavigationBar";
 import { TeamPanel } from "./components/team/TeamPanel";
 import { Spinner } from "react-bootstrap";
 
+const AddScorePage = lazy(() => import("./components/page/AddScorePage"));
+const AddPenaltyPage = lazy(() => import("./components/page/AddPenaltyPage"));
+const StageScorePage = lazy(() => import("./components/page/StageScorePage"));
+const TeamCreatePage = lazy(() => import("./components/page/TeamCreatePage"));
 const MessagePage = lazy(() => import("./components/page/MessagePage"));
 const LoginPage = lazy(() => import("./components/page/auth/LoginPage"));
 const HomePage = lazy(() => import("./components/page/HomePage"));
