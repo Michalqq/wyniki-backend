@@ -133,11 +133,26 @@ public class EventController {
         return respone;
     }
 
+    @PostMapping("addLogoFile")
+    public boolean addLogoFile(@RequestBody MultipartFile file,
+                               @RequestParam("eventId") Long eventId) {
+        try {
+            eventService.addLogoFile(file, eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
     @PostMapping("addFileToEvent")
     public boolean addFileToEvent(@RequestBody MultipartFile file,
                                   @RequestParam("fileName") String fileName,
                                   @RequestParam("desc") String desc,
                                   @RequestParam("eventId") Long eventId) {
+        if (file == null)
+            return false;
+        
         try {
             eventService.addFileToEvent(file, eventId, fileName, desc);
         } catch (Exception e) {

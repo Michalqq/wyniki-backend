@@ -30,6 +30,9 @@ public class Event implements Serializable {
     @Column(name = "LOGO_PATH")
     private String logoPath;
 
+    @Column(name = "LOGO_PATH_FILE")
+    private byte[] logoPathFile;
+
     @Column(name = "ORGANIZER")
     private String organizer;
 

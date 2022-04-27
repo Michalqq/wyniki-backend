@@ -510,7 +510,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                   <input
                     type="file"
                     name="logoPathFile"
-                    accept="image/png, image/gif, image/jpeg"
+                    accept="image/jpg"
                     onChange={(e) => addLogoFile(e)}
                   />
                 </Card.Body>

@@ -23,7 +23,7 @@ const TableHeader = ({ isHeader, headerGroups }) => {
               <th
                 key={"tableHeaderCell" + column.id}
                 {...column.getHeaderProps()}
-                className="p-1"
+                className="px-1 py-0 align-middle"
                 style={{
                   width: column.width,
                   wordBreak: "break-word",
@@ -32,7 +32,7 @@ const TableHeader = ({ isHeader, headerGroups }) => {
                 <div className="flex flex-column">
                   <div
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="flex align-items-end justify-content-center h6 l-row g-brand2-c table-column-header"
+                    className="py-1 my-0 flex align-items-end justify-content-center h6 l-row g-brand2-c table-column-header"
                   >
                     <span className="font13 flex">
                       {column.Header != null && column.render("Header")}

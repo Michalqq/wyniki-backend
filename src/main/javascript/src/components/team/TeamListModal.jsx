@@ -49,7 +49,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         Header: "L.p",
         accessor: (cellInfo) => cellInfo.number,
         disableFilters: true,
-        Cell: (row) => <> {row.row.index + 1}</>,
+        Cell: (row) => <div className="ps-2"> {row.row.index + 1}</div>,
       },
       {
         width: "9%",
@@ -83,7 +83,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         ),
       },
       {
-        width: "10%",
+        width: "11%",
         id: "engine",
         Header: "Silnik",
         accessor: (cellInfo) =>
@@ -123,7 +123,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
       <Modal.Header className="bg-dark text-white" closeButton>
         <Modal.Title>Lista zapisanych</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="px-0">
         <p style={{ fontSize: "11px" }} className="text-center my-0 py-0">
           Aplikacja w fazie testów
         </p>
@@ -133,7 +133,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
           </div>
         )}
         {!loading && teams.length === 0 && (
-          <h1 className="text-center">Brak zgłoszeń</h1>
+          <h1 className="text-center">Brak zgłoszeń - bądź pierwszy!</h1>
         )}
         {!loading && teams?.length > 0 && (
           <ResultTable

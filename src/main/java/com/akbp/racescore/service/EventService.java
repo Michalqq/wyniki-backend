@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -382,5 +383,16 @@ public class EventService {
         headers.setContentLength(eventFile.getFile().length);
 
         return new ResponseEntity<>(eventFile.getFile(), headers, HttpStatus.OK);
+    }
+
+    public void addLogoFile(MultipartFile file, Long eventId) {
+        Event event = eventRepository.getById(eventId);
+
+        try {
+            event.setLogoPathFile(file.getBytes());
+            eventRepository.save(event);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -42,7 +42,14 @@ export const EventCard = ({
               className="col-lg-2 px-0 align-self-center"
               style={{ width: "90px" }}
             >
-              {event.logoPath !== undefined && event.logoPath !== null ? (
+              {event.logoPathFile ? (
+                <img
+                  id={"eventImage" + event.eventId}
+                  className="img-fluid rounded float-left"
+                  src={"data:image/jpg;base64," + event.logoPathFile}
+                  alt="Logo"
+                ></img>
+              ) : event.logoPath !== undefined && event.logoPath !== null ? (
                 <img
                   className="img-fluid rounded float-left"
                   src={event.logoPath}

@@ -146,15 +146,26 @@ export const EventModal = ({ show, handleClose, event }) => {
           <Tab eventKey={1} title="Informacje">
             <div className="row text-center col-lg-12">
               <div className="col-lg-4">
-                {event?.logoPath !== undefined && event?.logoPath !== null && (
-                  <div className="">
-                    <img
-                      style={{ height: "140px" }}
-                      className="img-fluid rounded float-left"
-                      src={event.logoPath}
-                      alt="Logo"
-                    ></img>
-                  </div>
+                {event?.logoPathFile ? (
+                  <img
+                    id={"eventImage" + event.eventId}
+                    style={{ height: "140px" }}
+                    className="img-fluid rounded float-left"
+                    src={"data:image/jpg;base64," + event.logoPathFile}
+                    alt="Logo"
+                  ></img>
+                ) : (
+                  event?.logoPath !== undefined &&
+                  event?.logoPath !== null && (
+                    <div className="">
+                      <img
+                        style={{ height: "140px" }}
+                        className="img-fluid rounded float-left"
+                        src={event.logoPath}
+                        alt="Logo"
+                      ></img>
+                    </div>
+                  )
                 )}
               </div>
               <div className="col-lg-8">

@@ -162,7 +162,7 @@ const StageScorePage = (props) => {
       {
         width: "15%",
         id: "score",
-        Header: "Czas/ kary",
+        Header: "Czas / kary",
         accessor: (cellInfo) => cellInfo.stageScore,
         disableFilters: true,
         disableSortBy: true,
@@ -176,7 +176,7 @@ const StageScorePage = (props) => {
       {
         width: "15%",
         id: "result",
-        Header: "Wynik",
+        Header: "Wynik / straty",
         accessor: (cellInfo) => cellInfo.stageScore,
         disableFilters: true,
         disableSortBy: true,
@@ -200,15 +200,25 @@ const StageScorePage = (props) => {
         </p>
         <h4>{event?.name || ""}</h4>
         <div className="col-xl-8 d-flex justify-content-center">
-          {event?.logoPath !== undefined && event?.logoPath !== null && (
+          {(event?.logoPathFile || event?.logoPath) && (
             <div className="col-6">
               <div className="m-2 text-center">
-                <img
-                  style={{ height: "140px" }}
-                  className="img-fluid rounded float-left"
-                  src={event.logoPath}
-                  alt="Logo"
-                ></img>
+                {event.logoPathFile ? (
+                  <img
+                    id={"eventImage" + event.eventId}
+                    style={{ maxHeight: "120px" }}
+                    className="img-fluid rounded float-left"
+                    src={"data:image/jpg;base64," + event.logoPathFile}
+                    alt="Logo"
+                  ></img>
+                ) : (
+                  <img
+                    style={{ maxHeight: "120px" }}
+                    className="img-fluid rounded float-left"
+                    src={event.logoPath}
+                    alt="Logo"
+                  ></img>
+                )}
               </div>
             </div>
           )}
@@ -238,10 +248,6 @@ const StageScorePage = (props) => {
         </div>
         <div className="col-xl-4">
           <div className="m-2 text-center">
-            <h6>{`Data wydarzenia:  `}</h6>
-            <h6 className="fw-bold">
-              {moment(event?.date).format(" dddd, DD MMM YYYY, HH:mm")}
-            </h6>
             {referee && (
               <>
                 <Button
@@ -275,26 +281,24 @@ const StageScorePage = (props) => {
                 </Button>
               </>
             )}
+            <Button
+              className={"m-1"}
+              variant="primary"
+              onClick={() => fetchData()}
+            >
+              Odśwież
+            </Button>
           </div>
         </div>
-        <div className="justify-content-center">
-          <Button
-            className={"m-1"}
-            variant="primary"
-            onClick={() => fetchData()}
-          >
-            Odśwież
-          </Button>
-        </div>
       </div>
-      <div className="row">
-        <div className="col-xl-6 px-1">
+      <div className="row pt-2 mx-0">
+        <div className="col-xl-6 px-0 pe-1">
           <div className="shadow bg-body rounded">
             <div
               className="fw-bold alert alert-secondary p-1 m-0 "
               role="alert"
             >
-              {`Czas NA - ${stageName}`}
+              {`Czas NA odcinku - ${stageName}`}
             </div>
             <ResultTable
               columns={columns}
@@ -316,10 +320,10 @@ const StageScorePage = (props) => {
             />
           </div>
         </div>
-        <div className="col-xl-6 px-1">
+        <div className="col-xl-6 px-0 ps-1">
           <div className="shadow bg-body rounded">
             <div className="fw-bold alert alert-secondary p-1 m-0" role="alert">
-              {`Czas PO - ${stageName}`}
+              {`Suma czasów PO odcinku - ${stageName}`}
             </div>
             <ResultTable
               columns={columns}
