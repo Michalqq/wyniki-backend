@@ -1,5 +1,6 @@
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 
 module.exports = {
   devtool: "source-map",
@@ -19,7 +20,12 @@ module.exports = {
       },
     ],
   },
-  plugins: [new BundleAnalyzerPlugin()],
+  plugins: [
+    new BundleAnalyzerPlugin(),
+    new MomentLocalesPlugin({
+      localesToKeep: ["pl"],
+    }),
+  ],
   resolve: {
     extensions: [".ts", ".js", ".jsx", ".css"],
     modules: ["node_modules", "src/main/javascript"],

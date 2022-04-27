@@ -3,8 +3,8 @@ import axios from "axios";
 
 export const backendUrl = () => {
   //return "https://wyniki-backend.herokuapp.com";
-  return "http://localhost:8080";
-  //return "";
+  //return "http://localhost:8080";
+  return "";
 };
 
 export const fetchGet = (url, handleResponse) => {

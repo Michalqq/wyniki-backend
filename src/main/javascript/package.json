@@ -12,6 +12,7 @@
     "compression-webpack-plugin": "^9.2.0",
     "date-fns": "^2.27.0",
     "moment": "^2.29.1",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",
     "react-bootstrap": "^2.1.0",

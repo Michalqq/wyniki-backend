@@ -8,7 +8,6 @@ import MomentLocaleUtils, {
 } from "react-day-picker/moment";
 import pl from "date-fns/locale/pl";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 import "moment/locale/pl";
 
