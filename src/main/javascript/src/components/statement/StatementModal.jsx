@@ -61,7 +61,7 @@ export const StatementModal = ({ show, handleClose, event }) => {
   const columns = useMemo(
     () => [
       {
-        width: "8%",
+        width: "7%",
         id: "index",
         Header: "L.p",
         accessor: (cellInfo) => cellInfo.number,
@@ -69,7 +69,7 @@ export const StatementModal = ({ show, handleClose, event }) => {
         Cell: (row) => <div className="ps-2"> {row.row.index + 1}</div>,
       },
       {
-        width: "15%",
+        width: "25%",
         id: "date",
         Header: "Data dodania",
         accessor: (cellInfo) => cellInfo.date,
@@ -81,7 +81,7 @@ export const StatementModal = ({ show, handleClose, event }) => {
         ),
       },
       {
-        width: "40%",
+        width: "50%",
         id: "name",
         Header: "Nazwa",
         accessor: (cellInfo) => cellInfo.name,
@@ -95,7 +95,7 @@ export const StatementModal = ({ show, handleClose, event }) => {
         disableFilters: true,
       },
       {
-        width: "10%",
+        width: "7%",
         id: "download",
         Header: "Plik",
         accessor: (cellInfo) => cellInfo.fileName,
@@ -116,7 +116,7 @@ export const StatementModal = ({ show, handleClose, event }) => {
         },
       },
       {
-        width: "10%",
+        width: "9%",
         id: "view",
         Header: "Opis",
         accessor: (cellInfo) => cellInfo.description,
