@@ -11,6 +11,8 @@ import DisqualificationTable from "../tables/DisqualificationTable";
 import { NrBadge } from "../common/NrBadge";
 import Button from "react-bootstrap/Button";
 import { download } from "../utils/fileUtils";
+import Spinner from "react-bootstrap/Spinner";
+import { MyButton } from "../common/Button";
 
 const StageScorePage = (props) => {
   const location = useLocation();
@@ -34,6 +36,7 @@ const StageScorePage = (props) => {
   const [stageName, setStageName] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [loadingScoreFile, setLoadingScoreFile] = useState(false);
 
   const fetchScores = () => {
     fetchGetScores(stage, (data) => {
@@ -90,9 +93,11 @@ const StageScorePage = (props) => {
   };
 
   const getScoresFile = () => {
+    setLoadingScoreFile(true);
     download(
       `${backendUrl()}/file/getScoresFile?eventId=${eventId}`,
-      "wyniki_" + event.name + ".xlsx"
+      "wyniki_" + event.name + ".xlsx",
+      () => setLoadingScoreFile(false)
     );
   };
 
@@ -199,7 +204,7 @@ const StageScorePage = (props) => {
         <h4>{event?.name || ""}</h4>
         <div className="col-xl-8 d-flex justify-content-center">
           {(event?.logoPathFile || event?.logoPath) && (
-            <div className="col-6">
+            <div className="col-6 align-self-center">
               <div className="m-2 text-center">
                 {event.logoPathFile ? (
                   <img
@@ -270,13 +275,14 @@ const StageScorePage = (props) => {
                 >
                   Dodaj kare
                 </Button>
-                <Button
-                  className={"m-1"}
+                <MyButton
                   variant="secondary"
+                  isLoading={loadingScoreFile}
                   onClick={() => getScoresFile()}
-                >
-                  Generuj plik z zestawieniem wyników
-                </Button>
+                  msg="Generuj plik z zestawieniem wyników"
+                  loadingMsg="Trwa generowanie
+                  pliku z wynikami"
+                />
               </>
             )}
             <Button

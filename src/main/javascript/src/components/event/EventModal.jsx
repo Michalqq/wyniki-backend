@@ -143,8 +143,8 @@ export const EventModal = ({ show, handleClose, event }) => {
           className="m-0 fw-bold"
         >
           <Tab eventKey={1} title="Informacje">
-            <div className="row text-center col-lg-12">
-              <div className="col-lg-4">
+            <div className="row text-center px-2">
+              <div className="col-lg-4 py-1">
                 {event?.logoPathFile ? (
                   <img
                     id={"eventImage" + event.eventId}
@@ -181,9 +181,11 @@ export const EventModal = ({ show, handleClose, event }) => {
                   </p>
                 </div>
               </div>
-              <p style={{ whiteSpace: "pre-line" }} className="m-3">
-                {event?.description || ""}
-              </p>
+              <div className="col-lg-12 px-0">
+                <p style={{ whiteSpace: "pre-line" }} className="m-1">
+                  {event?.description || ""}
+                </p>
+              </div>
             </div>
             <Card className="text-center">
               <Card.Header className="bg-dark text-white">

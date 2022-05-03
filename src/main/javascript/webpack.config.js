@@ -1,6 +1,7 @@
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
+const path = require("path");
 
 module.exports = {
   devtool: "source-map",
@@ -17,6 +18,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
+        //exclude: path.resolve("./node_modules/bootstrap"),
       },
     ],
   },

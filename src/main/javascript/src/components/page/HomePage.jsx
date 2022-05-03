@@ -12,6 +12,7 @@ import { EventModal } from "../event/EventModal";
 import authHeader from "../../service/auth-header";
 import { AdminTeamList } from "../team/AdminTeamList";
 import Spinner from "react-bootstrap/Spinner";
+import { StatementModal } from "../statement/StatementModal";
 
 const HomePage = (props) => {
   const [futureEvents, setFutureEvents] = useState([]);
@@ -22,6 +23,7 @@ const HomePage = (props) => {
   const [loading, setLoading] = useState(true);
   const [mainAdmin, setMainAdmin] = useState(false);
   const [redirected, setRedirected] = useState(false);
+  const [showStatement, setShowStatement] = useState();
 
   let eventRedirect = useLocation().search;
 
@@ -109,6 +111,7 @@ const HomePage = (props) => {
               checkReferee(x.eventId, setMainAdmin);
               setEventToTeamList(x);
             }}
+            onStatement={() => setShowStatement(x)}
             onEdit={() => setCreateEvent(x)}
             mainAdmin={mainAdmin}
           />
@@ -134,6 +137,7 @@ const HomePage = (props) => {
               navigate("event", { state: { eventId: x.eventId } });
             }}
             onTeamList={() => setEventToTeamList(x)}
+            onStatement={() => setShowStatement(x)}
             onEdit={() => setCreateEvent(x)}
             mainAdmin={mainAdmin}
           />
@@ -179,6 +183,13 @@ const HomePage = (props) => {
           }}
           eventId={eventToTeamList?.eventId}
           started={eventToTeamList?.started}
+        />
+      )}
+      {showStatement && (
+        <StatementModal
+          show={true}
+          handleClose={() => setShowStatement()}
+          event={showStatement}
         />
       )}
       <EventModal

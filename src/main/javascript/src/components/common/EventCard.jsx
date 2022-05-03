@@ -1,8 +1,11 @@
+import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faEdit } from "@fortawesome/free-solid-svg-icons";
+import Badge from "react-bootstrap/Badge";
+import { fetchStatement } from "../utils/fetchUtils";
 
 export const EventCard = ({
   event,
@@ -10,10 +13,17 @@ export const EventCard = ({
   onTeamList,
   onScore,
   onEdit,
+  onStatement,
   mainAdmin,
 }) => {
   const eventDeadlined =
     new Date().getTime() > new Date(event.signDeadline).getTime();
+  const [statementCount, setStatementCount] = useState(0);
+
+  useEffect(() => {
+    if (event)
+      fetchStatement(event.eventId, (data) => setStatementCount(data.length));
+  }, []);
 
   return (
     <div className="col-lg-6 pb-3 u-box-shadow">
@@ -40,7 +50,7 @@ export const EventCard = ({
           <div className="container d-flex">
             <div
               className="col-lg-2 px-0 align-self-center"
-              style={{ width: "90px" }}
+              style={{ width: "110px" }}
             >
               {event.logoPathFile ? (
                 <img
@@ -88,13 +98,13 @@ export const EventCard = ({
             </div>
           </div>
         </Card.Body>
-        <Card.Footer className="text-start py-0">
-          <div className="row my-2">
+        <Card.Footer className="text-start py-0 px-1">
+          <div className="row my-2 mx-0">
             <div className="col-6 px-0">
               {/* {new Date().getTime() <=
                 new Date(event.signDeadline).getTime() && ( */}
               <Button
-                className={"start-0 py-1 px-1"}
+                className={"start-0 py-1 px-1 "}
                 variant="success"
                 onClick={onJoin}
               >
@@ -108,7 +118,7 @@ export const EventCard = ({
             </div>
             <div className="col-6 px-0 d-flex justify-content-end">
               <Button
-                className={"py-1 px-1"}
+                className={"py-1 px-2 mx-1"}
                 variant="dark"
                 onClick={onTeamList}
               >
@@ -117,6 +127,24 @@ export const EventCard = ({
               <Button
                 className={"py-1 px-1 mx-1"}
                 variant="warning"
+                onClick={onStatement}
+              >
+                Komunikaty
+              </Button>
+              <div
+                className="position-relative"
+                style={{ left: "-3vh", top: "-10px" }}
+              >
+                {statementCount > 0 && (
+                  <Badge className="position-absolute" pill bg="secondary">
+                    {statementCount}
+                  </Badge>
+                )}
+              </div>
+
+              <Button
+                className={"py-1 px-1 mx-1"}
+                variant="success"
                 onClick={onScore}
               >
                 Wyniki

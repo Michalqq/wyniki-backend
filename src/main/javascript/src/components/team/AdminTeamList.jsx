@@ -29,6 +29,8 @@ import { BasicTeamDataForm } from "./BasicTeamDataForm";
 import { TeamModal } from "./TeamModal";
 import { QuickJoinPanel } from "../join/QuickJoinPanel";
 import { download } from "../utils/fileUtils";
+import { MyButton } from "../common/Button";
+import { CarDiv, TeamDiv } from "../common/Div";
 
 export const AdminTeamList = ({
   show,
@@ -56,6 +58,9 @@ export const AdminTeamList = ({
   const [teamToPreview, setTeamToPreview] = useState();
   const [quickJoin, setQuickJoin] = useState();
   const [doSort, setDoSort] = useState(false);
+
+  const [downloadingOA, setDownloadingOA] = useState(false);
+  const [downloadingBK, setDownloadingBK] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -118,16 +123,20 @@ export const AdminTeamList = ({
   };
 
   const fetchOaDocuments = () => {
+    setDownloadingOA(true);
     download(
       `${backendUrl()}/file/getEventTeamsData?eventId=${eventId}`,
-      "dokumenty_oa_" + eventName + ".pdf"
+      "dokumenty_oa_" + eventName + ".pdf",
+      setDownloadingOA(false)
     );
   };
 
   const fetchBkDocuments = () => {
+    setDownloadingBK(true);
     download(
       `${backendUrl()}/file/getBkFiles?eventId=${eventId}`,
-      "dokumenty_bk_" + eventName + ".pdf"
+      "dokumenty_bk_" + eventName + ".pdf",
+      setDownloadingBK(false)
     );
   };
   const fetchReferee = () => {
@@ -324,7 +333,7 @@ export const AdminTeamList = ({
                                 <Card className="my-1">
                                   <Card.Body className="p-0">
                                     <table className="m-0">
-                                      <th className="d-table-row fw-normal align-middle">
+                                      <tr className="d-table-row fw-normal align-middle">
                                         <td
                                           className={
                                             item.teamChecked &&
@@ -372,16 +381,22 @@ export const AdminTeamList = ({
                                           />
                                         </td>
                                         <td style={{ width: "270px" }}>
-                                          {item.team.driver +
-                                            (item.team?.coDriver === null ||
-                                            item.team.coDriver === ""
-                                              ? ""
-                                              : " / " + item.team?.coDriver)}
+                                          <TeamDiv team={item.team}></TeamDiv>
                                         </td>
                                         <td style={{ width: "270px" }}>
-                                          {(item.team.currentCar?.brand || "") +
-                                            " " +
-                                            (item.team.currentCar?.model || "")}
+                                          <CarDiv
+                                            line1={
+                                              (item.team.currentCar?.brand ||
+                                                "") +
+                                              " " +
+                                              (item.team.currentCar?.model ||
+                                                "")
+                                            }
+                                            driveType={
+                                              item.team.currentCar
+                                                ?.driveTypeEnum
+                                            }
+                                          ></CarDiv>
                                         </td>
                                         <td
                                           style={{
@@ -503,7 +518,7 @@ export const AdminTeamList = ({
                                             cursor={"pointer"}
                                           />
                                         </td>
-                                      </th>
+                                      </tr>
                                     </table>
                                   </Card.Body>
                                 </Card>
@@ -618,20 +633,20 @@ export const AdminTeamList = ({
           >
             Sortuj wstępnie wg. klas
           </Button>
-          <Button
-            className={"m-1"}
+          <MyButton
             variant="primary"
+            isLoading={downloadingOA}
             onClick={() => fetchOaDocuments()}
-          >
-            Pobierz dokumenty OA
-          </Button>{" "}
-          <Button
-            className={"m-1"}
+            msg="Pobierz dokumenty OA"
+            loadingMsg="Pobieranie dokumentów OA"
+          />
+          <MyButton
             variant="primary"
+            isLoading={downloadingBK}
             onClick={() => fetchBkDocuments()}
-          >
-            Pobierz dokumenty BK
-          </Button>
+            msg="Pobierz dokumenty BK"
+            loadingMsg="Pobieranie dokumentów BK"
+          />
           <p>{msg}</p>
         </div>
       </Modal.Body>

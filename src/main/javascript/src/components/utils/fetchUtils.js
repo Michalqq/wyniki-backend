@@ -91,3 +91,10 @@ export const fetchRemindPassword = (email, handleResponse) => {
     handleResponse
   );
 };
+
+export const fetchStatement = (eventId, handleResponse) => {
+  fetchGet(
+    `${backendUrl()}/statement/getStatements?eventId=${eventId}`,
+    handleResponse
+  );
+};

@@ -48,8 +48,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/score/addScore", "/event/removeTeam",
                         "/event/confirmEntryFee", "/event/deleteEvent", "/event/teamChecked", "/event/saveNumbersAndClasses",
-                        "/penalty/addPenalty", "/penalty/removePenalty", "/penalty/removeDisqualification", "/files/**").authenticated()
-                .antMatchers("/**", "/auth/**", "/event/**", "/penalty/**", "/score/getStageScores", "/score/getStagesSumScores", "/team/**").permitAll()
+                        "/penalty/addPenalty", "/penalty/removePenalty", "/penalty/removeDisqualification", "/files/**",
+                        "/statement/deleteStatement", "/statement/addFileToStatement").authenticated()
+                .antMatchers("/**", "/auth/**", "/event/**", "/penalty/**", "/score/getStageScores", "/score/getStagesSumScores", "/team/**", "/statement/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -120,7 +120,6 @@ export const NewEventForm = ({ show, handleClose, event }) => {
           }
         )
       );
-      console.log(logoFile);
       if (logoFile)
         axios.post(
           `${backendUrl()}/event/addLogoFile?eventId=${res.data}`,
