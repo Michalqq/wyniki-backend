@@ -178,7 +178,9 @@ export const StatementModal = ({ show, handleClose, event }) => {
               <Spinner animation="border" variant="secondary" size="lg" />
             </div>
           ) : statements.length === 0 ? (
-            <h4 className="text-center">Organizator nie dodał komunikatów</h4>
+            <h4 className="text-center pt-3">
+              Organizator nie dodał komunikatów
+            </h4>
           ) : (
             <ResultTable
               columns={columns}
