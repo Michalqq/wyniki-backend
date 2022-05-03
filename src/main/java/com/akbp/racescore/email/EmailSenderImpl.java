@@ -48,7 +48,7 @@ public class EmailSenderImpl implements EmailSender {
         content += " <br></br> ";
         content += "Aby zresetować hasło kliknij w link umieszczony poniżej <br></br> ";
 
-        content += "<a href=" + appPath + "/passwordReset?" + token + ">Link do resetowania hasła</a>";
+        content += "<a href=http://" + appPath + "/passwordReset?" + token + ">Link do resetowania hasła</a>";
 
         content += "<br></br><br></br><br></br>";
         content += "Jeśli nie prosiłeś o reset hasła zignoruj tę wiadomość.";
