@@ -104,6 +104,12 @@ public class ScoreToExcelExporterService {
             tempEventTeams.stream().forEach(x ->
                     createScoreRow(sheet, x, scores.stream().filter(y -> y.getTeamId().compareTo(x.getTeamId()) == 0).collect(Collectors.toList()), index.getAndIncrement(), false));
         }
+        sheet.createRow(index.getAndIncrement());
+        sheet.createRow(index.getAndIncrement());
+        sheet.createRow(index.getAndIncrement());
+        sheet.createRow(index.getAndIncrement());
+        Row row = sheet.createRow(index.getAndIncrement());
+        row.createCell(9).setCellValue("Wyniki wygenerowane za pomocą aplikacji: www.wyniki.online");
     }
 
     private void createTitle(Sheet sheet, String title, AtomicInteger index) {

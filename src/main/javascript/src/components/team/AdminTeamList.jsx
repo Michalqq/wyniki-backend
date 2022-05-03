@@ -127,7 +127,7 @@ export const AdminTeamList = ({
     download(
       `${backendUrl()}/file/getEventTeamsData?eventId=${eventId}`,
       "dokumenty_oa_" + eventName + ".pdf",
-      setDownloadingOA(false)
+      () => setDownloadingOA(false)
     );
   };
 
@@ -136,7 +136,7 @@ export const AdminTeamList = ({
     download(
       `${backendUrl()}/file/getBkFiles?eventId=${eventId}`,
       "dokumenty_bk_" + eventName + ".pdf",
-      setDownloadingBK(false)
+      () => setDownloadingBK(false)
     );
   };
   const fetchReferee = () => {

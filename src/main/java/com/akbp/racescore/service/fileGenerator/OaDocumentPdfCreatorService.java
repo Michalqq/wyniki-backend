@@ -8,16 +8,15 @@ import com.akbp.racescore.model.repository.EventRepository;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.element.AreaBreak;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.VerticalAlignment;
@@ -74,6 +73,9 @@ public class OaDocumentPdfCreatorService {
 
     private void createPage(Document doc, EventTeam et, Event event) {
         doc.add(createNumberBox(et.getNumber()));
+        Image img = addLogo(event.getLogoPathFile());
+        if (img != null) doc.add(img);
+
         doc.add(createTitle(event));
         doc.add(new Paragraph("Dane zawodników:"));
         Table personalDataTable = createPersonalDataTable(et.getTeam());
@@ -86,6 +88,21 @@ public class OaDocumentPdfCreatorService {
         doc.add(createApprovalParagraph(event));
         doc.add(createSignSpace());
         doc.add(new AreaBreak());
+    }
+
+    private Image addLogo(byte[] logoPathFile) {
+        if (logoPathFile == null) return null;
+
+        ImageData imageData = ImageDataFactory.create(logoPathFile);
+        Image img = new Image(imageData);
+
+        img.setMaxWidth(100);
+        img.setMaxHeight(100);
+
+        float fixHeight = (806 - img.getImageHeight()) / 10 - (img.getImageHeight() / 10);
+        img.setFixedPosition(40, 720 + fixHeight);
+
+        return img;
     }
 
     private Table createNumberBox(Integer number) {
@@ -228,7 +245,7 @@ public class OaDocumentPdfCreatorService {
         Paragraph p = new Paragraph().setFontSize(8).setVerticalAlignment(VerticalAlignment.BOTTOM);
         p.add("\n\n\n");
         p.add("Zgłaszamy swój udział w imprezie samochodowej i stwierdzamy podpisami prawdziwość danych zawartych w " +
-                "zgłoszeniu.\n" +
+                "zgłoszeniu.\n\n" +
                 "Oświadczamy, że jesteśmy świadomi ryzyka i niebezpieczeństwa podczas imprezy. W związku z moim uczestnictwem " +
                 "przyjmujemy na siebie pełną odpowiedzialność, jednocześnie zrzekamy się wszelkich późniejszych roszczeń w " +
                 "stosunku do organizatora. Oświadczamy, że znany jest nam Regulamin Imprezy i Regulamin Uzupełniający oraz " +

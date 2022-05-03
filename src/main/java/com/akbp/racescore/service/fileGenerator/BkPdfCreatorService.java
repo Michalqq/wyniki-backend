@@ -4,8 +4,10 @@ import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.model.repository.EventRepository;
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +109,7 @@ public class BkPdfCreatorService {
             for (int i = 1; i <= eventTeams.size(); i++) {
                 PdfContentByte over = stamper.getOverContent(i);
                 fillData(over, event, eventTeams.get(i - 1), bf);
+                if (event.getLogoPathFile() != null) addLogoImage(over, event.getLogoPathFile());
             }
             stamper.close();
             return baos.toByteArray();
@@ -116,12 +119,26 @@ public class BkPdfCreatorService {
         return null;
     }
 
+    private void addLogoImage(PdfContentByte over, byte[] logoPathFile) {
+        try {
+            Image img = Image.getInstance(logoPathFile);
+            img.scaleToFit(100, 50);
+            img.setAbsolutePosition(470, 780 + (50 - img.getScaledHeight()) / 2);
+            over.addImage(img);
+        } catch (BadElementException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void fillData(PdfContentByte over, Event event, EventTeam et, BaseFont bf) {
         over.beginText();
         over.setFontAndSize(bf, 12);
         over.setTextMatrix(NUMBER_X, NAME_ROW_Y);
         over.showText(et.getNumber().toString());
-
         over.setTextMatrix(CLASS_X, NAME_ROW_Y);
         over.showText(et.getCarClass().getName());
 

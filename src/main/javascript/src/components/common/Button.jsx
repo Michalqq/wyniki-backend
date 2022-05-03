@@ -4,7 +4,12 @@ import Spinner from "react-bootstrap/Spinner";
 
 export const MyButton = ({ variant, onClick, isLoading, msg, loadingMsg }) => {
   return (
-    <Button className={"m-1"} variant={variant} onClick={onClick}>
+    <Button
+      className={"m-1"}
+      variant={variant}
+      onClick={onClick}
+      disabled={isLoading}
+    >
       {isLoading ? (
         <>
           <Spinner size="sm" animation="border" /> {" " + loadingMsg}
