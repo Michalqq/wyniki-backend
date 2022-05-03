@@ -81,7 +81,7 @@ export const StatementModal = ({ show, handleClose, event }) => {
         ),
       },
       {
-        width: "50%",
+        width: "45%",
         id: "name",
         Header: "Nazwa",
         accessor: (cellInfo) => cellInfo.name,
