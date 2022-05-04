@@ -30,10 +30,10 @@ CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --insert into race_score.car_class values (5, 'K5');
 --insert into race_score.car_class values (6, 'GOŚĆ');
 --insert into race_score.car_class values (7, 'OPEN');
-insert into race_score.car_class values (8, 'JUNIOR');
-insert into race_score.car_class values (9, 'RWD');
-insert into race_score.car_class values (10, 'FWD');
-insert into race_score.car_class values (11, 'AWD');
+--insert into race_score.car_class values (8, 'JUNIOR');
+--insert into race_score.car_class values (9, 'RWD');
+--insert into race_score.car_class values (10, 'FWD');
+--insert into race_score.car_class values (11, 'AWD');
 
 --INSERT INTO race_score.penalty_dict values (1, 'Opona/pachołek', false, '5');
 --INSERT INTO race_score.penalty_dict values (2, 'Kara 10 sek', false, '10');
