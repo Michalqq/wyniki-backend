@@ -191,8 +191,9 @@ body,
   padding-bottom: 0px !important;
   padding-left: 5%;
   padding-right: 5%;
-  border-bottom: 4px solid rgb(8, 70, 13);
-  background-color: rgb(209, 220, 209);
+  border-bottom: 2px solid rgb(8, 70, 13);
+  background-color: rgb(222, 222, 222);
+  font-family: poppins-semibold, poppins, sans-serif !important;
   /* box-shadow: 0 7px 6px -6px rgb(78, 134, 255); */
 }
 .navbar-light,
@@ -206,6 +207,7 @@ body,
   font-size: calc(9px + 1vmin) !important;
   font-style: italic !important;
   font-weight: 700 !important;
+  font-family: poppins-semibold, poppins, sans-serif !important;
 }
 
 .number-badge {
@@ -274,7 +276,7 @@ body,
 
 .btn-warning {
   background-color: #6bdf7c !important;
-  border-color: #4c9c58 !important;
+  border-color: #6bdf7c !important;
 }
 
 .btn-dark {
