@@ -119,7 +119,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
       keyboard={false}
       size="xl"
     >
-      <Modal.Header className="bg-dark text-white" closeButton>
+      <Modal.Header className="bg-dark-green text-white" closeButton>
         <Modal.Title>Lista zapisanych</Modal.Title>
       </Modal.Header>
       <Modal.Body className="px-0">

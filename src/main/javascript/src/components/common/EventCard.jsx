@@ -26,9 +26,9 @@ export const EventCard = ({
   }, []);
 
   return (
-    <div className="col-lg-6 pb-3 u-box-shadow">
+    <div className="col-lg-6 pb-3 px-1 u-box-shadow">
       <Card className="">
-        <Card.Header className="bg-secondary text-white text-start fw-bold py-1">
+        <Card.Header className="bg-secondary-green text-white text-start fw-bold py-1">
           <div className="row px-1">
             <div className="col-11 px-0">{event?.name}</div>
             <div className="col-1 px-0 text-end">
@@ -44,7 +44,7 @@ export const EventCard = ({
           </div>
         </Card.Header>
         <Card.Body className="p-1">
-          <div className="position-absolute end-0 mx-3 text-end badge bg-primary text-wrap fst-italic">
+          <div className="position-absolute end-0 mx-3 text-end badge bg-primary-green text-wrap fst-italic">
             {moment(event?.date).format("dddd, DD MMM YYYY, HH:mm")}
           </div>
           <div className="container d-flex">

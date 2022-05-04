@@ -168,7 +168,7 @@ export const StatementModal = ({ show, handleClose, event }) => {
         keyboard={false}
         size="xl"
       >
-        <Modal.Header closeButton className="bg-dark text-white">
+        <Modal.Header closeButton className="bg-dark-green text-white">
           <Modal.Title className="text-white">{`Komunikaty`}</Modal.Title>
         </Modal.Header>
         <Modal.Body>

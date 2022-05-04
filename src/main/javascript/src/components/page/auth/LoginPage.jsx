@@ -48,7 +48,7 @@ export const LoginPage = (props) => {
         <div className="row justify-content-center">
           <div className="col-lg-4 pb-3 u-box-shadow">
             <Card className="text-center">
-              <Card.Header className="bg-dark text-white">
+              <Card.Header className="bg-dark-green text-white">
                 Logowanie
               </Card.Header>
               <Card.Body>

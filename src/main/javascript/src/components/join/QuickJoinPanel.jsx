@@ -96,7 +96,7 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
       keyboard={false}
       size="l"
     >
-      <Modal.Header className="bg-dark text-white" closeButton>
+      <Modal.Header className="bg-dark-green text-white" closeButton>
         <Modal.Title>Szybkie dodawanie zawodnika</Modal.Title>
       </Modal.Header>
       <Modal.Body>

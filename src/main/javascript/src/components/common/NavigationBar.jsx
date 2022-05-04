@@ -21,7 +21,7 @@ export const NavigationBar = () => {
   );
 
   return (
-    <Navbar bg="primary gradient" expand="lg">
+    <Navbar expand="lg">
       <Container>
         <Navbar.Brand className="nav_bar" href="/">
           Wyniki motorsportowe online AKBP

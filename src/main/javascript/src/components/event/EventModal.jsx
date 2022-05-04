@@ -120,7 +120,7 @@ export const EventModal = ({ show, handleClose, event }) => {
         keyboard={false}
         size="xl"
       >
-        <Modal.Header className="bg-dark text-white" closeButton>
+        <Modal.Header className="bg-dark-green text-white" closeButton>
           <Modal.Title className="w-100 row">
             <div className="col-lg-8">{`Informacje o wydarzeniu`}</div>
             {myEvent?.joined && (
@@ -188,7 +188,7 @@ export const EventModal = ({ show, handleClose, event }) => {
               </div>
             </div>
             <Card className="text-center">
-              <Card.Header className="bg-dark text-white">
+              <Card.Header className="bg-dark-green text-white">
                 Do pobrania:
               </Card.Header>
               <Card.Body>
@@ -228,7 +228,7 @@ export const EventModal = ({ show, handleClose, event }) => {
                     przyspieszy to proces odbioru administracyjnego
                   </h5>
                   <Card className="text-center ">
-                    <Card.Header className="bg-dark text-white">
+                    <Card.Header className="bg-dark-green text-white">
                       Wpisowe
                     </Card.Header>
                     <Card.Body>

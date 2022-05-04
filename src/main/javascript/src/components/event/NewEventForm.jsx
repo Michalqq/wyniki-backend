@@ -289,7 +289,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
       keyboard={false}
       size="xl"
     >
-      <Modal.Header className="bg-dark text-white" closeButton>
+      <Modal.Header className="bg-dark-green text-white" closeButton>
         <Modal.Title>Dodawanie nowego wydarzenia</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -400,7 +400,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                 </Card.Body>
               </Card>
               <Card className="text-center">
-                <Card.Header className="bg-dark text-white">
+                <Card.Header className="bg-dark-green text-white">
                   Podział na klasy
                 </Card.Header>
                 <Card.Body className="p-0">
@@ -501,7 +501,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                 </Card.Body>
               </Card>
               <Card className="text-center">
-                <Card.Header className="bg-dark text-white">
+                <Card.Header className="bg-dark-green text-white">
                   Plik z logo wydarzenia
                 </Card.Header>
                 <Card.Body className="p-1">
@@ -517,7 +517,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
           </div>
           <div className="col-lg-8 py-2 shadow mb-1 bg-white rounded">
             <Card>
-              <Card.Header className="bg-dark text-white">
+              <Card.Header className="bg-dark-green text-white">
                 Odcinki PS/OS (w kolejności)
               </Card.Header>
               <Card.Body className="p-0">
@@ -613,7 +613,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
             </Card>
 
             <Card className="text-center">
-              <Card.Header className="bg-dark text-white">
+              <Card.Header className="bg-dark-green text-white">
                 Linki do regulaminow, informacji itd.
               </Card.Header>
               <Card.Body className="p-0">
@@ -679,7 +679,9 @@ export const NewEventForm = ({ show, handleClose, event }) => {
               </Card.Body>
             </Card>
             <Card className="text-center">
-              <Card.Header className="bg-dark text-white">Pliki</Card.Header>
+              <Card.Header className="bg-dark-green text-white">
+                Pliki
+              </Card.Header>
               <Card.Body className="p-0">
                 <Table responsive>
                   <thead>

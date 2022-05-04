@@ -93,7 +93,7 @@ export const AddStatementModal = ({ show, handleClose, eventId }) => {
       keyboard={false}
       size="lg"
     >
-      <Modal.Header className="bg-dark text-white" closeButton>
+      <Modal.Header className="bg-dark-green text-white" closeButton>
         <Modal.Title>Dodawanie komunikatu</Modal.Title>
       </Modal.Header>
       <Modal.Body>

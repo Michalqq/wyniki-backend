@@ -16,7 +16,7 @@ const TableHeader = ({ isHeader, headerGroups }) => {
             key={"tableHeader" + index}
             style={{ display: "table-row" }}
             {...headerGroup.getHeaderGroupProps()}
-            className="l-table-row text-white bg-dark"
+            className="l-table-row text-white bg-dark-green"
           >
             {headerGroup.headers.map((column) => (
               <th

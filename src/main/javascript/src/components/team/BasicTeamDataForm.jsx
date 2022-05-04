@@ -52,7 +52,7 @@ export const BasicTeamDataForm = ({
       keyboard={false}
       size="l"
     >
-      <Modal.Header closeButton className="bg-dark text-white">
+      <Modal.Header closeButton className="bg-dark-green text-white">
         <Modal.Title className="text-white">{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>

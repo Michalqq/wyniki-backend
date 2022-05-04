@@ -191,8 +191,9 @@ body,
   padding-bottom: 0px !important;
   padding-left: 5%;
   padding-right: 5%;
-  background-image: linear-gradient(rgb(0, 21, 212), rgb(78, 134, 255));
-  box-shadow: 0 7px 6px -6px rgb(78, 134, 255);
+  border-bottom: 4px solid rgb(8, 70, 13);
+  background-color: rgb(209, 220, 209);
+  /* box-shadow: 0 7px 6px -6px rgb(78, 134, 255); */
 }
 .navbar-light,
 .navbar-brand,
@@ -203,6 +204,8 @@ body,
 .nav_bar,
 .basic-navbar-nav {
   font-size: calc(9px + 1vmin) !important;
+  font-style: italic !important;
+  font-weight: 700 !important;
 }
 
 .number-badge {
@@ -254,4 +257,36 @@ body,
 
 .btn-close {
   background-color: white !important;
+}
+
+.bg-dark-green {
+  background-color: rgb(6, 53, 9) !important;
+}
+
+.bg-secondary-green {
+  background-color: rgb(81, 110, 84) !important;
+}
+
+.btn-success {
+  background-color: #157246 !important;
+  border-color: #157246 !important;
+}
+
+.btn-warning {
+  background-color: #1cca36 !important;
+  border-color: #1cca36 !important;
+}
+
+.btn-dark {
+  background-color: #18441f !important;
+  border-color: #18441f !important;
+}
+
+.btn-primary {
+  background-color: #1a95c5 !important;
+  border-color: #1a95c5 !important;
+}
+
+.bg-primary-green {
+  background-color: #099fad !important;
 }

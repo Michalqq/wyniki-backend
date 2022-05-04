@@ -98,7 +98,7 @@ export const CarPanelModal = ({
       keyboard={false}
       size="lg"
     >
-      <Modal.Header closeButton className="bg-dark text-white">
+      <Modal.Header closeButton className="bg-dark-green text-white">
         <Modal.Title className="text-white">
           {disabled ? "Dane samochodu" : "Dodawanie samochodu"}
         </Modal.Title>

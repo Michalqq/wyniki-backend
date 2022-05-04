@@ -154,7 +154,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
         keyboard={false}
         size="xl"
       >
-        <Modal.Header className="bg-dark text-white" closeButton>
+        <Modal.Header className="bg-dark-green text-white" closeButton>
           <Modal.Title className="w-100 row">
             <div className="col-lg-8">
               {disable ? "Dane zawodnika" : `Panel zawodnika`}
@@ -173,7 +173,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
               <div className="row">
                 <div className="col-lg-6 pb-3 px-1">
                   <Card className="text-center">
-                    <Card.Header className="bg-dark text-white pt-1 pb-0">
+                    <Card.Header className="bg-dark-green text-white pt-1 pb-0">
                       <h5>Kierowca</h5>
                     </Card.Header>
                     <Card.Body>
@@ -297,7 +297,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                 </div>
                 <div className="col-lg-6 pb-3 px-1">
                   <Card className="text-center">
-                    <Card.Header className="bg-dark text-white pt-1 pb-0">
+                    <Card.Header className="bg-dark-green text-white pt-1 pb-0">
                       <h5>Pilot</h5>
                     </Card.Header>
                     <Card.Body>
@@ -375,7 +375,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                     </Card.Body>
                   </Card>
                   <Card className="text-center">
-                    <Card.Header className="bg-dark text-white pt-1 pb-0">
+                    <Card.Header className="bg-dark-green text-white pt-1 pb-0">
                       {team.currentCar !== undefined &&
                       team.currentCar !== null ? (
                         <h5>{`Samochód:`}</h5>
