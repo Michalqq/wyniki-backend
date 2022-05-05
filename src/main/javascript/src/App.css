@@ -191,15 +191,14 @@ body,
   padding-bottom: 0px !important;
   padding-left: 5%;
   padding-right: 5%;
-  border-bottom: 2px solid rgb(8, 70, 13);
-  background-color: rgb(222, 222, 222);
-  font-family: poppins-semibold, poppins, sans-serif !important;
-  /* box-shadow: 0 7px 6px -6px rgb(78, 134, 255); */
+  /* border-bottom: 2px solid rgb(8, 70, 13); */
+  background-color: #000000;
+  box-shadow: 0 2px 2px -2px rgb(8, 70, 13);
 }
 .navbar-light,
 .navbar-brand,
 .nav-link {
-  color: rgb(0, 0, 0) !important;
+  color: white !important;
 }
 
 .nav_bar,
@@ -207,7 +206,6 @@ body,
   font-size: calc(9px + 1vmin) !important;
   font-style: italic !important;
   font-weight: 700 !important;
-  font-family: poppins-semibold, poppins, sans-serif !important;
 }
 
 .number-badge {
@@ -262,7 +260,7 @@ body,
 }
 
 .bg-dark-green {
-  background-color: rgb(6, 53, 9) !important;
+  background-color: #063509 !important;
 }
 
 .bg-secondary-green {
@@ -272,23 +270,36 @@ body,
 .btn-success {
   background-color: #157246 !important;
   border-color: #157246 !important;
+  box-shadow: 1px 1px 2px rgba(0, 96, 5, 0.8);
 }
 
 .btn-warning {
-  background-color: #6bdf7c !important;
-  border-color: #6bdf7c !important;
+  background-color: #52905b !important;
+  border-color: #52905b !important;
+  color: white !important;
+  box-shadow: 1px 1px 2px rgba(0, 96, 5, 0.8);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
 }
 
 .btn-dark {
   background-color: #18441f !important;
   border-color: #2b7237 !important;
+  box-shadow: 1px 1px 2px rgba(0, 96, 5, 0.8);
 }
 
 .btn-primary {
   background-color: #1a95c5 !important;
   border-color: #1a95c5 !important;
+  box-shadow: 1px 1px 2px rgba(37, 89, 166, 0.8);
 }
 
 .bg-primary-green {
   background-color: #099fad !important;
+}
+
+.card-body {
+  background-color: #ffffffe2 !important;
 }

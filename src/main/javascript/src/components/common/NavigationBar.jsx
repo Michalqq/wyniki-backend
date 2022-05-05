@@ -88,7 +88,7 @@ export const NavigationBar = () => {
 export const Footer = () => {
   return (
     <div className="fixed-bottom">
-      <Card className="bg-black">
+      <Card style={{ borderRadius: "0" }} className="bg-black">
         <Card.Footer className="text-white text-start py-0">
           <div className="row font12">
             <div className="col-lg-3 text-end"></div>

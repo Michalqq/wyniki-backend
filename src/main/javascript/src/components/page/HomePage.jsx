@@ -93,7 +93,7 @@ const HomePage = (props) => {
         style={{ borderRadius: "0" }}
         className=" my-1 bg-dark-green text-white"
       >
-        <h3>Najbliższe wydarzenia</h3>
+        <h4 className="mb-1">Najbliższe wydarzenia</h4>
       </Card>
       <div className="row mx-0 justify-content-center">
         {loading && (
@@ -124,7 +124,7 @@ const HomePage = (props) => {
         style={{ borderRadius: "0" }}
         className="my-1 bg-dark-green text-white"
       >
-        <h3>Archiwalne wydarzenia</h3>
+        <h4 className="mb-1">Archiwalne wydarzenia</h4>
       </Card>
 
       <div className="row mx-0 justify-content-center">
