@@ -48,13 +48,18 @@ public class AuthService {
     private EmailSenderImpl emailSender;
 
     public ResponseEntity<?> authenticateUser(AuthRequest request) {
-        if (!userRepository.existsByUsername(request.getUsername()))
+        String username = request.getUsername();
+        User userByEmail = userRepository.findByEmail(username);
+        if (username.contains("@") && userByEmail != null)
+            username = userByEmail.getUsername();
+
+        if (!userRepository.existsByUsername(username))
             return ResponseEntity.badRequest().body("Brak użytkownika o podanym loginie");
 
         Authentication auth;
         try {
             auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                    new UsernamePasswordAuthenticationToken(username, request.getPassword()));
         } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().body("Błędne dane logowania");
         }
@@ -70,7 +75,7 @@ public class AuthService {
     }
 
     public ResponseEntity<?> registerUser(AuthRequest signupRequest) {
-        if (userRepository.existsByUsername(signupRequest.getUsername()))
+        if (userRepository.existsByUsername(signupRequest.getUsername()) || userRepository.existsByEmail(signupRequest.getUsername()))
             return ResponseEntity.badRequest().body("Error: Wybrany login jest zajęty");
 
         if (userRepository.existsByEmail(signupRequest.getEmail()))
