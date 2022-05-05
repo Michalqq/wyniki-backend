@@ -201,6 +201,10 @@ body,
   color: white !important;
 }
 
+.navbar-toggler {
+  background-color: rgba(166, 166, 166, 0.557) !important;
+}
+
 .nav_bar,
 .basic-navbar-nav {
   font-size: calc(9px + 1vmin) !important;
