@@ -203,6 +203,8 @@ body,
 
 .navbar-toggler {
   background-color: rgba(166, 166, 166, 0.557) !important;
+  margin: 0.25rem 0.75rem !important;
+  padding: 0 0 !important;
 }
 
 .nav_bar,

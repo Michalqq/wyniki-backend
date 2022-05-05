@@ -134,9 +134,7 @@ export const EventModal = ({ show, handleClose, event }) => {
             )}
           </Modal.Title>
         </Modal.Header>
-        <p style={{ fontSize: "11px" }} className="text-center my-0 py-0">
-          Aplikacja w fazie testów
-        </p>
+
         <Tabs
           activeKey={activeTab}
           onSelect={(key) => setActiveTab(key)}
@@ -144,7 +142,7 @@ export const EventModal = ({ show, handleClose, event }) => {
         >
           <Tab eventKey={1} title="Informacje">
             <div className="row text-center px-2">
-              <div className="col-lg-4 py-1">
+              <div className="col-lg-12 py-1">
                 {event?.logoPathFile ? (
                   <img
                     id={"eventImage" + event.eventId}
@@ -167,7 +165,7 @@ export const EventModal = ({ show, handleClose, event }) => {
                   )
                 )}
               </div>
-              <div className="col-lg-8">
+              <div className="col-lg-12">
                 <h3>{event?.name || ""}</h3>
                 <h5>{`Data wydarzenia:  `}</h5>
                 <h5 className="fw-bold">

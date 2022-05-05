@@ -12,7 +12,7 @@ export const OkCancelModal = ({
 }) => {
   return (
     <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton className="bg-dark-green text-white">
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
 
@@ -39,7 +39,7 @@ export const OkCancelModal = ({
 export const OkModal = ({ show, title, text, handleAccept }) => {
   return (
     <Modal show={show} onHide={handleAccept} backdrop="static" keyboard={false}>
-      <Modal.Header closeButton>
+      <Modal.Header closeButton className="bg-dark-green text-white">
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
 

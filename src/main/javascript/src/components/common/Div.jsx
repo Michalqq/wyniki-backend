@@ -1,6 +1,7 @@
 export const TeamDiv = ({ team }) => {
   const getWithBracketIfNotEmpty = (value) => {
-    if (value !== undefined && value !== null) return " (" + value + ")";
+    if (value !== undefined && value !== null && value !== "")
+      return " (" + value + ")";
 
     return "";
   };

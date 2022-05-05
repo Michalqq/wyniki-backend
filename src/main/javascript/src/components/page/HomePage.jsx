@@ -86,9 +86,6 @@ const HomePage = (props) => {
 
   return (
     <>
-      <p style={{ fontSize: "11px" }} className="my-0 py-0">
-        Aplikacja w fazie testów
-      </p>
       <Card
         style={{ borderRadius: "0" }}
         className=" my-1 bg-dark-green text-white"
@@ -96,7 +93,7 @@ const HomePage = (props) => {
         <h4 className="mb-1">Najbliższe wydarzenia</h4>
       </Card>
       <div className="row mx-0 justify-content-center">
-        {loading && (
+        {loading && futureEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />
           </div>
@@ -128,7 +125,7 @@ const HomePage = (props) => {
       </Card>
 
       <div className="row mx-0 justify-content-center">
-        {loading && (
+        {loading && archiveEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />
           </div>

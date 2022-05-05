@@ -198,9 +198,7 @@ const StageScorePage = (props) => {
   return (
     <>
       <div className="row">
-        <p style={{ fontSize: "11px" }} className="my-0 py-0">
-          Aplikacja w fazie testów
-        </p>
+     
         <h4>{event?.name || ""}</h4>
         <div className="col-xl-8 d-flex justify-content-center">
           {(event?.logoPathFile || event?.logoPath) && (
