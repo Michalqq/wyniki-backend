@@ -138,7 +138,7 @@ export const EventModal = ({ show, handleClose, event }) => {
         <Tabs
           activeKey={activeTab}
           onSelect={(key) => setActiveTab(key)}
-          className="m-0 fw-bold"
+          className="m-0 fw-bold text-dark"
         >
           <Tab eventKey={1} title="Informacje">
             <div className="row text-center px-2">
@@ -146,7 +146,7 @@ export const EventModal = ({ show, handleClose, event }) => {
                 {event?.logoPathFile ? (
                   <img
                     id={"eventImage" + event.eventId}
-                    style={{ height: "140px" }}
+                    style={{ height: "250px" }}
                     className="img-fluid rounded float-left"
                     src={"data:image/jpg;base64," + event.logoPathFile}
                     alt="Logo"
@@ -156,7 +156,7 @@ export const EventModal = ({ show, handleClose, event }) => {
                   event?.logoPath !== null && (
                     <div className="">
                       <img
-                        style={{ height: "140px" }}
+                        style={{ height: "250px" }}
                         className="img-fluid rounded float-left"
                         src={event.logoPath}
                         alt="Logo"
@@ -167,12 +167,12 @@ export const EventModal = ({ show, handleClose, event }) => {
               </div>
               <div className="col-lg-12">
                 <h3>{event?.name || ""}</h3>
-                <h5>{`Data wydarzenia:  `}</h5>
-                <h5 className="fw-bold">
+                <h6>{`Data wydarzenia:  `}</h6>
+                <h6 className="fw-bold">
                   {moment(event?.date).format(" dddd, DD MMM YYYY, HH:mm")}
-                </h5>
+                </h6>
                 <div className="col-lg-10">
-                  <p className="fw-bold fst-italic m-4">
+                  <p className="fw-bold fst-italic m-2">
                     {`Koniec zapisów:  ${moment(event?.signDeadline).format(
                       "dddd, DD MMM YYYY, HH:mm"
                     )}`}

@@ -198,6 +198,9 @@ body,
 .navbar-light,
 .navbar-brand,
 .nav-link {
+  /* color: white !important; */
+}
+.dropdown-toggle {
   color: white !important;
 }
 

@@ -23,17 +23,25 @@ export const NavigationBar = () => {
   return (
     <Navbar expand="lg">
       <Container>
-        <Navbar.Brand className="nav_bar" href="/">
+        <Navbar.Brand className="text-white nav_bar" href="/">
           Wyniki motorsportowe online AKBP
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/">Lista wydarzeń</Nav.Link>
-            <Nav.Link href="/message">Kontakt</Nav.Link>
+            <Nav.Link className="text-white" href="/">
+              Lista wydarzeń
+            </Nav.Link>
+            <Nav.Link className="text-white" href="/message">
+              Kontakt
+            </Nav.Link>
 
             {referee && location.state?.eventId !== undefined && (
-              <NavDropdown title="Administrator" id="basic-nav-dropdown">
+              <NavDropdown
+                className="text-white"
+                title="Administrator"
+                id="basic-nav-dropdown"
+              >
                 <NavDropdown.Item
                   onClick={() =>
                     navigate(`add_score`, {
@@ -58,17 +66,25 @@ export const NavigationBar = () => {
           <Nav>
             {sessionStorage.getItem("username") === null && (
               <>
-                <Nav.Link href="/login">Zaloguj</Nav.Link>
-                <Nav.Link href="/register">Rejestracja</Nav.Link>
+                <Nav.Link className="text-white" href="/login">
+                  Zaloguj
+                </Nav.Link>
+                <Nav.Link className="text-white" href="/register">
+                  Rejestracja
+                </Nav.Link>
               </>
             )}
             {sessionStorage.getItem("username") !== null && (
               <>
-                <Nav.Link href="/teamPanel">{`Panel zawodnika - ${sessionStorage.getItem(
+                <Nav.Link
+                  className="text-white"
+                  href="/teamPanel"
+                >{`Panel zawodnika - ${sessionStorage.getItem(
                   "username"
                 )}`}</Nav.Link>
 
                 <Nav.Link
+                  className="text-white"
                   onClick={() => {
                     sessionStorage.removeItem("username");
                     window.location.href = "/";
