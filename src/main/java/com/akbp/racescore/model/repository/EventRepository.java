@@ -20,6 +20,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "left join race_score.users u on u.user_id = er.user_id " +
             "where e.event_Id = :eventId and u.username = :username", nativeQuery = true)
     Optional<Event> checkIfUserIsReferee(@Param("eventId") Long eventId, @Param("username") String username);
-
-    byte[] getLogoPathFileByEventId(Long eventId);
 }

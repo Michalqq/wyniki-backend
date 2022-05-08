@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faEdit } from "@fortawesome/free-solid-svg-icons";
 import Badge from "react-bootstrap/Badge";
 import { fetchLogoPath, fetchStatement } from "../utils/fetchUtils";
+import { _base64ToArrayBuffer } from "../utils/fileUtils";
 
 export const EventCard = ({
   event,
@@ -24,7 +25,9 @@ export const EventCard = ({
   useEffect(() => {
     if (event) {
       fetchStatement(event.eventId, (data) => setStatementCount(data.length));
-      fetchLogoPath(event.eventId, (data) => setLogoPath(data));
+      fetchLogoPath(event.eventId, (data) => {
+        setLogoPath(data);
+      });
     }
   }, []);
 
@@ -59,7 +62,7 @@ export const EventCard = ({
                 <img
                   id={"eventImage" + event.eventId}
                   className="img-fluid rounded float-left"
-                  src={"data:image/jpg;base64," + logoPath}
+                  src={"data:image/jpg;base64," + logoPath.file}
                   alt="Logo"
                 ></img>
               ) : event.logoPath !== undefined && event.logoPath !== null ? (

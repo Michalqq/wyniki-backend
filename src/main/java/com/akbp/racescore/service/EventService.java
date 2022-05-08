@@ -1,6 +1,7 @@
 package com.akbp.racescore.service;
 
 import com.akbp.racescore.model.dto.EventDTO;
+import com.akbp.racescore.model.dto.FileDto;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -288,7 +289,7 @@ public class EventService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.set("Content-Disposition", "attachment; filename=" + "potwierdzenie_wplaty_" + teamId);
-        headers.setContentLength(eventTeam.getEntryFeeFile().length);
+        if (eventTeam.getEntryFeeFile() != null) headers.setContentLength(eventTeam.getEntryFeeFile().length);
 
         return new ResponseEntity<>(eventTeam.getEntryFeeFile(), headers, HttpStatus.OK);
     }
@@ -396,7 +397,12 @@ public class EventService {
         }
     }
 
-    public byte[] getLogoPath(Long eventId) {
-        return eventRepository.getLogoPathFileByEventId(eventId);
+    public FileDto getLogoPath(Long eventId) {
+        Event event = eventRepository.getById(eventId);
+
+        if (event != null && event.getLogoPathFile() != null)
+            return new FileDto(event.getLogoPathFile());
+
+        return null;
     }
 }

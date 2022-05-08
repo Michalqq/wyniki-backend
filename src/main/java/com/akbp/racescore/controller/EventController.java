@@ -1,6 +1,7 @@
 package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.EventDTO;
+import com.akbp.racescore.model.dto.FileDto;
 import com.akbp.racescore.model.dto.StgesAndClassesDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
@@ -244,7 +245,7 @@ public class EventController {
     }
 
     @GetMapping("/getLogoPath")
-    public byte[] getLogoPath(@RequestParam("eventId") Long eventId) {
+    public FileDto getLogoPath(@RequestParam("eventId") Long eventId) {
         try {
             return eventService.getLogoPath(eventId);
         } catch (Exception e) {

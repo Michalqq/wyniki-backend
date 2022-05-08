@@ -363,7 +363,7 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   position: relative;
-  display: block;
+  display: flex;
 }
 
 @media all and (min-width: 0) and (max-width: 567px) {
@@ -387,4 +387,5 @@ body {
 .btn-close,
 .modal-title {
   z-index: 1;
+  position: relative;
 }
