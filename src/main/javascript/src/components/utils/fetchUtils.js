@@ -98,3 +98,10 @@ export const fetchStatement = (eventId, handleResponse) => {
     handleResponse
   );
 };
+
+export const fetchLogoPath = (eventId, handleResponse) => {
+  fetchGet(
+    `${backendUrl()}/event/getLogoPath?eventId=${eventId}`,
+    handleResponse
+  );
+};

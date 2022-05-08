@@ -5,7 +5,7 @@ import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faEdit } from "@fortawesome/free-solid-svg-icons";
 import Badge from "react-bootstrap/Badge";
-import { fetchStatement } from "../utils/fetchUtils";
+import { fetchLogoPath, fetchStatement } from "../utils/fetchUtils";
 
 export const EventCard = ({
   event,
@@ -19,14 +19,17 @@ export const EventCard = ({
   const eventDeadlined =
     new Date().getTime() > new Date(event.signDeadline).getTime();
   const [statementCount, setStatementCount] = useState(0);
+  const [logoPath, setLogoPath] = useState(null);
 
   useEffect(() => {
-    if (event)
+    if (event) {
       fetchStatement(event.eventId, (data) => setStatementCount(data.length));
+      fetchLogoPath(event.eventId, (data) => setLogoPath(data));
+    }
   }, []);
 
   return (
-    <div className="col-lg-6 pb-3 px-1">
+    <div className="col-lg-6 py-1 px-1 no-opacity-hover opacity-90a">
       <Card className="shadow-sm">
         <Card.Header className="bg-secondary-green text-white text-start fw-bold py-1">
           <div className="row px-1">
@@ -52,11 +55,11 @@ export const EventCard = ({
               className="col-lg-2 px-0 align-self-center"
               style={{ width: "110px" }}
             >
-              {event.logoPathFile ? (
+              {logoPath ? (
                 <img
                   id={"eventImage" + event.eventId}
                   className="img-fluid rounded float-left"
-                  src={"data:image/jpg;base64," + event.logoPathFile}
+                  src={"data:image/jpg;base64," + logoPath}
                   alt="Logo"
                 ></img>
               ) : event.logoPath !== undefined && event.logoPath !== null ? (

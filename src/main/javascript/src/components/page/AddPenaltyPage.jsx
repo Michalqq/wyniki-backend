@@ -125,8 +125,8 @@ export const AddPenaltyPage = (props) => {
   };
 
   return (
-    <div className="u-text-center">
-      <div className="u-box-shadow">
+    <div className="u-text-center card-body pb-5">
+      <div className="u-box-shadow ">
         <div className="col-xl-12">
           <h5 className="pb-2 mb-1 border-bottom">Dodaj kare:</h5>
         </div>

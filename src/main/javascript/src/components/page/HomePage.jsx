@@ -88,11 +88,13 @@ const HomePage = (props) => {
     <>
       <Card
         style={{ borderRadius: "0" }}
-        className=" my-1 bg-dark-green text-white"
+        className=" my-1 bg-dark-green text-white green-header"
       >
-        <h4 className="mb-1">Najbliższe wydarzenia</h4>
+        <h4 style={{ zIndex: 1 }} className="mb-1">
+          Najbliższe wydarzenia
+        </h4>
       </Card>
-      <div className="row mx-0 justify-content-center">
+      <div className="row mx-0 justify-content-center card-body">
         {loading && futureEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />
@@ -117,14 +119,17 @@ const HomePage = (props) => {
           />
         ))}
       </div>
+      <div className="py-4"></div>
       <Card
         style={{ borderRadius: "0" }}
-        className="my-1 bg-dark-green text-white"
+        className=" my-1 bg-dark-green text-white green-header"
       >
-        <h4 className="mb-1">Archiwalne wydarzenia</h4>
+        <h4 style={{ zIndex: 1 }} className="mb-1">
+          Archiwalne wydarzenia
+        </h4>
       </Card>
 
-      <div className="row mx-0 justify-content-center">
+      <div className="row mx-0 justify-content-center card-body">
         {loading && archiveEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />

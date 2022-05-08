@@ -395,4 +395,8 @@ public class EventService {
             e.printStackTrace();
         }
     }
+
+    public byte[] getLogoPath(Long eventId) {
+        return eventRepository.getLogoPathFileByEventId(eventId);
+    }
 }

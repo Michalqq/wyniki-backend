@@ -8,6 +8,19 @@ body,
   font-size: calc(9px + 1vmin) !important;
 }
 
+body {
+  background-image: url("/public/fiesta.jpg");
+  background-size: contain;
+  background-attachment: fixed;
+}
+
+@media all and (min-width: 0) and (max-width: 567px) {
+  body {
+    background-size: cover;
+    background-attachment: fixed;
+  }
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -194,6 +207,11 @@ body,
   /* border-bottom: 2px solid rgb(8, 70, 13); */
   background-color: #000000;
   box-shadow: 0 2px 2px -2px rgb(8, 70, 13);
+  opacity: 0.8;
+}
+
+.navbar:hover {
+  opacity: 1;
 }
 .navbar-light,
 .navbar-brand,
@@ -311,4 +329,62 @@ body,
 
 .card-body {
   background-color: #ffffffe2 !important;
+}
+
+.opacity-95 {
+  --bs-bg-opacity: 0.95 !important;
+}
+
+.opacity-90 {
+  --bs-bg-opacity: 0.9 !important;
+}
+
+.opacity-85 {
+  --bs-bg-opacity: 0.85 !important;
+}
+
+.opacity-1 {
+  --bs-bg-opacity: 0 !important;
+}
+
+.opacity-90a {
+  opacity: 0.9 !important;
+}
+
+.no-opacity-hover:hover {
+  --bs-bg-opacity: 1 !important;
+  opacity: 1 !important;
+}
+
+.green-header,
+.modal-header {
+  background-image: url("/public/modal_header.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
+  display: block;
+}
+
+@media all and (min-width: 0) and (max-width: 567px) {
+  .modal-header,
+  .green-header {
+    background-size: auto;
+  }
+}
+
+.green-header:before,
+.modal-header:before {
+  content: "";
+  background-color: #063509c9 !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+.btn-close,
+.modal-title {
+  z-index: 1;
 }

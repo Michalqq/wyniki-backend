@@ -45,7 +45,7 @@ export const MessagePage = (props) => {
     updatePassword();
   };
   return (
-    <div className="u-text-center">
+    <div className="u-text-center card-body">
       <div className="u-box-shadow">
         <div className="row justify-content-center">
           <div className="col-lg-6 pb-3 u-box-shadow">

@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import "./App.css";
-//import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Footer, NavigationBar } from "./components/common/NavigationBar";
 import { TeamPanel } from "./components/team/TeamPanel";
@@ -34,7 +34,7 @@ function App() {
           }
         >
           <div className="App container">
-            <div className="shadow bg-body rounded pb-5">
+            <div className="bg-body rounded pb-5 opacity-1">
               <div className="p-0">
                 <Routes>
                   <Route path="/" element={<HomePage />} />

@@ -192,7 +192,7 @@ export const AddScorePage = (props) => {
   };
 
   return (
-    <div className="u-text-center">
+    <div className="u-text-center  card-body pb-5">
       <div className="u-box-shadow">
         <div className="col-xl-12">
           <h5 className="pb-1 mb-0 border-bottom">Dodaj wynik:</h5>

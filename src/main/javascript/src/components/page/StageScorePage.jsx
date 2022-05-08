@@ -197,8 +197,7 @@ const StageScorePage = (props) => {
 
   return (
     <>
-      <div className="row">
-     
+      <div className="row card-body mx-0">
         <h4>{event?.name || ""}</h4>
         <div className="col-xl-8 d-flex justify-content-center">
           {(event?.logoPathFile || event?.logoPath) && (
@@ -293,7 +292,7 @@ const StageScorePage = (props) => {
           </div>
         </div>
       </div>
-      <div className="row pt-2 mx-0">
+      <div className="row pt-2 mx-0 card-body">
         <div className="col-xl-6 px-0 pe-1">
           <div className="shadow bg-body rounded">
             <div

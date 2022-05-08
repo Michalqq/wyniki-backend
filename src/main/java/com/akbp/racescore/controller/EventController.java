@@ -152,7 +152,7 @@ public class EventController {
                                   @RequestParam("eventId") Long eventId) {
         if (file == null)
             return false;
-        
+
         try {
             eventService.addFileToEvent(file, eventId, fileName, desc);
         } catch (Exception e) {
@@ -241,6 +241,17 @@ public class EventController {
     @GetMapping("/checkReferee")
     public boolean checkReferee(@RequestParam("eventId") Long eventId, Authentication auth) {
         return eventService.checkReferee(eventId, auth);
+    }
+
+    @GetMapping("/getLogoPath")
+    public byte[] getLogoPath(@RequestParam("eventId") Long eventId) {
+        try {
+            return eventService.getLogoPath(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return null;
     }
 
     @GetMapping("/getRefereeOptions")
