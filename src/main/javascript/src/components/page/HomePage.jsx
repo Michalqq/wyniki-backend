@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import { backendUrl, checkReferee } from "../utils/fetchUtils";
+import { backendUrl, checkReferee, fetchLogoPath } from "../utils/fetchUtils";
 import Button from "react-bootstrap/Button";
 import { NewEventForm } from "../event/NewEventForm";
 import { EventCard } from "../common/EventCard";
@@ -20,7 +20,8 @@ const HomePage = (props) => {
   const [createEvent, setCreateEvent] = useState();
   const [eventToTeamList, setEventToTeamList] = useState();
   const [eventToTeamPanel, setEventToTeamPanel] = useState();
-  const [loading, setLoading] = useState(true);
+  const [loadingFuture, setLoadingFuture] = useState(true);
+  const [loadingBefore, setLoadingBefore] = useState(true);
   const [mainAdmin, setMainAdmin] = useState(false);
   const [redirected, setRedirected] = useState(false);
   const [showStatement, setShowStatement] = useState();
@@ -30,27 +31,46 @@ const HomePage = (props) => {
   const navigate = useNavigate();
 
   const fetchEvents = () => {
-    setLoading(true);
+    setLoadingFuture(true);
+    setLoadingBefore(true);
 
-    let endDay = new Date();
-    endDay.setHours(23, 59, 59, 999);
-    endDay.setDate(new Date().getDate() - 1);
+    // let endDay = new Date();
+    // endDay.setHours(23, 59, 59, 999);
+    // endDay.setDate(new Date().getDate() - 1);
+
+    // axios
+    //   .get(`${backendUrl()}/event/getAll`, {
+    //     headers: authHeader(),
+    //   })
+    //   .then((res) => {
+    //     setFutureEvents(
+    //       res.data
+    //         .filter((x) => endDay.getTime() <= new Date(x.date).getTime())
+    //         .sort((x, y) => (x.date < y.date ? -1 : 1))
+    //     );
+    //     setArchiveEvents(
+    //       res.data
+    //         .filter((x) => endDay.getTime() > new Date(x.date).getTime())
+    //         .sort((x, y) => (x.date > y.date ? -1 : 1))
+    //     );
+    //     if (eventRedirect !== undefined && !redirected) {
+    //       const event = res.data.find(
+    //         (x) => x.eventId === Number(eventRedirect.replace("?", ""))
+    //       );
+    //       setEventToTeamPanel(event);
+    //       eventRedirect = null;
+    //       setRedirected(true);
+    //     }
+    //     setLoading(false);
+    //   });
 
     axios
-      .get(`${backendUrl()}/event/getAll`, {
+      .get(`${backendUrl()}/event/getAllFuture`, {
         headers: authHeader(),
       })
       .then((res) => {
-        setFutureEvents(
-          res.data
-            .filter((x) => endDay.getTime() <= new Date(x.date).getTime())
-            .sort((x, y) => (x.date < y.date ? -1 : 1))
-        );
-        setArchiveEvents(
-          res.data
-            .filter((x) => endDay.getTime() > new Date(x.date).getTime())
-            .sort((x, y) => (x.date > y.date ? -1 : 1))
-        );
+        setFutureEvents(res.data.sort((x, y) => (x.date < y.date ? -1 : 1)));
+
         if (eventRedirect !== undefined && !redirected) {
           const event = res.data.find(
             (x) => x.eventId === Number(eventRedirect.replace("?", ""))
@@ -59,7 +79,16 @@ const HomePage = (props) => {
           eventRedirect = null;
           setRedirected(true);
         }
-        setLoading(false);
+        setLoadingFuture(false);
+      });
+
+    axios
+      .get(`${backendUrl()}/event/getAllBefore`, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        setArchiveEvents(res.data.sort((x, y) => (x.date > y.date ? -1 : 1)));
+        setLoadingBefore(false);
       });
   };
 
@@ -95,7 +124,7 @@ const HomePage = (props) => {
         </h4>
       </Card>
       <div className="row mx-0 justify-content-center card-body">
-        {loading && futureEvents.length === 0 && (
+        {loadingFuture && futureEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />
           </div>
@@ -130,7 +159,7 @@ const HomePage = (props) => {
       </Card>
 
       <div className="row mx-0 justify-content-center card-body">
-        {loading && archiveEvents.length === 0 && (
+        {loadingBefore && archiveEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />
           </div>

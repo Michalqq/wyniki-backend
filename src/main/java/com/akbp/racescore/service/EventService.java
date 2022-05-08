@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -126,7 +127,24 @@ public class EventService {
     }
 
     public List<EventDTO> getAll(Authentication auth) {
-        List<Event> events = eventRepository.findAll();
+        return prepareEvents(eventRepository.findAll(), auth);
+    }
+
+    public List<EventDTO> getAllBefore(Authentication auth) {
+        Instant today = Instant.now();
+        today = today.atZone(ZoneOffset.UTC).withHour(0).withMinute(0).withSecond(1).toInstant();
+
+        return prepareEvents(eventRepository.findAllByDateLessThan(today), auth);
+    }
+
+    public List<EventDTO> getAllFuture(Authentication auth) {
+        Instant today = Instant.now();
+        today = today.atZone(ZoneOffset.UTC).withHour(0).withMinute(0).withSecond(1).toInstant();
+
+        return prepareEvents(eventRepository.findAllByDateGreaterThanEqual(today), auth);
+    }
+
+    private List<EventDTO> prepareEvents(List<Event> events, Authentication auth) {
         List<EventDTO> eventDTOS = events.stream().map(x -> new EventDTO(x)).collect(Collectors.toList());
 
         if (auth != null)

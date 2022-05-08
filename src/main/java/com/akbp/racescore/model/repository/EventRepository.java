@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +21,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "left join race_score.users u on u.user_id = er.user_id " +
             "where e.event_Id = :eventId and u.username = :username", nativeQuery = true)
     Optional<Event> checkIfUserIsReferee(@Param("eventId") Long eventId, @Param("username") String username);
+
+    List<Event> findAllByDateGreaterThanEqual(Instant date);
+
+    List<Event> findAllByDateLessThan(Instant date);
 }

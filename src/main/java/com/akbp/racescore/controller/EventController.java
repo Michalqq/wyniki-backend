@@ -49,6 +49,26 @@ public class EventController {
         return Collections.emptyList();
     }
 
+    @GetMapping("/getAllFuture")
+    public List<EventDTO> getAllFuture(Authentication auth) {
+        try {
+            return eventService.getAllFuture(auth);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return Collections.emptyList();
+    }
+
+    @GetMapping("/getAllBefore")
+    public List<EventDTO> getAllBefore(Authentication auth) {
+        try {
+            return eventService.getAllBefore(auth);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return Collections.emptyList();
+    }
+
     @PostMapping("/startEvent")
     public boolean startEvent(@RequestParam("eventId") Long eventId) {
         try {

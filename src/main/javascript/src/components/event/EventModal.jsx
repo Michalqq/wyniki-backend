@@ -197,7 +197,11 @@ export const EventModal = ({ show, handleClose, event }) => {
                         <a
                           target="_blank"
                           rel="noopener noreferrer"
-                          href={path.path}
+                          href={
+                            path.path.startsWith("http")
+                              ? path.path
+                              : "http://" + path.path
+                          }
                         >
                           {path.description}
                         </a>
