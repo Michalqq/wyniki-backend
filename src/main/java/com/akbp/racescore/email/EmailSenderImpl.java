@@ -9,7 +9,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
@@ -20,24 +19,31 @@ public class EmailSenderImpl implements EmailSender {
     @Value("${racescore.app.path}")
     private String appPath;
 
+    @Value("${racescore.email.from1}")
+    private String emailFrom1;
+
+    @Value("${racescore.email.from2}")
+    private String emailFrom2;
+
     @Autowired
     private JwtUtils jwtUtils;
 
     @Override
-    public boolean sendEmail(String to, String title, String content) {
+    public boolean sendEmail(Long attemptCount, String to, String title, String content) {
         MimeMessage mail = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mail, true);
             helper.setTo(to);
-            helper.setReplyTo("testowekonto9090@gmail.com");
+            helper.setFrom(attemptCount == 1L ? emailFrom1 : emailFrom2);
+            helper.setReplyTo("kraciukmichal@gmail.com");
             helper.setSubject(title);
             helper.setText(content, true);
-        } catch (MessagingException e) {
+            javaMailSender.send(mail);
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return attemptCount == 1L ? sendEmail(2L, to, title, content) : false;
         }
-        javaMailSender.send(mail);
-        return true;
     }
 
     public boolean sendPasswordReminderEmail(User user) {
@@ -48,13 +54,13 @@ public class EmailSenderImpl implements EmailSender {
         content += " <br></br> ";
         content += "Aby zresetować hasło kliknij w link umieszczony poniżej <br></br> ";
 
-        content += "<a href=http://" + appPath + "/passwordReset?" + token + ">Link do resetowania hasła</a>";
+        content += "<a href=http://" + appPath + "/passwordReset?" + token + ">Link do resetowania hasła (kliknij w tekst)</a>";
 
         content += "<br></br><br></br><br></br>";
         content += "Jeśli nie prosiłeś o reset hasła zignoruj tę wiadomość.";
         content += getHtmlEnd();
 
-        return sendEmail(user.getEmail(), "Wyniki.online - resetowanie hasła", content);
+        return sendEmail(1L, user.getEmail(), "Wyniki.online - resetowanie hasła", content);
     }
 
     public boolean sendMsg(MsgDto msg) {
@@ -69,7 +75,7 @@ public class EmailSenderImpl implements EmailSender {
 
         content += getHtmlEnd();
 
-        return sendEmail("kraciukmichal@gmail.com", msg.getTitle(), content);
+        return sendEmail(1L, "kraciukmichal@gmail.com", msg.getTitle(), content);
     }
 
     private String getHtmlStart() {
