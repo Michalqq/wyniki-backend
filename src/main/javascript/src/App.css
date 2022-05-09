@@ -9,7 +9,7 @@ body,
 }
 
 body {
-  background-image: url("/public/fiesta.jpg");
+  /* background-image: url("/public/fiesta.jpg"); */
   background-size: contain;
   background-attachment: fixed;
 }
