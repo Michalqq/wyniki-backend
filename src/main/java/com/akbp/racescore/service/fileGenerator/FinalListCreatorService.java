@@ -31,8 +31,10 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -95,6 +97,8 @@ public class FinalListCreatorService {
         table.addHeaderCell("Team");
         table.addHeaderCell("Czas startu");
 
+        eventTeams = eventTeams.stream().sorted(Comparator.comparingLong(EventTeam::getNumber)).collect(Collectors.toList());
+
         int count = 1;
         for (EventTeam et : eventTeams) {
             Team team = et.getTeam();
@@ -126,13 +130,12 @@ public class FinalListCreatorService {
     }
 
     private String getTeamNames(Team team) {
-        String coDriver = Optional.ofNullable(team.getCoDriver()).map(x -> x != "" ? (" / " + x) : "").orElse("");
-
+        String coDriver = team.getCoDriver() != null && team.getCoDriver() != "" ? " / " + team.getCoDriver() : "";
         return Optional.ofNullable(team.getDriver()).map(x -> x + coDriver).orElse("");
     }
 
     private String getClubs(Team team) {
-        String coClub = Optional.ofNullable(team.getCoClub()).map(x -> x != "" ? (" / " + x) : "").orElse("");
+        String coClub = team.getCoClub() != null && team.getCoClub() != "" ? " / " + team.getCoClub() : "";
         return Optional.ofNullable(team.getClub()).map(x -> x + coClub).orElse("");
     }
 

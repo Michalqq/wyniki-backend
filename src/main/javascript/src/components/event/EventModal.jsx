@@ -142,30 +142,7 @@ export const EventModal = ({ show, handleClose, event }) => {
         >
           <Tab eventKey={1} title="Informacje">
             <div className="row text-center px-2">
-              <div className="col-lg-12 py-1">
-                {event?.logoPathFile ? (
-                  <img
-                    id={"eventImage" + event.eventId}
-                    style={{ height: "250px" }}
-                    className="img-fluid rounded float-left"
-                    src={"data:image/jpg;base64," + event.logoPathFile}
-                    alt="Logo"
-                  ></img>
-                ) : (
-                  event?.logoPath !== undefined &&
-                  event?.logoPath !== null && (
-                    <div className="">
-                      <img
-                        style={{ height: "250px" }}
-                        className="img-fluid rounded float-left"
-                        src={event.logoPath}
-                        alt="Logo"
-                      ></img>
-                    </div>
-                  )
-                )}
-              </div>
-              <div className="col-lg-12">
+              <div className="col-lg-7 px-0">
                 <h3>{event?.name || ""}</h3>
                 <h6>{`Data wydarzenia:  `}</h6>
                 <h6 className="fw-bold">
@@ -178,11 +155,38 @@ export const EventModal = ({ show, handleClose, event }) => {
                     )}`}
                   </p>
                 </div>
-              </div>
-              <div className="col-lg-12 px-0">
                 <p style={{ whiteSpace: "pre-line" }} className="m-1">
                   {event?.description || ""}
                 </p>
+              </div>
+              <div className="col-lg-5 py-1  align-items-center d-flex">
+                {event?.logoPathFile ? (
+                  <img
+                    id={"eventImage" + event.eventId}
+                    style={{
+                      maxHeight: "450px",
+                    }}
+                    className="pt-2 img-fluid rounded float-left"
+                    src={"data:image/jpg;base64," + event.logoPathFile}
+                    alt="Logo"
+                  ></img>
+                ) : (
+                  event?.logoPath !== undefined &&
+                  event?.logoPath !== null && (
+                    <div className="">
+                      <img
+                        style={{
+                          maxHeight: "450px",
+                          position: "relative",
+                          top: "30%",
+                        }}
+                        className="img-fluid rounded float-left"
+                        src={event.logoPath}
+                        alt="Logo"
+                      ></img>
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <Card className="text-center">
