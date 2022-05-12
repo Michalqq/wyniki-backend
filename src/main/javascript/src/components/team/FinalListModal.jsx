@@ -142,7 +142,7 @@ export const FinalListModal = ({ show, handleClose, eventId }) => {
         title={""}
         text={
           okModal
-            ? "Lista startowa została dodana do komunikatów wydarzeina"
+            ? "Lista startowa została dodana do komunikatów wydarzenia"
             : "Akcja nieudana"
         }
         handleAccept={() => setOkModal()}
