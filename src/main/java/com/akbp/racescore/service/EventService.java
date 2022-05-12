@@ -452,7 +452,7 @@ public class EventService {
         Event event = eventRepository.getById(eventId);
         System.out.println(event.getStages());
 
-        Stage stage = event.getStages().stream().filter(x -> x.getStageId() == stageId).findFirst().get();
+        Stage stage = event.getStages().stream().filter(x -> x.getStageId().equals(stageId)).findFirst().get();
         System.out.println(stage);
 
         List<PenaltyDTO> penalties = penaltyRepository.findAllByEventIdAndDisqualification(eventId, true)
