@@ -123,7 +123,7 @@ const HomePage = (props) => {
           Najbliższe wydarzenia
         </h4>
       </Card>
-      <div className="row mx-0 justify-content-center card-body">
+      <div className="row mx-0 justify-content-center card-body p-0">
         {loadingFuture && futureEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />

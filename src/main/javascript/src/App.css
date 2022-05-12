@@ -10,8 +10,8 @@ body,
 
 body {
   /* background-image: url("/public/fiesta.jpg"); */
-  background-size: contain;
-  background-attachment: fixed;
+  /* background-size: contain; */
+  /* background-attachment: fixed; */
 }
 
 @media all and (min-width: 0) and (max-width: 567px) {

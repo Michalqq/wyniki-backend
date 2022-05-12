@@ -6,6 +6,7 @@ import Card from "react-bootstrap/Card";
 import { InputLabeled } from "../common/InputLabeled";
 import {
   backendUrl,
+  fetchBkChecked,
   fetchSaveTeam,
   fetchTeamChecked,
 } from "../utils/fetchUtils";
@@ -24,6 +25,7 @@ import {
   faCarCrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { getCarLogo } from "../utils/car";
+import { OkModal } from "../common/Modal";
 
 export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [disable, setDisable] = useState(false);
@@ -33,6 +35,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [addCar, setAddCar] = useState();
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [okModal, setOkModal] = useState();
 
   useEffect(() => {
     if (!show) return;
@@ -145,9 +148,9 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   }, [msg]);
 
   return (
-    <div>
+    <>
       <Modal
-        style={{ zIndex: addCar ? 1000 : 1055 }}
+        style={{ zIndex: addCar || okModal ? 1000 : 1055 }}
         show={show}
         onHide={handleClose}
         backdrop="static"
@@ -444,7 +447,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
             )}
             <div className="text-center my-0">
               <h6 style={{ whiteSpace: "pre-line" }}>{msg}</h6>
-              {mode !== "teamPanel" && (
+              {mode !== "teamPanel" && !disable && (
                 <h6 style={{ whiteSpace: "pre-line" }}>
                   Uzupełnij profil danymi osobowymi oraz dodaj auto, po
                   zapisaniu będziesz mógł zapisywać się na kolejne imprezy
@@ -467,20 +470,70 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                 </Button>
               )}
               {disable && (
-                <Button
-                  className={"m-1"}
-                  variant="success"
-                  onClick={() =>
-                    fetchTeamChecked(
-                      myEvent?.eventId,
-                      myEvent?.teamId,
-                      true,
-                      handleClose
-                    )
-                  }
-                >
-                  Zatwierdź pozytywny OA
-                </Button>
+                <div className="row">
+                  <div className="col-xl-6 justify-content-center">
+                    <p className="mb-0">Odbiór administracyjny</p>
+                    <Button
+                      className={"m-1"}
+                      variant="success"
+                      onClick={() =>
+                        fetchTeamChecked(
+                          myEvent?.eventId,
+                          myEvent?.teamId,
+                          true,
+                          (data) => setOkModal(data)
+                        )
+                      }
+                    >
+                      OA pozytywne
+                    </Button>
+                    <Button
+                      className={"m-1"}
+                      variant="danger"
+                      onClick={() =>
+                        fetchTeamChecked(
+                          myEvent?.eventId,
+                          myEvent?.teamId,
+                          false,
+                          (data) => setOkModal(data)
+                        )
+                      }
+                    >
+                      OA negatywne
+                    </Button>
+                  </div>
+                  <div className="col-xl-6 justify-content-center">
+                    <p className="mb-0">Badanie kontrolne</p>
+                    <Button
+                      className={"m-1"}
+                      variant="success"
+                      onClick={() =>
+                        fetchBkChecked(
+                          myEvent?.eventId,
+                          myEvent?.teamId,
+                          true,
+                          (data) => setOkModal(data)
+                        )
+                      }
+                    >
+                      BK pozytywne
+                    </Button>
+                    <Button
+                      className={"m-1"}
+                      variant="danger"
+                      onClick={() =>
+                        fetchBkChecked(
+                          myEvent?.eventId,
+                          myEvent?.teamId,
+                          false,
+                          (data) => setOkModal(data)
+                        )
+                      }
+                    >
+                      BK negatywne
+                    </Button>
+                  </div>
+                </div>
               )}
               <Button
                 className={"m-1"}
@@ -489,22 +542,6 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
               >
                 Zamknij okno
               </Button>
-              {disable && (
-                <Button
-                  className={"m-1"}
-                  variant="danger"
-                  onClick={() =>
-                    fetchTeamChecked(
-                      myEvent?.eventId,
-                      myEvent?.teamId,
-                      false,
-                      handleClose
-                    )
-                  }
-                >
-                  Negatywny OA
-                </Button>
-              )}
             </div>
           </form>
         </Modal.Body>
@@ -519,6 +556,12 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
         carToEdit={addCar}
         mode={mode}
       />
-    </div>
+      <OkModal
+        show={okModal !== undefined}
+        title={""}
+        text={okModal ? "Akcja zakończona pomyślnie" : "Akcja nieudana"}
+        handleAccept={() => setOkModal()}
+      />
+    </>
   );
 };

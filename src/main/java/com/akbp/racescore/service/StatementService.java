@@ -1,6 +1,9 @@
 package com.akbp.racescore.service;
 
+import com.akbp.racescore.model.entity.Event;
+import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.Statement;
+import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.StatementRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
@@ -19,9 +22,8 @@ public class StatementService {
     private StatementRepository statementRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
-    private EventService eventService;
+    private EventRepository eventRepository;
 
     public List<Statement> getStatements(Long eventId) {
         return statementRepository.findByEventId(eventId);
@@ -49,12 +51,34 @@ public class StatementService {
         return "Dodano komunikat";
     }
 
+    public void addFinalList(Authentication auth, byte[] file, Event event, Stage stage) {
+        if (file == null) return;
+        Statement statement = new Statement(event, file);
+
+        User user = userRepository.findByUsername(auth.getName());
+        if (user != null)
+            statement.setUserMod(user.getUserId());
+
+        String finalListName = "Lista startowa: " + stage.getName();
+        removeFinalListStatement(finalListName);
+
+        statement.setName(finalListName);
+        statement.setFileName(finalListName + ".pdf");
+        statementRepository.save(statement);
+    }
+
+    private void removeFinalListStatement(String finalListName) {
+        List<Statement> statements = statementRepository.findByName(finalListName);
+        if (!statements.isEmpty())
+            statements.forEach(x -> statementRepository.delete(x));
+    }
+
     public void deleteStatement(Authentication auth, Long statementId) {
         Statement statement = statementRepository.getById(statementId);
         if (statement == null)
             return;
 
-        if (eventService.checkReferee(statement.getEventId(), auth))
+        if (eventRepository.checkIfUserIsReferee(statement.getEventId(), auth.getName()).isPresent())
             statementRepository.delete(statement);
     }
 }

@@ -56,6 +56,27 @@ export const fetchTeamChecked = (eventId, teamId, checked, handleResponse) => {
   );
 };
 
+export const fetchBkChecked = (eventId, teamId, checked, handleResponse) => {
+  fetchPost(
+    `${backendUrl()}/event/bkChecked?eventId=${eventId}&teamId=${teamId}&checked=${checked}`,
+    null,
+    handleResponse
+  );
+};
+
+export const fetchCreateFinalList = (
+  eventId,
+  stageId,
+  startTime,
+  frequency,
+  handleResponse
+) => {
+  fetchGet(
+    `${backendUrl()}/event/fetchCreateFinalList?eventId=${eventId}&stageId=${stageId}&startTime=${startTime}&frequency=${frequency}`,
+    handleResponse
+  );
+};
+
 export const fetchRemoveFromEvent = (eventId, teamId, handleResponse) => {
   axios
     .post(
@@ -95,6 +116,13 @@ export const fetchRemindPassword = (email, handleResponse) => {
 export const fetchStatement = (eventId, handleResponse) => {
   fetchGet(
     `${backendUrl()}/statement/getStatements?eventId=${eventId}`,
+    handleResponse
+  );
+};
+
+export const fetchDriverCount = (eventId, handleResponse) => {
+  fetchGet(
+    `${backendUrl()}/event/getDriverCount?eventId=${eventId}`,
     handleResponse
   );
 };

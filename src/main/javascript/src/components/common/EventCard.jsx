@@ -4,8 +4,8 @@ import Button from "react-bootstrap/Button";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faEdit } from "@fortawesome/free-solid-svg-icons";
-import Badge from "react-bootstrap/Badge";
-import { fetchStatement } from "../utils/fetchUtils";
+import { fetchDriverCount, fetchStatement } from "../utils/fetchUtils";
+import { Count } from "./Count";
 
 export const EventCard = ({
   event,
@@ -19,10 +19,27 @@ export const EventCard = ({
   const eventDeadlined =
     new Date().getTime() > new Date(event.signDeadline).getTime();
   const [statementCount, setStatementCount] = useState(0);
+  const [driverCount, setDriverCount] = useState(0);
+
+  const signDeadlineCount = moment(event?.signDeadline).diff(
+    new Date(),
+    "days"
+  );
+  const eventCount = moment(event?.date).diff(new Date(), "days");
+
+  const getTxtCount = (count) => {
+    return count === 0
+      ? "DZISIAJ!"
+      : count === 1
+      ? "za " + count + " dzień"
+      : "za " + count + " dni";
+  };
 
   useEffect(() => {
-    if (event)
+    if (event) {
       fetchStatement(event.eventId, (data) => setStatementCount(data.length));
+      fetchDriverCount(event.eventId, (data) => setDriverCount(data));
+    }
   }, []);
 
   return (
@@ -44,45 +61,63 @@ export const EventCard = ({
           </div>
         </Card.Header>
         <Card.Body className="p-1">
-          <div className="position-absolute end-0 mx-3 text-end badge bg-primary-green text-wrap fst-italic">
-            {moment(event?.date).format("dddd, DD MMM YYYY, HH:mm")}
+          <div
+            style={{ whiteSpace: "break-spaces" }}
+            className="position-absolute end-0 mx-1 badge bg-primary-green text-wrap fst-italic"
+          >
+            {`${moment(event?.date).format("dddd, DD MMM YYYY, HH:mm")}
+            ${eventCount >= 0 ? "(" + getTxtCount(eventCount) + ")" : ""}`}
           </div>
           <div className="container d-flex">
             <div
-              className="col-lg-2 px-0 align-self-center"
-              style={{ width: "110px" }}
+              className="col-lg-4 px-0 align-self-center"
+              style={{
+                width: "200px",
+                maxHeight: "150px",
+                display: "flex",
+              }}
             >
               {event.logoPathFile ? (
                 <img
                   id={"eventImage" + event.eventId}
                   className="img-fluid rounded float-left"
+                  style={{ objectFit: "contain" }}
                   src={"data:image/jpg;base64," + event.logoPathFile}
                   alt="Logo"
                 ></img>
               ) : event.logoPath !== undefined && event.logoPath !== null ? (
                 <img
                   className="img-fluid rounded float-left"
+                  style={{ objectFit: "contain" }}
                   src={event.logoPath}
                   alt="Logo"
                 ></img>
               ) : (
                 <img
                   src="/akbpLogo.png"
+                  style={{ objectFit: "contain" }}
                   className="img-fluid rounded float-left"
                   alt="..."
                 />
               )}
             </div>
-            <div className="col-lg-10 mt-3">
+            <div className="col-lg-8 mt-3">
               {event.organizer !== undefined && event.organizer !== null && (
-                <p className="m-3 ">{`Organizator: ${event.organizer}`}</p>
+                <h6 className="m-3 ">{`Organizator: ${event.organizer}`}</h6>
               )}
               {new Date(event?.signDeadline) >= new Date() && (
-                <p className="fw-bold fst-italic mt-2">
-                  {`Koniec zapisów:  ${moment(event?.signDeadline).format(
-                    "dddd, DD MMM YYYY, HH:mm"
-                  )}`}
-                </p>
+                <>
+                  <h6
+                    style={{ whiteSpace: "break-spaces" }}
+                    className="font13 fw-bold fst-italic mt-2"
+                  >
+                    {`Koniec zapisów ${getTxtCount(
+                      signDeadlineCount
+                    )}\n${moment(event?.signDeadline).format(
+                      "dddd, DD MMM YYYY, HH:mm"
+                    )}`}
+                  </h6>
+                </>
               )}
               {new Date(event?.signDeadline) < new Date() && (
                 <p className="fw-bold fst-italic mt-2">{"Zapisy zamknięte"}</p>
@@ -125,6 +160,12 @@ export const EventCard = ({
               >
                 Lista
               </Button>
+              <Count
+                count={driverCount}
+                lPos="-3.5vh"
+                bg="primary"
+                title={"Liczba zapisanych"}
+              />
               <Button
                 className={"py-1 px-1 mx-1"}
                 variant="warning"
@@ -132,17 +173,7 @@ export const EventCard = ({
               >
                 Komunikaty
               </Button>
-              <div
-                className="position-relative"
-                style={{ left: "-3vh", top: "-10px" }}
-              >
-                {statementCount > 0 && (
-                  <Badge className="position-absolute" pill bg="secondary">
-                    {statementCount}
-                  </Badge>
-                )}
-              </div>
-
+              <Count count={statementCount} title={"Liczba komunikatów"} />
               <Button
                 className={"py-1 px-1 mx-1"}
                 variant="success"

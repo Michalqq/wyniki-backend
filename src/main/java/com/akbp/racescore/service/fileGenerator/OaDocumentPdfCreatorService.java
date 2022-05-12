@@ -61,6 +61,7 @@ public class OaDocumentPdfCreatorService {
         for (EventTeam et : event.getEventTeams().stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList()))
             createPage(doc, et, event);
 
+        pdf.removePage(event.getEventTeams().size() + 1);
         doc.close();
 
         HttpHeaders headers = new HttpHeaders();
@@ -99,8 +100,11 @@ public class OaDocumentPdfCreatorService {
         img.setMaxWidth(100);
         img.setMaxHeight(100);
 
-        float fixHeight = (806 - img.getImageHeight()) / 10 - (img.getImageHeight() / 10);
-        img.setFixedPosition(40, 720 + fixHeight);
+        System.out.println(img.getImageHeight());
+
+        float fixedHeight = img.getImageHeight() / 13;
+
+        img.setFixedPosition(35, 780 - fixedHeight);
 
         return img;
     }
@@ -223,7 +227,7 @@ public class OaDocumentPdfCreatorService {
     }
 
     private Paragraph createTitle(Event event) {
-        Paragraph p = new Paragraph(event.getName() + "\n").setFontSize(14).setPaddingLeft(80).setPaddingRight(80).setTextAlignment(TextAlignment.CENTER);
+        Paragraph p = new Paragraph(event.getName() + "\n").setFontSize(14).setPaddingLeft(100).setPaddingRight(80).setTextAlignment(TextAlignment.CENTER);
         p.setMarginTop(-40);
         p.add(fromInstant(event.getDate()) + "\n");
         p.add("Organizator: " + event.getOrganizer());

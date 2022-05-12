@@ -17,7 +17,13 @@ export const OkCancelModal = ({
       </Modal.Header>
 
       <Modal.Body>
-        <p>{text}</p>
+        <p
+          style={{
+            whiteSpace: "break-spaces",
+          }}
+        >
+          {text}
+        </p>
       </Modal.Body>
 
       <Modal.Footer className={"justify-content-center"}>

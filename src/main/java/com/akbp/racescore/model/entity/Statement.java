@@ -53,4 +53,10 @@ public class Statement {
         if (statementInDto.getPostFile() != null)
             this.file = statementInDto.getPostFile().getBytes();
     }
+
+    public Statement(Event event, byte[] file) {
+        this.eventId = event.getEventId();
+        this.file = file;
+        this.date = Instant.now();
+    }
 }

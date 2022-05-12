@@ -136,7 +136,7 @@ export const TimePicker = (props) => {
         className="form-control "
         showTimeSelect
         showTimeSelectOnly
-        timeIntervals={15}
+        timeIntervals={10}
         timeCaption="Godzina"
         dateFormat="HH:mm"
         onChange={props.onChange}

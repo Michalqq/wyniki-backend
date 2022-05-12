@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface PenaltyRepository extends JpaRepository<Penalty, Long> {
 
-    @Query(value = "select stage.name, pen.penalty_id penaltyId, pen.description, pen.penalty_kind penaltyKind, pen.penalty_sec penaltySec, et.number, team.driver, team.co_driver coDriver\n" +
+    @Query(value = "select stage.name, stage.stage_id stageId, " +
+            "pen.penalty_id penaltyId, pen.description, pen.penalty_kind penaltyKind, pen.penalty_sec penaltySec, " +
+            "et.team_id teamId, et.number, team.driver, team.co_driver coDriver\n" +
             "from race_score.penalty pen " +
             "left join race_score.event_team et on et.team_id = pen.team_id and et.event_id = :eventId " +
             "left join race_score.team team on team.team_id = pen.team_id " +
@@ -23,6 +25,8 @@ public interface PenaltyRepository extends JpaRepository<Penalty, Long> {
     List<Penalty> findByStageIdAndTeamId(Long stageId, Long teamId);
 
     List<Penalty> findByStageIdInAndTeamId(List<Long> stagesId, Long teamId);
+
+    List<Penalty> findByStageIdAndTeamIdAndPenaltyKind(Long stageId, Long teamId, Long penaltyKind);
 
     void deleteByStageIdAndTeamId(Long stageId, Long teamId);
 }

@@ -78,3 +78,27 @@ export const ScoreDivPenalty = ({ line1, line2 }) => {
     </div>
   );
 };
+
+export const BkOaDiv = ({ oa, bk }) => {
+  const oaColor = oa ? "text-success" : "text-danger";
+  const bkColor = bk ? "text-success" : "text-danger";
+
+  return (
+    <div className="float-left">
+      <>
+        {oa === null ? (
+          ""
+        ) : (
+          <p className={"font13 m-0 p-0 fw-bolder " + oaColor}>{"OA"}</p>
+        )}
+      </>{" "}
+      <>
+        {bk === null ? (
+          ""
+        ) : (
+          <p className={"font13 m-0 p-0 fw-bolder " + bkColor}>{"BK"}</p>
+        )}
+      </>
+    </div>
+  );
+};

@@ -2,6 +2,7 @@ package com.akbp.racescore.service;
 
 import com.akbp.racescore.model.dto.EventDTO;
 import com.akbp.racescore.model.dto.FileDto;
+import com.akbp.racescore.model.dto.PenaltyDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -13,8 +14,8 @@ import com.akbp.racescore.model.repository.*;
 import com.akbp.racescore.model.repository.dictionary.CarClassRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
-import com.akbp.racescore.service.fileGenerator.BkPdfCreatorService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.akbp.racescore.service.fileGenerator.FinalListCreatorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,9 +35,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EventService {
 
     private static final String GENERAL = "GENERALNA";
+    private static final Long DISQUALIFIED_PENALTY_ID = 7L;
+
+    private static final String OA_DISQ = "Odbiór administracyjny!";
+    private static final String BK_DISQ = "Badanie kontrolne!";
 
     private final EventRepository eventRepository;
     private final EventTeamRepository eventTeamRepository;
@@ -45,43 +51,14 @@ public class EventService {
     private final UserRepository userRepository;
     private final CarClassRepository carClassRepository;
     private final EventPathsRepository eventPathsRepository;
-    private final EventClassesRepository eventClassesRepository;
     private final PenaltyRepository penaltyRepository;
     private final EventFileRepository eventFileRepository;
 
-    private final BkPdfCreatorService bkPdfCreatorService;
+    private final FinalListCreatorService finalListCreatorService;
 
+    private final StatementService statementService;
     private final CarService carService;
     private int sortIndex = 0;
-
-    @Autowired
-    public EventService(EventRepository eventRepository,
-                        EventTeamRepository eventTeamRepository,
-                        StageScoreRepository stageScoreRepository,
-                        UserRepository userRepository,
-                        TeamRepository teamRepository,
-                        CarClassRepository carClassRepository,
-                        CarService carService,
-                        EventPathsRepository eventPathsRepository,
-                        EventClassesRepository eventClassesRepository,
-                        PenaltyRepository penaltyRepository,
-                        EventFileRepository eventFileRepository,
-                        BkPdfCreatorService bkPdfCreatorService) {
-        this.eventRepository = eventRepository;
-        this.eventTeamRepository = eventTeamRepository;
-        this.stageScoreRepository = stageScoreRepository;
-        this.userRepository = userRepository;
-        this.teamRepository = teamRepository;
-        this.carClassRepository = carClassRepository;
-        this.eventPathsRepository = eventPathsRepository;
-        this.eventClassesRepository = eventClassesRepository;
-        this.penaltyRepository = penaltyRepository;
-        this.eventFileRepository = eventFileRepository;
-
-        this.bkPdfCreatorService = bkPdfCreatorService;
-
-        this.carService = carService;
-    }
 
     public List<String> getStages(Long eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
@@ -367,13 +344,56 @@ public class EventService {
 
     public Boolean teamChecked(Long eventId, Long teamId, boolean checked) {
         EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
-
         if (eventTeam == null) return false;
 
         eventTeam.setTeamChecked(checked);
         eventTeamRepository.save(eventTeam);
 
+        if (checked)
+            removePenalty(eventId, teamId, OA_DISQ);
+        else
+            addDisqualifiedPenalty(eventId, teamId, OA_DISQ);
+
         return true;
+    }
+
+    public Boolean bkChecked(Long eventId, Long teamId, boolean checked) {
+        EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
+        if (eventTeam == null) return false;
+
+        eventTeam.setBkPositive(checked);
+        eventTeamRepository.save(eventTeam);
+
+        if (checked)
+            removePenalty(eventId, teamId, BK_DISQ);
+        else
+            addDisqualifiedPenalty(eventId, teamId, BK_DISQ);
+
+        return true;
+    }
+
+    private void removePenalty(Long eventId, Long teamId, String bkDisq) {
+        Event event = eventRepository.getById(eventId);
+        List<Stage> stages = event.getStages().stream().sorted(Comparator.comparingLong(Stage::getStageId)).collect(Collectors.toList());
+
+        List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamIdAndPenaltyKind(stages.get(0).getStageId(), teamId, DISQUALIFIED_PENALTY_ID);
+
+        penalties = penalties.stream().filter(x -> x.getDescription().equals(bkDisq)).collect(Collectors.toList());
+        if (penalties.size() > 0)
+            penalties.forEach(x -> penaltyRepository.delete(x));
+    }
+
+    private void addDisqualifiedPenalty(Long eventId, Long teamId, String desc) {
+        Event event = eventRepository.getById(eventId);
+        List<Stage> stages = event.getStages().stream().sorted(Comparator.comparingLong(Stage::getStageId)).collect(Collectors.toList());
+
+        Penalty penalty = new Penalty();
+        penalty.setStageId(stages.get(0).getStageId());
+        penalty.setPenaltyKind(DISQUALIFIED_PENALTY_ID);
+        penalty.setDescription(desc);
+        penalty.setTeamId(teamId);
+
+        penaltyRepository.save(penalty);
     }
 
     public boolean removeFile(Long fileId, Long eventId) {
@@ -422,5 +442,30 @@ public class EventService {
             return new FileDto(event.getLogoPathFile());
 
         return null;
+    }
+
+    public Long getDriverCount(Long eventId) {
+        return eventTeamRepository.countByEventId(eventId);
+    }
+
+    public boolean fetchCreateFinalList(Authentication auth, Long eventId, Long stageId, Instant startTime, Long frequency) throws IOException {
+        Event event = eventRepository.getById(eventId);
+        Stage stage = event.getStages().stream().filter(x -> x.getStageId() == stageId).findFirst().get();
+
+        List<PenaltyDTO> penalties = penaltyRepository.findAllByEventIdAndDisqualification(eventId, true)
+                .stream().filter(x -> x.getStageId() < stageId).collect(Collectors.toList());
+        List<Long> disqualifiedTeamIds = penalties.stream().map(x -> x.getTeamId()).collect(Collectors.toList());
+
+        List<EventTeam> eventTeams = eventTeamRepository.findByEventId(eventId);
+        eventTeams = eventTeams.stream()
+                .filter(x -> !Boolean.FALSE.equals(x.getTeamChecked()) && !Boolean.FALSE.equals(x.getBkPositive()))
+                .filter(x -> !disqualifiedTeamIds.contains(x.getTeamId())).collect(Collectors.toList());
+
+        byte[] file = finalListCreatorService.createFinalListFile(event, stage, eventTeams, startTime, frequency);
+        statementService.addFinalList(auth, file, event, stage);
+        //Path path = Paths.get("/test.pdf");
+        //Files.write(path, file);
+
+        return true;
     }
 }

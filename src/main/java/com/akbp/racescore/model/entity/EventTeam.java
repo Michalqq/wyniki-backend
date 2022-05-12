@@ -41,6 +41,9 @@ public class EventTeam {
     @Column(name = "TEAM_CHECKED")
     private Boolean teamChecked;
 
+    @Column(name = "BK_POSITIVE")
+    private Boolean bkPositive;
+
     @Column(name = "JOIN_DATE")
     private Instant joinDate;
 

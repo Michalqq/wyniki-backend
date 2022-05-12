@@ -36,6 +36,9 @@ public class Event implements Serializable {
     @Column(name = "ORGANIZER")
     private String organizer;
 
+    @Column(name = "FINAL_LIST")
+    private byte[] finalList;
+
     @Column(name = "DATE", nullable = false)
     private Instant date;
 

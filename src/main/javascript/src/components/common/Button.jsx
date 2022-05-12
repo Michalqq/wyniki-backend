@@ -2,13 +2,20 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
-export const MyButton = ({ variant, onClick, isLoading, msg, loadingMsg }) => {
+export const MyButton = ({
+  variant,
+  onClick,
+  disabled = false,
+  isLoading,
+  msg,
+  loadingMsg,
+}) => {
   return (
     <Button
       className={"m-1"}
       variant={variant}
       onClick={onClick}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
     >
       {isLoading ? (
         <>

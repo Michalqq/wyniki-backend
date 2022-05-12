@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import {
   backendUrl,
   fetchConfirmEntryFee,
+  fetchCreateFinalList,
   fetchRemoveFromEvent,
   fetchSaveTeam,
 } from "../utils/fetchUtils";
@@ -30,7 +31,8 @@ import { TeamModal } from "./TeamModal";
 import { QuickJoinPanel } from "../join/QuickJoinPanel";
 import { download } from "../utils/fileUtils";
 import { MyButton } from "../common/Button";
-import { CarDiv, TeamDiv } from "../common/Div";
+import { BkOaDiv, CarDiv, TeamDiv } from "../common/Div";
+import { FinalListModal } from "./FinalListModal";
 
 export const AdminTeamList = ({
   show,
@@ -61,6 +63,8 @@ export const AdminTeamList = ({
 
   const [downloadingOA, setDownloadingOA] = useState(false);
   const [downloadingBK, setDownloadingBK] = useState(false);
+
+  const [finalList, setFinalList] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -267,401 +271,442 @@ export const AdminTeamList = ({
   };
 
   return (
-    <Modal
-      style={{ zIndex: teamToEdit || teamToPreview || quickJoin ? 1000 : 1055 }}
-      show={show}
-      onHide={handleClose}
-      backdrop="static"
-      keyboard={false}
-      size="xl"
-    >
-      <Modal.Header className="bg-dark-green text-white" closeButton>
-        <Modal.Title>Lista zapisanych</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {loading && (
-          <div className="text-center">
-            <Spinner animation="border" variant="secondary" size="lg" />
-          </div>
-        )}
-        {!loading && teams.length === 0 && (
-          <h1 className="text-center">Brak zgłoszeń</h1>
-        )}
-        {!loading && teams?.length > 0 && (
-          <>
-            <table>
-              <th className="">
-                <td style={{ width: "70px" }}>Edycja</td>
-                <td style={{ width: "60px" }}>Nr</td>
-                <td style={{ width: "350px" }}>Kierowca</td>
-                <td style={{ width: "350px" }}>Samochód</td>
-                <td style={{ width: "100px" }}>Klasa</td>
-                <td style={{ width: "100px" }}>Zapłacone</td>
-                <td style={{ width: "110px" }}>Potwierdź wpisowe</td>
-                <td style={{ width: "100px" }}>Plik</td>
-                <td style={{ width: "80px" }}>OA</td>
-                <td style={{ width: "80px" }}>Usuń załogę</td>
-              </th>
-            </table>
-            <div style={{ overflowX: "scroll" }}>
-              <DragDropContext
-                onDragStart={() => setRefreshSelect(true)}
-                onDragEnd={handleOnDragEnd}
-              >
-                <Droppable droppableId="selectedCases">
-                  {(provided) => (
-                    <ol
-                      className="selectedCases fw-bold"
-                      style={{ minWidth: "600px" }}
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                    >
-                      {teams?.map((item, index) => {
-                        return (
-                          <Draggable
-                            key={item.order}
-                            draggableId={item.order.toString()}
-                            index={index}
-                            draggable={true}
-                          >
-                            {(provided) => (
-                              <li
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <Card className="my-1">
-                                  <Card.Body className="p-0">
-                                    <table className="m-0">
-                                      <tr className="d-table-row fw-normal align-middle">
-                                        <td
-                                          className={
-                                            item.teamChecked &&
-                                            item.entryFeePaid
-                                              ? "bg-success"
-                                              : ""
-                                          }
-                                          style={{ width: "20px" }}
-                                        >
-                                          <FontAwesomeIcon
-                                            icon={faUserEdit}
-                                            onClick={() =>
-                                              setTeamToEdit(item.team)
+    <>
+      <Modal
+        style={{
+          zIndex:
+            teamToEdit || teamToPreview || quickJoin || finalList ? 1000 : 1055,
+        }}
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        size="xl"
+      >
+        <Modal.Header className="bg-dark-green text-white" closeButton>
+          <Modal.Title>Lista zapisanych</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="pb-0">
+          {loading && (
+            <div className="text-center">
+              <Spinner animation="border" variant="secondary" size="lg" />
+            </div>
+          )}
+          {!loading && teams.length === 0 && (
+            <h1 className="text-center">Brak zgłoszeń</h1>
+          )}
+          {!loading && teams?.length > 0 && (
+            <>
+              <table style={{ minWidth: "600px" }}>
+                <th className="">
+                  <td style={{ width: "70px" }}>Edycja</td>
+                  <td style={{ width: "60px" }}>Nr</td>
+                  <td style={{ width: "350px" }}>Kierowca</td>
+                  <td style={{ width: "350px" }}>Samochód</td>
+                  <td style={{ width: "100px" }}>Klasa</td>
+                  <td style={{ width: "100px" }}>Zapłacone</td>
+                  <td style={{ width: "110px" }}>Potwierdź wpisowe</td>
+                  <td style={{ width: "100px" }}>Plik</td>
+                  <td style={{ width: "50px" }}>OA/BK</td>
+                  <td style={{ width: "10px" }}></td>
+                  <td style={{ width: "80px", textAlign: "right" }}>
+                    Usuń załogę
+                  </td>
+                </th>
+              </table>
+              <div style={{ overflowX: "scroll" }}>
+                <DragDropContext
+                  onDragStart={() => setRefreshSelect(true)}
+                  onDragEnd={handleOnDragEnd}
+                >
+                  <Droppable droppableId="selectedCases">
+                    {(provided) => (
+                      <ol
+                        className="selectedCases fw-bold"
+                        style={{ minWidth: "600px" }}
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                      >
+                        {teams?.map((item, index) => {
+                          return (
+                            <Draggable
+                              key={item.order}
+                              draggableId={item.order.toString()}
+                              index={index}
+                              draggable={true}
+                            >
+                              {(provided) => (
+                                <li
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <Card className="my-1">
+                                    <Card.Body className="p-0">
+                                      <table className="m-0">
+                                        <tr className="d-table-row fw-normal align-middle">
+                                          <td
+                                            className={
+                                              item.teamChecked &&
+                                              item.entryFeePaid &&
+                                              item.bkPositive
+                                                ? "bg-success"
+                                                : ""
                                             }
-                                            title={"Edytuj dane"}
-                                            cursor={"pointer"}
-                                          />
-                                        </td>
-                                        <td style={{ width: "55px" }}>
-                                          {/* <NrBadge value={item.number}></NrBadge> */}
-                                          <input
+                                            style={{ width: "20px" }}
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faUserEdit}
+                                              onClick={() =>
+                                                setTeamToEdit(item.team)
+                                              }
+                                              title={"Edytuj dane"}
+                                              cursor={"pointer"}
+                                            />
+                                          </td>
+                                          <td style={{ width: "55px" }}>
+                                            {/* <NrBadge value={item.number}></NrBadge> */}
+                                            <input
+                                              style={{
+                                                width: "90%",
+                                                backgroundColor: "#ffad4f",
+                                                fontWeight: item.forcedNumber
+                                                  ? "700"
+                                                  : "100",
+                                                borderRadius: "20px",
+                                                textAlign: "center",
+                                              }}
+                                              type="number"
+                                              value={item.number}
+                                              onChange={(e) =>
+                                                numberChanged(
+                                                  e.target.value,
+                                                  item
+                                                )
+                                              }
+                                              onBlur={(e) =>
+                                                checkRepeated(
+                                                  e.target.value,
+                                                  item
+                                                )
+                                              }
+                                            />
+                                          </td>
+                                          <td style={{ width: "270px" }}>
+                                            <TeamDiv team={item.team}></TeamDiv>
+                                          </td>
+                                          <td style={{ width: "270px" }}>
+                                            <CarDiv
+                                              line1={
+                                                (item.team.currentCar?.brand ||
+                                                  "") +
+                                                " " +
+                                                (item.team.currentCar?.model ||
+                                                  "")
+                                              }
+                                              driveType={
+                                                item.team.currentCar
+                                                  ?.driveTypeEnum
+                                              }
+                                            ></CarDiv>
+                                          </td>
+                                          <td
                                             style={{
-                                              width: "90%",
-                                              backgroundColor: "#ffad4f",
-                                              fontWeight: item.forcedNumber
-                                                ? "700"
-                                                : "100",
-                                              borderRadius: "20px",
+                                              width: "100px",
+                                              display: "flex",
+                                            }}
+                                          >
+                                            {item.carClassId}
+                                            {!refreshSelect && (
+                                              <Selector
+                                                className={"m-0 p-0"}
+                                                options={eventClasses}
+                                                handleChange={(value) => {
+                                                  changeCarClass(
+                                                    item.id,
+                                                    value
+                                                  );
+                                                }}
+                                                isValid={true}
+                                                value={item.carClassId}
+                                              />
+                                            )}
+                                            {refreshSelect && (
+                                              <Selector
+                                                className={"m-0 p-0"}
+                                                options={eventClasses}
+                                                handleChange={(value) => {
+                                                  changeCarClass(
+                                                    item.id,
+                                                    value
+                                                  );
+                                                }}
+                                                isValid={true}
+                                                skipDefault={true}
+                                              />
+                                            )}
+                                          </td>
+                                          <td
+                                            style={{
+                                              width: "90px",
                                               textAlign: "center",
                                             }}
-                                            type="number"
-                                            value={item.number}
-                                            onChange={(e) =>
-                                              numberChanged(
-                                                e.target.value,
-                                                item
-                                              )
-                                            }
-                                            onBlur={(e) =>
-                                              checkRepeated(
-                                                e.target.value,
-                                                item
-                                              )
-                                            }
-                                          />
-                                        </td>
-                                        <td style={{ width: "270px" }}>
-                                          <TeamDiv team={item.team}></TeamDiv>
-                                        </td>
-                                        <td style={{ width: "270px" }}>
-                                          <CarDiv
-                                            line1={
-                                              (item.team.currentCar?.brand ||
-                                                "") +
-                                              " " +
-                                              (item.team.currentCar?.model ||
-                                                "")
-                                            }
-                                            driveType={
-                                              item.team.currentCar
-                                                ?.driveTypeEnum
-                                            }
-                                          ></CarDiv>
-                                        </td>
-                                        <td
-                                          style={{
-                                            width: "100px",
-                                            display: "flex",
-                                          }}
-                                        >
-                                          {item.carClassId}
-                                          {!refreshSelect && (
-                                            <Selector
-                                              className={"m-0 p-0"}
-                                              options={eventClasses}
-                                              handleChange={(value) => {
-                                                changeCarClass(item.id, value);
-                                              }}
-                                              isValid={true}
-                                              value={item.carClassId}
-                                            />
-                                          )}
-                                          {refreshSelect && (
-                                            <Selector
-                                              className={"m-0 p-0"}
-                                              options={eventClasses}
-                                              handleChange={(value) => {
-                                                changeCarClass(item.id, value);
-                                              }}
-                                              isValid={true}
-                                              skipDefault={true}
-                                            />
-                                          )}
-                                        </td>
-                                        <td
-                                          style={{
-                                            width: "90px",
-                                            textAlign: "center",
-                                          }}
-                                        >
-                                          {item.entryFeePaid ? (
+                                          >
+                                            {item.entryFeePaid ? (
+                                              <FontAwesomeIcon
+                                                className={"text-success"}
+                                                icon={faDollarSign}
+                                              />
+                                            ) : (
+                                              <FontAwesomeIcon
+                                                className={"text-danger"}
+                                                icon={faExclamation}
+                                              />
+                                            )}
+                                          </td>
+                                          <td style={{ width: "90px" }}>
                                             <FontAwesomeIcon
-                                              className={"text-success"}
-                                              icon={faDollarSign}
-                                            />
-                                          ) : (
-                                            <FontAwesomeIcon
-                                              className={"text-danger"}
-                                              icon={faExclamation}
-                                            />
-                                          )}
-                                        </td>
-                                        <td style={{ width: "90px" }}>
-                                          <FontAwesomeIcon
-                                            icon={faCoins}
-                                            onClick={() =>
-                                              setTeamToEntryFee(
-                                                getDriverAndTeamId(item.team)
-                                              )
-                                            }
-                                            title={"Potwierdź wpisowe"}
-                                            cursor={"pointer"}
-                                          />
-                                        </td>
-                                        <td style={{ width: "90px" }}>
-                                          {item.entryFeeFile !== null ? (
-                                            <FontAwesomeIcon
-                                              icon={faDownload}
+                                              icon={faCoins}
                                               onClick={() =>
-                                                fetchEntryFeeFile(
-                                                  item.team.teamId,
-                                                  item.team.driver
+                                                setTeamToEntryFee(
+                                                  getDriverAndTeamId(item.team)
                                                 )
                                               }
-                                              title={"Pobierz plik"}
+                                              title={"Potwierdź wpisowe"}
                                               cursor={"pointer"}
                                             />
-                                          ) : (
-                                            <></>
-                                          )}
-                                        </td>
-                                        <td style={{ width: "80px" }}>
-                                          {item.teamChecked ? (
+                                          </td>
+                                          <td style={{ width: "90px" }}>
+                                            {item.entryFeeFile !== null ? (
+                                              <FontAwesomeIcon
+                                                icon={faDownload}
+                                                onClick={() =>
+                                                  fetchEntryFeeFile(
+                                                    item.team.teamId,
+                                                    item.team.driver
+                                                  )
+                                                }
+                                                title={"Pobierz plik"}
+                                                cursor={"pointer"}
+                                              />
+                                            ) : (
+                                              <></>
+                                            )}
+                                          </td>
+                                          <td style={{ width: "30px" }}>
+                                            {item.teamChecked ? (
+                                              <FontAwesomeIcon
+                                                className={"text-success"}
+                                                icon={faClipboard}
+                                                onClick={() =>
+                                                  setTeamToPreview(
+                                                    item.team.teamId
+                                                  )
+                                                }
+                                                title={"Podgląd danych"}
+                                                cursor={"pointer"}
+                                              />
+                                            ) : (
+                                              <FontAwesomeIcon
+                                                icon={faClipboard}
+                                                onClick={() =>
+                                                  setTeamToPreview(
+                                                    item.team.teamId
+                                                  )
+                                                }
+                                                title={"Podgląd danych"}
+                                                cursor={"pointer"}
+                                              />
+                                            )}
+                                          </td>
+                                          <td style={{ width: "30px" }}>
+                                            <BkOaDiv
+                                              oa={item.teamChecked}
+                                              bk={item.bkPositive}
+                                            />
+                                          </td>
+                                          <td
+                                            style={{
+                                              width: "60px",
+                                              color: "red",
+                                              textAlign: "right",
+                                              paddingRight: "5px",
+                                            }}
+                                          >
                                             <FontAwesomeIcon
-                                              className={"text-success"}
-                                              icon={faClipboard}
+                                              icon={faTimesCircle}
                                               onClick={() =>
-                                                setTeamToPreview(
-                                                  item.team.teamId
+                                                setTeamToRemove(
+                                                  getDriverAndTeamId(item.team)
                                                 )
                                               }
-                                              title={"Podgląd danych"}
+                                              title={"Usuń załoge"}
                                               cursor={"pointer"}
                                             />
-                                          ) : (
-                                            <FontAwesomeIcon
-                                              icon={faClipboard}
-                                              onClick={() =>
-                                                setTeamToPreview(
-                                                  item.team.teamId
-                                                )
-                                              }
-                                              title={"Podgląd danych"}
-                                              cursor={"pointer"}
-                                            />
-                                          )}
-                                        </td>
-                                        <td
-                                          style={{
-                                            width: "60px",
-                                            color: "red",
-                                          }}
-                                        >
-                                          <FontAwesomeIcon
-                                            icon={faTimesCircle}
-                                            onClick={() =>
-                                              setTeamToRemove(
-                                                getDriverAndTeamId(item.team)
-                                              )
-                                            }
-                                            title={"Usuń załoge"}
-                                            cursor={"pointer"}
-                                          />
-                                        </td>
-                                      </tr>
-                                    </table>
-                                  </Card.Body>
-                                </Card>
-                              </li>
-                            )}
-                          </Draggable>
-                        );
-                      })}
-                      {provided.placeholder}
-                    </ol>
-                  )}
-                </Droppable>
-              </DragDropContext>
-            </div>
-          </>
-        )}
-        {teamToRemove.teamId !== null && (
-          <OkCancelModal
-            show={true}
-            title={"Usuwanie załogi"}
-            text={`Czy napewno chcesz usunąć załoge: ${teamToRemove.driver}`}
-            handleAccept={() => {
-              fetchRemoveFromEvent(eventId, teamToRemove.teamId, () =>
-                fetchTeams()
-              );
-              eraseTeamToRemove();
-            }}
-            handleClose={() => {
-              eraseTeamToRemove();
-            }}
-          />
-        )}
-        {teamToEntryFee.teamId !== null && (
-          <OkCancelModal
-            show={true}
-            title={"Potwierdzanie wpisowego"}
-            text={`Czy napewno chcesz potwierdzić wpłatę wpisowego przez załoge: ${teamToEntryFee.driver}`}
-            handleAccept={() => {
-              fetchConfirmEntryFee(eventId, teamToEntryFee.teamId, () =>
-                fetchTeams()
-              );
-              eraseTeamToEntryFee();
-            }}
-            handleClose={() => {
-              eraseTeamToEntryFee();
-            }}
-          />
-        )}
-        {startEvent && (
-          <OkCancelModal
-            show={true}
-            title={"Zamykanie listy / Rozpoczynanie wydarzenia"}
-            text={`Czy napewno chcesz zamknąć listę i rozpocząć wydarzenie? Operacja nieodwracalna`}
-            handleAccept={() => {
-              fetchStartEvent();
-              setStartEvent(false);
-            }}
-            handleClose={() => setStartEvent(false)}
-          />
-        )}
-        {teamToEdit && (
-          <BasicTeamDataForm
-            show={true}
-            myTeam={teamToEdit}
-            eventId={eventId}
-            onSave={(team) => saveTeam(team)}
-            okBtnLabel={"Zapisz zmiany"}
-            handleClose={() => setTeamToEdit()}
-            title={"Edycja danych załogi"}
-          />
-        )}
-        {doSort && (
-          <OkCancelModal
-            show={true}
-            title={"Sortowanie"}
-            text={`Czy chcesz posortować zawodników? Pamiętaj, że zresetuje to numery które nie zostały wpisane ręcznie (nie-pogrubione). Jeśli chcesz nadać komuś numer na stałe edytuj wartość na liście.`}
-            handleAccept={() => {
-              sortByClass();
-              setDoSort(false);
-            }}
-            handleClose={() => setDoSort(false)}
-          />
-        )}
-        {teamToPreview && (
-          <TeamModal
-            show={true}
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </Card.Body>
+                                  </Card>
+                                </li>
+                              )}
+                            </Draggable>
+                          );
+                        })}
+                        {provided.placeholder}
+                      </ol>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              </div>
+            </>
+          )}
+          {teamToRemove.teamId !== null && (
+            <OkCancelModal
+              show={true}
+              title={"Usuwanie załogi"}
+              text={`Czy napewno chcesz usunąć załoge: ${teamToRemove.driver}`}
+              handleAccept={() => {
+                fetchRemoveFromEvent(eventId, teamToRemove.teamId, () =>
+                  fetchTeams()
+                );
+                eraseTeamToRemove();
+              }}
+              handleClose={() => {
+                eraseTeamToRemove();
+              }}
+            />
+          )}
+          {teamToEntryFee.teamId !== null && (
+            <OkCancelModal
+              show={true}
+              title={"Potwierdzanie wpisowego"}
+              text={`Czy napewno chcesz potwierdzić wpłatę wpisowego przez załoge: ${teamToEntryFee.driver}`}
+              handleAccept={() => {
+                fetchConfirmEntryFee(eventId, teamToEntryFee.teamId, () =>
+                  fetchTeams()
+                );
+                eraseTeamToEntryFee();
+              }}
+              handleClose={() => {
+                eraseTeamToEntryFee();
+              }}
+            />
+          )}
+          {startEvent && (
+            <OkCancelModal
+              show={true}
+              title={"Zamykanie listy / Rozpoczynanie wydarzenia"}
+              text={`Czy napewno chcesz zamknąć listę i rozpocząć wydarzenie? Operacja nieodwracalna`}
+              handleAccept={() => {
+                fetchStartEvent();
+                setStartEvent(false);
+              }}
+              handleClose={() => setStartEvent(false)}
+            />
+          )}
+          {teamToEdit && (
+            <BasicTeamDataForm
+              show={true}
+              myTeam={teamToEdit}
+              eventId={eventId}
+              onSave={(team) => saveTeam(team)}
+              okBtnLabel={"Zapisz zmiany"}
+              handleClose={() => setTeamToEdit()}
+              title={"Edycja danych załogi"}
+            />
+          )}
+          {doSort && (
+            <OkCancelModal
+              show={true}
+              title={"Sortowanie"}
+              text={`Czy chcesz posortować zawodników? Pamiętaj, że zresetuje to numery które nie zostały wpisane ręcznie (nie-pogrubione). Jeśli chcesz nadać komuś numer na stałe edytuj wartość na liście.`}
+              handleAccept={() => {
+                sortByClass();
+                setDoSort(false);
+              }}
+              handleClose={() => setDoSort(false)}
+            />
+          )}
+          {teamToPreview && (
+            <TeamModal
+              show={true}
+              handleClose={() => {
+                fetchTeams();
+                setTeamToPreview();
+              }}
+              myEvent={{
+                eventId: eventId,
+                started: false,
+                teamId: teamToPreview,
+              }}
+              mode="preview"
+            />
+          )}
+          <QuickJoinPanel
+            show={quickJoin}
             handleClose={() => {
               fetchTeams();
-              setTeamToPreview();
+              setQuickJoin();
             }}
-            myEvent={{
-              eventId: eventId,
-              started: false,
-              teamId: teamToPreview,
-            }}
-            mode="preview"
+            eventId={eventId}
           />
-        )}
-        <QuickJoinPanel
-          show={quickJoin}
-          handleClose={() => {
-            fetchTeams();
-            setQuickJoin();
-          }}
-          eventId={eventId}
-        />
-        <div className="text-center">
-          <Button
-            className={"m-1"}
-            variant="primary"
-            onClick={() => setDoSort(true)}
-          >
-            Sortuj wstępnie wg. klas
-          </Button>
-          <MyButton
-            variant="primary"
-            isLoading={downloadingOA}
-            onClick={() => fetchOaDocuments()}
-            msg="Pobierz dokumenty OA"
-            loadingMsg="Pobieranie dokumentów OA"
-          />
-          <MyButton
-            variant="primary"
-            isLoading={downloadingBK}
-            onClick={() => fetchBkDocuments()}
-            msg="Pobierz dokumenty BK"
-            loadingMsg="Pobieranie dokumentów BK"
-          />
-          <p>{msg}</p>
-        </div>
-      </Modal.Body>
-      <Modal.Footer className={"justify-content-center"}>
-        <div className="d-flex">
-          {referee && (
-            <Button
-              className={"m-2"}
-              variant="success"
-              onClick={() => setQuickJoin(true)}
-            >
-              Dodaj zawodnika
-            </Button>
-          )}
-          {/* {referee && (
+          <div className="text-center">
+            <div className="col-xl-12">
+              <p className="font12 m-0 p-0">
+                Sortowanie można wykonać również ręcznie przesuwając zawodnika
+                za pomocą myszy - po zakończeniu ZAPISZ
+              </p>
+              <p className="font12 m-0 p-0">
+                Zmiana kolejności zmienia numery startowe! Jeśli chcesz nadać
+                numer startowy zawodnikowi wpisz go ręcznie
+              </p>
+              <Button
+                className={"m-1"}
+                variant="info"
+                onClick={() => setDoSort(true)}
+              >
+                Sortuj wstępnie wg. klas
+              </Button>
+            </div>
+            <div className="col-xl-12">
+              <MyButton
+                variant="primary"
+                isLoading={downloadingOA}
+                onClick={() => fetchOaDocuments()}
+                msg="Pobierz dokumenty OA"
+                loadingMsg="Pobieranie dokumentów OA"
+              />
+              <MyButton
+                variant="primary"
+                isLoading={downloadingBK}
+                onClick={() => fetchBkDocuments()}
+                msg="Pobierz dokumenty BK"
+                loadingMsg="Pobieranie dokumentów BK"
+              />
+            </div>
+            <div className="col-xl-12">
+              <MyButton
+                variant="warning"
+                onClick={() => setFinalList(true)}
+                msg="Zatwierdź listę startową"
+              />
+            </div>
+            <p>{msg}</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer className={"justify-content-center py-0"}>
+          <div className="d-flex">
+            {referee && (
+              <Button
+                className={"m-2"}
+                variant="success"
+                onClick={() => setQuickJoin(true)}
+              >
+                Dodaj zawodnika
+              </Button>
+            )}
+            {/* {referee && (
             <Button
               className={"m-2"}
               variant="success"
@@ -671,18 +716,24 @@ export const AdminTeamList = ({
               Zamknij liste / Rozpocznij wydarzenie
             </Button>
           )} */}
-          <Button
-            className={"m-2"}
-            variant="success"
-            onClick={saveNumbersAndClasses}
-          >
-            Zapisz klasy i kolejność załóg
-          </Button>
-          <Button className={"m-2"} variant="secondary" onClick={handleClose}>
-            Wyjdź
-          </Button>
-        </div>
-      </Modal.Footer>
-    </Modal>
+            <Button
+              className={"m-2"}
+              variant="success"
+              onClick={saveNumbersAndClasses}
+            >
+              Zapisz klasy i kolejność załóg
+            </Button>
+            <Button className={"m-2"} variant="secondary" onClick={handleClose}>
+              Wyjdź
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+      <FinalListModal
+        show={finalList}
+        eventId={eventId}
+        handleClose={() => setFinalList(false)}
+      />
+    </>
   );
 };

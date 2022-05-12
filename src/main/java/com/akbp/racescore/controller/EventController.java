@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -87,6 +88,16 @@ public class EventController {
             LOGGER.error(e.getMessage());
         }
         return Collections.emptyList();
+    }
+
+    @GetMapping("/getDriverCount")
+    public Long getDriverCount(@RequestParam("eventId") Long eventId) {
+        try {
+            return eventService.getDriverCount(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return 0L;
     }
 
     @GetMapping("/getTeams")
@@ -232,6 +243,31 @@ public class EventController {
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
+        return false;
+    }
+
+    @PostMapping("bkChecked")
+    public Boolean bkChecked(@RequestParam Long eventId, @RequestParam Long teamId, @RequestParam boolean checked) {
+        try {
+            return eventService.bkChecked(eventId, teamId, checked);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return false;
+    }
+
+    @GetMapping("/fetchCreateFinalList")
+    public boolean fetchCreateFinalList(@RequestParam("eventId") Long eventId,
+                                        @RequestParam("stageId") Long stageId,
+                                        @RequestParam("startTime") Instant startTime,
+                                        @RequestParam("frequency") Long frequency,
+                                        Authentication auth) {
+        try {
+            return eventService.fetchCreateFinalList(auth, eventId, stageId, startTime, frequency);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+
         return false;
     }
 

@@ -4,6 +4,8 @@ public interface PenaltyDTO {
 
     String getName();
 
+    Long getStageId();
+
     String getDescription();
 
     Long getPenaltyId();
@@ -11,6 +13,8 @@ public interface PenaltyDTO {
     Long getPenaltyKind();
 
     Long getPenaltySec();
+
+    Long getTeamId();
 
     Integer getNumber();
 
