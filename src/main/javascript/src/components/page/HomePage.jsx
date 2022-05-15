@@ -72,8 +72,13 @@ const HomePage = (props) => {
         setFutureEvents(res.data.sort((x, y) => (x.date < y.date ? -1 : 1)));
 
         if (eventRedirect !== undefined && !redirected) {
+          const index = eventRedirect.includes("&")
+            ? eventRedirect.indexOf("&")
+            : eventRedirect.length;
           const event = res.data.find(
-            (x) => x.eventId === Number(eventRedirect.replace("?", ""))
+            (x) =>
+              x.eventId ===
+              Number(eventRedirect.substring(0, index).replace("?", ""))
           );
           setEventToTeamPanel(event);
           eventRedirect = null;
