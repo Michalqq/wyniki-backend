@@ -20,7 +20,9 @@ import Form from "react-bootstrap/Form";
 export const NewEventForm = ({ show, handleClose, event }) => {
   const [myEvent, setMyEvent] = useState({
     name: "",
+    headDescription: "",
     description: "",
+    footerDescription: "",
     date: new Date(),
     signDeadline: new Date(),
     admin: 1,
@@ -189,7 +191,9 @@ export const NewEventForm = ({ show, handleClose, event }) => {
   };
 
   const removeFromStages = (id) => {
-    const tempStages = stages.filter((x) => x.index !== id);
+    console.log(id);
+    console.log(stages);
+    const tempStages = stages.filter((x) => x.stageId !== id);
     setStages(tempStages);
   };
 
@@ -303,17 +307,39 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                   handleChange={handleChange}
                   big={true}
                   value={myEvent.name}
-                  multiline={2}
+                  multiline={5}
                 />
               </div>
               <div className="col-lg-8 px-1">
+                <InputLabeled
+                  label="Opis główny"
+                  name="headDescription"
+                  handleChange={handleChange}
+                  big={true}
+                  value={myEvent.headDescription}
+                  multiline={5}
+                />
+              </div>
+            </div>
+            <div className="row d-flex">
+              <div className="col-lg-6 px-1">
                 <InputLabeled
                   label="Opis"
                   name="description"
                   handleChange={handleChange}
                   big={true}
                   value={myEvent.description}
-                  multiline={2}
+                  multiline={5}
+                />
+              </div>
+              <div className="col-lg-6 px-1">
+                <InputLabeled
+                  label="Opis stopka"
+                  name="footerDescription"
+                  handleChange={handleChange}
+                  big={true}
+                  value={myEvent.footerDescription}
+                  multiline={5}
                 />
               </div>
             </div>
@@ -546,7 +572,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                           <td className="text-end">
                             <FontAwesomeIcon
                               icon={faTimesCircle}
-                              onClick={() => removeFromStages(x.index)}
+                              onClick={() => removeFromStages(x.stageId)}
                               title={"Usuń załoge"}
                               cursor={"pointer"}
                             />

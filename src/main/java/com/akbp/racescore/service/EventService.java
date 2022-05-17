@@ -48,11 +48,13 @@ public class EventService {
     private final EventTeamRepository eventTeamRepository;
     private final TeamRepository teamRepository;
     private final StageScoreRepository stageScoreRepository;
+    private final StageRepository stageRepository;
     private final UserRepository userRepository;
     private final CarClassRepository carClassRepository;
     private final EventPathsRepository eventPathsRepository;
     private final PenaltyRepository penaltyRepository;
     private final EventFileRepository eventFileRepository;
+    private final EventClassesRepository eventClassesRepository;
 
     private final FinalListCreatorService finalListCreatorService;
 
@@ -220,6 +222,10 @@ public class EventService {
     public Long createNew(Event event) {
         if (event.getEventId() != null) eventPathsRepository.deleteByEventId(event.getEventId());
 
+        Event savedEvent = eventRepository.getById(event.getEventId());
+        removeStagesIfNeccesarry(savedEvent.getStages(), event.getStages());
+        removeEventClassesIfNeccesarry(savedEvent.getEventClasses(), event.getEventClasses());
+
         eventRepository.save(event);
 
         List<EventTeam> eventTeams = eventTeamRepository.findByEventId(event.getEventId());
@@ -228,6 +234,28 @@ public class EventService {
             eventTeams.stream().forEach(x -> createEmptyEventScoreIfNeccesarry(stage, x));
         }
         return event.getEventId();
+    }
+
+    private void removeEventClassesIfNeccesarry(List<EventClasses> savedEventClasses, List<EventClasses> eventClasses) {
+        if (savedEventClasses == null || savedEventClasses.isEmpty()) return;
+
+        List<Long> carClassIds = eventClasses.stream().map(x -> x.getCarClassId()).collect(Collectors.toList());
+        List<EventClasses> removedCarClasses = savedEventClasses.stream().filter(x -> !carClassIds.contains(x.getCarClassId())).collect(Collectors.toList());
+
+        if (removedCarClasses.isEmpty()) return;
+
+        removedCarClasses.stream().forEach(x -> eventClassesRepository.delete(x));
+    }
+
+    private void removeStagesIfNeccesarry(List<Stage> savedStages, List<Stage> stages) {
+        if (savedStages == null || savedStages.isEmpty()) return;
+
+        List<Long> newStagesId = stages.stream().map(x -> x.getStageId()).collect(Collectors.toList());
+        List<Stage> removedStages = savedStages.stream().filter(x -> !newStagesId.contains(x.getStageId())).collect(Collectors.toList());
+
+        if (removedStages.isEmpty()) return;
+
+        removedStages.stream().forEach(x -> stageRepository.delete(x));
     }
 
     private void createEmptyEventScoreIfNeccesarry(Stage stage, EventTeam et) {

@@ -148,16 +148,14 @@ export const EventModal = ({ show, handleClose, event }) => {
                 <h6 className="fw-bold">
                   {moment(event?.date).format(" dddd, DD MMM YYYY, HH:mm")}
                 </h6>
-                <div className="col-lg-10">
-                  <p className="fw-bold fst-italic m-2">
-                    {`Koniec zapisów:  ${moment(event?.signDeadline).format(
-                      "dddd, DD MMM YYYY, HH:mm"
-                    )}`}
-                  </p>
-                </div>
-                <p style={{ whiteSpace: "pre-line" }} className="m-1">
-                  {event?.description || ""}
+                <p className="fw-bold fst-italic m-2">
+                  {`Koniec zapisów:  ${moment(event?.signDeadline).format(
+                    "dddd, DD MMM YYYY, HH:mm"
+                  )}`}
                 </p>
+                <h6 style={{ whiteSpace: "pre-line" }} className="ps-2 py-2">
+                  {event?.headDescription || ""}
+                </h6>
               </div>
               <div className="col-lg-5 py-1  align-items-center d-flex">
                 {event?.logoPathFile ? (
@@ -187,6 +185,17 @@ export const EventModal = ({ show, handleClose, event }) => {
                     </div>
                   )
                 )}
+              </div>
+              <div className="col-lg-12 py-2">
+                <p
+                  style={{ whiteSpace: "pre-line" }}
+                  className="font14 m-1 py-2"
+                >
+                  {event?.description || ""}
+                </p>
+                <p style={{ whiteSpace: "pre-line" }} className="font12 m-1">
+                  {event?.footerDescription || ""}
+                </p>
               </div>
             </div>
             <Card className="text-center">

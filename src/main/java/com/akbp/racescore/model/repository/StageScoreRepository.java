@@ -72,4 +72,6 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
     List<StageScore> findAllByEventId(@Param("eventId") Long eventId);
 
     void deleteByStageIdAndTeamId(Long eventId, Long teamId);
+
+    void deleteByStageId(Long stageId);
 }

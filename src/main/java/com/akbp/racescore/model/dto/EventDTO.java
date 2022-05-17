@@ -20,6 +20,8 @@ public class EventDTO {
     private Long eventId;
     private String name;
     private String description;
+    private String headDescription;
+    private String footerDescription;
     private Instant date;
     private Instant signDeadline;
     private Long admin;
@@ -42,6 +44,8 @@ public class EventDTO {
         this.eventId = x.getEventId();
         this.name = x.getName();
         this.description = x.getDescription();
+        this.headDescription = x.getHeadDescription();
+        this.footerDescription = x.getFooterDescription();
         this.date = x.getDate();
         this.admin = x.getAdmin();
         this.signDeadline = x.getSignDeadline();
