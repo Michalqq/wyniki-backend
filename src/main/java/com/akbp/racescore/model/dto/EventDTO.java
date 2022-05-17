@@ -33,6 +33,7 @@ public class EventDTO {
     private Boolean fwdClassification;
     private Boolean rwdClassification;
     private Boolean awdClassification;
+    private Boolean carClassManual;
 
     private List<User> referee;
     private List<StageDTO> stages;
@@ -56,6 +57,7 @@ public class EventDTO {
         this.fwdClassification = x.getFwdClassification();
         this.rwdClassification = x.getRwdClassification();
         this.awdClassification = x.getAwdClassification();
+        this.carClassManual = x.getCarClassManual();
 
         this.eventPaths = x.getEventPaths();
         this.eventClasses = x.getEventClasses();

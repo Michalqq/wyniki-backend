@@ -79,11 +79,11 @@ public class TeamService {
         return team;
     }
 
-    public String addTeam(Team team, Long eventId) {
+    public Long addTeam(Team team, Long eventId) {
         team = saveTeam(team);
 
         eventService.addTeamToEvent(team, eventId);
-        return team.getDriver() + " zostałeś zapisany!";
+        return team.getTeamId();
     }
 
     public Car getCar(Long carId) {

@@ -326,6 +326,19 @@ public class EventController {
         return eventService.sortByClass(teams);
     }
 
+    @GetMapping("/getManualCarClass")
+    public String getManualCarClass(@RequestParam("eventId") Long eventId,
+                                    @RequestParam("teamId") Long teamId) {
+        return eventService.getManualCarClass(eventId, teamId);
+    }
+
+    @PostMapping("/saveManualCarClass")
+    public void saveManualCarClass(@RequestParam("eventId") Long eventId,
+                                   @RequestParam("teamId") Long teamId,
+                                   @RequestParam("carClass") String carClass) {
+        eventService.saveManualCarClass(eventId, teamId, carClass);
+    }
+
     @PostMapping("/saveNumbersAndClasses")
     public boolean saveNumbersAndClasses(@RequestBody List<EventTeam> teams, @RequestParam("eventId") Long eventId) {
         try {

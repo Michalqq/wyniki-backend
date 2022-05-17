@@ -36,6 +36,8 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [okModal, setOkModal] = useState();
+  const [manualCarClass, setManualCarClass] = useState();
+  const [classesOptions, setClassesOptions] = useState([]);
 
   useEffect(() => {
     if (!show) return;
@@ -46,8 +48,10 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
       fetchTeam(myEvent?.teamId);
       setDisable(true);
     }
-
+    fetchPsOptions();
     setCarsOption([]);
+    setAddingToEvent(false);
+    setLoading(false);
   }, [show]);
 
   const fetchGetTeam = () => {
@@ -70,6 +74,37 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
       });
   };
 
+  const fetchPsOptions = () => {
+    axios
+      .get(
+        `${backendUrl()}/event/getStagesAndClasses?eventId=${myEvent?.eventId}`
+      )
+      .then((res) => {
+        res.data.classesOptions.shift();
+        setClassesOptions(res.data.classesOptions || []);
+      });
+  };
+
+  const fetchManualCarClass = (teamId) => {
+    axios
+      .get(
+        `${backendUrl()}/event/getManualCarClass?eventId=${
+          myEvent?.eventId
+        }&teamId=${teamId}`
+      )
+      .then((res) => {
+        setManualCarClass(res.data);
+      });
+  };
+
+  const fetchSaveManualCarClass = (teamId) => {
+    axios.post(
+      `${backendUrl()}/event/saveManualCarClass?eventId=${
+        myEvent?.eventId
+      }&teamId=${teamId}&carClass=${manualCarClass}`
+    );
+  };
+
   useEffect(() => {
     let tempOptions = [];
     if (team !== undefined && team.cars) {
@@ -83,6 +118,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
       });
       setCarsOption(tempOptions);
     }
+    if (team?.teamId) fetchManualCarClass(team.teamId);
   }, [team]);
 
   const fetchAddTeam = () => {
@@ -92,7 +128,8 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
       .post(`${backendUrl()}/team/addTeam?eventId=${myEvent.eventId}`, team, {
         headers: authHeader(),
       })
-      .then(() => {
+      .then((res) => {
+        if (myEvent?.carClassManual) fetchSaveManualCarClass(res.data);
         handleOk();
         handleClose();
       });
@@ -104,6 +141,10 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (myEvent.carClassManual && !manualCarClass) {
+      setMsg("Proszę wybrać klasę samochodu");
+      return;
+    }
     if (mode === "teamPanel") return saveTeamData();
 
     if (!validation()) return;
@@ -297,6 +338,29 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       </div>
                     </Card.Body>
                   </Card>
+                  {myEvent?.carClassManual && (
+                    <Card className="text-center">
+                      <Card.Header className="bg-dark-green text-white pt-1 pb-0">
+                        <h5>Klasa samochodu</h5>
+                      </Card.Header>
+                      <Card.Body>
+                        <div className="row d-flex">
+                          <div className="col-lg-12 px-1">
+                            {manualCarClass !== undefined && (
+                              <h5>{`Wybrana klasa: ${manualCarClass}`}</h5>
+                            )}
+                            <Selector
+                              label={"Klasy"}
+                              options={classesOptions}
+                              handleChange={(value) => setManualCarClass(value)}
+                              isValid={true}
+                              skipDefault={true}
+                            />
+                          </div>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  )}
                 </div>
                 <div className="col-lg-6 pb-3 px-1">
                   <Card className="text-center">
@@ -448,7 +512,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
             <div className="text-center my-0">
               <h6 style={{ whiteSpace: "pre-line" }}>{msg}</h6>
               {mode !== "teamPanel" && !disable && (
-                <h6 style={{ whiteSpace: "pre-line" }}>
+                <h6 className="font13" style={{ whiteSpace: "pre-line" }}>
                   Uzupełnij profil danymi osobowymi oraz dodaj auto, po
                   zapisaniu będziesz mógł zapisywać się na kolejne imprezy
                   jednym kliknięciem.

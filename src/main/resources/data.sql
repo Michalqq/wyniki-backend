@@ -11,7 +11,7 @@ CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --delete from race_score.users where user_id = 93;
 
 --update race_score.event_team set start_order=number;
-ALTER TABLE  race_score.event ALTER COLUMN HEAD_DESCRIPTION TYPE varchar(1500);
+--ALTER TABLE  race_score.event ALTER COLUMN HEAD_DESCRIPTION TYPE varchar(1500);
 
 --INSERT INTO race_score.penalty_dict values (100, 'Wpisz ręcznie', false, '0');
 
@@ -34,6 +34,9 @@ ALTER TABLE  race_score.event ALTER COLUMN HEAD_DESCRIPTION TYPE varchar(1500);
 --insert into race_score.car_class values (9, 'RWD');
 --insert into race_score.car_class values (10, 'FWD');
 --insert into race_score.car_class values (11, 'AWD');
+insert into race_score.car_class values (12, 'Wyczyn');
+insert into race_score.car_class values (13, 'Adventure');
+insert into race_score.car_class values (14, 'Extreme');
 
 --INSERT INTO race_score.penalty_dict values (1, 'Opona/pachołek', false, '5');
 --INSERT INTO race_score.penalty_dict values (2, 'Kara 10 sek', false, '10');

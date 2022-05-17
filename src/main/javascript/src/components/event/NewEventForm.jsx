@@ -191,8 +191,6 @@ export const NewEventForm = ({ show, handleClose, event }) => {
   };
 
   const removeFromStages = (id) => {
-    console.log(id);
-    console.log(stages);
     const tempStages = stages.filter((x) => x.stageId !== id);
     setStages(tempStages);
   };
@@ -521,6 +519,20 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                       setMyEvent({
                         ...myEvent,
                         fwdClassification: e.target.checked,
+                      })
+                    }
+                  />
+                  <div className="mt-4" />
+                  <Form.Check
+                    inline
+                    label="Klasy wybierane manualnie przy zapisach"
+                    name="carClassManual"
+                    type={"checkbox"}
+                    checked={myEvent.carClassManual}
+                    onClick={(e) =>
+                      setMyEvent({
+                        ...myEvent,
+                        carClassManual: e.target.checked,
                       })
                     }
                   />

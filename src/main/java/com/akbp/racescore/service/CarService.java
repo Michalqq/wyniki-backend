@@ -22,6 +22,7 @@ public class CarService {
     private static final String K5 = "K5";
 
     public void calculateClass(Team team, EventTeam et, Event event) {
+        if (Boolean.TRUE.equals(event.getCarClassManual())) return;
 
         try {
             Car car = team.getCurrentCar();

@@ -49,12 +49,12 @@ public class TeamController {
     }
 
     @PostMapping("/addTeam")
-    public String addTeam(@RequestParam("eventId") Long eventId, @RequestBody Team team) {
+    public Long addTeam(@RequestParam("eventId") Long eventId, @RequestBody Team team) {
         try {
             return teamService.addTeam(team, eventId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            return e.getMessage();
+            return -1L;
         }
     }
 

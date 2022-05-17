@@ -497,4 +497,20 @@ public class EventService {
 
         return true;
     }
+
+    public void saveManualCarClass(Long eventId, Long teamId, String manualCarClass) {
+        EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
+        CarClass carClass = carClassRepository.findByName(manualCarClass);
+
+        if (et == null || carClass == null) return;
+
+        et.setCarClassId(carClass.getCarClassId());
+        eventTeamRepository.save(et);
+    }
+
+    public String getManualCarClass(Long eventId, Long teamId) {
+        EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
+        if (et == null) return "";
+        return et.getCarClass().getName();
+    }
 }

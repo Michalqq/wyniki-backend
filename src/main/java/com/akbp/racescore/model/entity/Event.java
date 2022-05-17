@@ -62,6 +62,9 @@ public class Event implements Serializable {
     @Column(name = "AWD_CLASSIFICATION")
     private Boolean awdClassification;
 
+    @Column(name = "CAR_CLASS_MANUAL")
+    private Boolean carClassManual;
+
     @Column(name = "admin", nullable = false)
     private Long admin;
 
