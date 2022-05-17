@@ -24,8 +24,14 @@ public class Event implements Serializable {
     @Column(name = "NAME", nullable = false)
     private String name;
 
+    @Column(length = 500, name = "HEAD_DESCRIPTION")
+    private String headDescription;
+
     @Column(name = "DESCRIPTION")
     private String description;
+
+    @Column(length = 1500, name = "FOOTER_DESCRIPTION")
+    private String footerDescription;
 
     @Column(name = "LOGO_PATH")
     private String logoPath;

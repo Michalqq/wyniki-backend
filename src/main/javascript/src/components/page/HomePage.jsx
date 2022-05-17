@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import { backendUrl, checkReferee, fetchLogoPath } from "../utils/fetchUtils";
+import { backendUrl, checkReferee } from "../utils/fetchUtils";
 import Button from "react-bootstrap/Button";
 import { NewEventForm } from "../event/NewEventForm";
 import { EventCard } from "../common/EventCard";
@@ -25,6 +25,7 @@ const HomePage = (props) => {
   const [mainAdmin, setMainAdmin] = useState(false);
   const [redirected, setRedirected] = useState(false);
   const [showStatement, setShowStatement] = useState();
+  const [referee, setReferee] = useState(false);
 
   let eventRedirect = useLocation().search;
 
@@ -144,7 +145,7 @@ const HomePage = (props) => {
               navigate("event", { state: { eventId: x.eventId } });
             }}
             onTeamList={() => {
-              checkReferee(x.eventId, setMainAdmin);
+              checkReferee(x.eventId, (data) => setReferee(data));
               setEventToTeamList(x);
             }}
             onStatement={() => setShowStatement(x)}
@@ -204,7 +205,7 @@ const HomePage = (props) => {
         }}
         event={createEvent}
       />
-      {mainAdmin && (
+      {(mainAdmin || referee) && (
         <AdminTeamList
           show={eventToTeamList !== undefined}
           handleClose={() => {
@@ -216,7 +217,7 @@ const HomePage = (props) => {
           started={eventToTeamList?.started}
         />
       )}
-      {!mainAdmin && (
+      {!mainAdmin && !referee && (
         <TeamListModal
           show={eventToTeamList !== undefined}
           handleClose={() => {

@@ -25,13 +25,15 @@ export const EventCard = ({
     new Date(),
     "days"
   );
-  const eventCount = moment(event?.date).diff(new Date(), "days");
+  const eventCount = moment(event?.date)
+    .startOf("day")
+    .diff(moment().startOf("day"), "days");
 
   const getTxtCount = (count) => {
     return count === 0
       ? "DZISIAJ!"
       : count === 1
-      ? "za " + count + " dzień"
+      ? "jutro!"
       : "za " + count + " dni";
   };
 
