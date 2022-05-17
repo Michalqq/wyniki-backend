@@ -370,6 +370,13 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    public List<ClassesOption> getAllEventClassesOptions(Long eventId) {
+        List<EventClasses> classes = eventClassesRepository.findByEventId(eventId);
+        return classes.stream()
+                .map(x -> new ClassesOption(x.getCarClass().getName(), String.valueOf(x.getCarClassId()), false))
+                .collect(Collectors.toList());
+    }
+
     public Boolean teamChecked(Long eventId, Long teamId, boolean checked) {
         EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
         if (eventTeam == null) return false;
@@ -498,9 +505,9 @@ public class EventService {
         return true;
     }
 
-    public void saveManualCarClass(Long eventId, Long teamId, String manualCarClass) {
+    public void saveManualCarClass(Long eventId, Long teamId, Long carClassId) {
         EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
-        CarClass carClass = carClassRepository.findByName(manualCarClass);
+        CarClass carClass = carClassRepository.getById(carClassId);
 
         if (et == null || carClass == null) return;
 
@@ -513,4 +520,5 @@ public class EventService {
         if (et == null) return "";
         return et.getCarClass().getName();
     }
+
 }

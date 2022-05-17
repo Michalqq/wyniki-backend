@@ -77,12 +77,11 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const fetchPsOptions = () => {
     axios
       .get(
-        `${backendUrl()}/event/getStagesAndClasses?eventId=${myEvent?.eventId}`
+        `${backendUrl()}/event/getAllEventClassesOptions?eventId=${
+          myEvent?.eventId
+        }`
       )
-      .then((res) => {
-        res.data.classesOptions.shift();
-        setClassesOptions(res.data.classesOptions || []);
-      });
+      .then((res) => setClassesOptions(res.data || []));
   };
 
   const fetchManualCarClass = (teamId) => {
@@ -92,16 +91,14 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
           myEvent?.eventId
         }&teamId=${teamId}`
       )
-      .then((res) => {
-        setManualCarClass(res.data);
-      });
+      .then((res) => setManualCarClass(res.data));
   };
 
   const fetchSaveManualCarClass = (teamId) => {
     axios.post(
       `${backendUrl()}/event/saveManualCarClass?eventId=${
         myEvent?.eventId
-      }&teamId=${teamId}&carClass=${manualCarClass}`
+      }&teamId=${teamId}&carClassId=${manualCarClass}`
     );
   };
 
