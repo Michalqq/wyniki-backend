@@ -50,6 +50,15 @@ export const EventCard = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (logoDto.file === undefined) {
+      setTimeout(
+        () => fetchLogo(event.eventId, (data) => setLogoDto(data)),
+        3000
+      );
+    }
+  }, [logoDto]);
+
   return (
     <div className="col-lg-6 py-1 px-1 no-opacity-hover opacity-90a">
       <Card className="shadow-sm">
