@@ -211,18 +211,18 @@ const StageScorePage = (props) => {
         <div className="col-xl-8 d-flex justify-content-center">
           {(event?.logoPathFile || event?.logoPath) && (
             <div className="col-6 align-self-center">
-              <div className="m-2 text-center">
+              <div className="m-0 text-center">
                 {event.logoPathFile ? (
                   <img
                     id={"eventImage" + event.eventId}
-                    style={{ maxHeight: "120px" }}
+                    style={{ maxHeight: "150px" }}
                     className="img-fluid rounded float-left"
                     src={"data:image/jpg;base64," + event.logoPathFile}
                     alt="Logo"
                   ></img>
                 ) : (
                   <img
-                    style={{ maxHeight: "120px" }}
+                    style={{ maxHeight: "150px" }}
                     className="img-fluid rounded float-left"
                     src={event.logoPath}
                     alt="Logo"
