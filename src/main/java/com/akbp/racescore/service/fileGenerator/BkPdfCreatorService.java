@@ -4,10 +4,7 @@ import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.model.repository.EventRepository;
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +43,7 @@ public class BkPdfCreatorService {
     private final float CLASS_X = 80;
     private final float DRIVER_X = 125;
     private final float CO_DRIVER_X = 262;
-    private final float EVENT_X = 400;
+    private final float EVENT_X = 395;
 
     private final float DRIVING_LICENSE_X = 270;
 
@@ -97,6 +94,7 @@ public class BkPdfCreatorService {
         for (int i = 1; i <= eventTeams.size(); i++)
             copy.addPage(copy.getImportedPage(reader, 1));
         doc.close();
+        copy.close();
     }
 
     private byte[] getPdf(Event event, List<EventTeam> eventTeams) {
@@ -110,8 +108,10 @@ public class BkPdfCreatorService {
                 PdfContentByte over = stamper.getOverContent(i);
                 fillData(over, event, eventTeams.get(i - 1), bf);
                 if (event.getLogoPathFile() != null) addLogoImage(over, event.getLogoPathFile());
+                if (Boolean.FALSE.equals(event.getPzm())) hidePzm(over);
             }
             stamper.close();
+            reader.close();
             return baos.toByteArray();
         } catch (IOException | DocumentException e) {
             e.printStackTrace();
@@ -134,6 +134,13 @@ public class BkPdfCreatorService {
         }
     }
 
+    private void hidePzm(PdfContentByte over) {
+        Rectangle rectangle = new Rectangle(50, 780, 150, 840);
+        rectangle.setBackgroundColor(BaseColor.WHITE);
+
+        over.rectangle(rectangle);
+    }
+
     private void fillData(PdfContentByte over, Event event, EventTeam et, BaseFont bf) {
         over.beginText();
         over.setFontAndSize(bf, 12);
@@ -150,7 +157,8 @@ public class BkPdfCreatorService {
         over.setTextMatrix(CO_DRIVER_X, NAME_ROW_Y);
         over.showText(team.getCoDriver());
 
-        fillEventInfo(over, event);
+        fillEventInfo(over, event, bf);
+        over.setFontAndSize(bf, 12);
 
         over.setTextMatrix(CAR_1_X, CAR_1_Y);
         over.showText(team.getCurrentCar().getBrand());
@@ -182,14 +190,21 @@ public class BkPdfCreatorService {
         over.endText();
     }
 
-    private void fillEventInfo(PdfContentByte over, Event event) {
+    private void fillEventInfo(PdfContentByte over, Event event, BaseFont bf) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
                 .withZone(ZoneId.systemDefault());
 
-        over.setTextMatrix(EVENT_X, NAME_ROW_Y + 5);
+        String eventName = event.getName();
+        int fontSize = 10;
+        if (eventName.length() > 32)
+            fontSize = 8;
+        if (eventName.length() > 42)
+            fontSize = 6;
+        over.setFontAndSize(bf, fontSize);
+        over.setTextMatrix(EVENT_X, NAME_ROW_Y + 6);
         over.showText(event.getName());
 
-        over.setTextMatrix(EVENT_X + 50, NAME_ROW_2_Y);
+        over.setTextMatrix(EVENT_X + 80, NAME_ROW_2_Y);
         over.showText(formatter.format(event.getDate()));
     }
 

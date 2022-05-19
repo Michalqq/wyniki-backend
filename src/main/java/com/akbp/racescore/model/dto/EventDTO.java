@@ -34,6 +34,7 @@ public class EventDTO {
     private Boolean rwdClassification;
     private Boolean awdClassification;
     private Boolean carClassManual;
+    private Boolean pzm;
 
     private List<User> referee;
     private List<StageDTO> stages;
@@ -52,12 +53,13 @@ public class EventDTO {
         this.signDeadline = x.getSignDeadline();
         this.organizer = x.getOrganizer();
         this.logoPath = x.getLogoPath();
-        this.logoPathFile = x.getLogoPathFile();
+//        this.logoPathFile = x.getLogoPathFile();
         this.started = x.getStarted();
         this.fwdClassification = x.getFwdClassification();
         this.rwdClassification = x.getRwdClassification();
         this.awdClassification = x.getAwdClassification();
         this.carClassManual = x.getCarClassManual();
+        this.pzm = x.getPzm();
 
         this.eventPaths = x.getEventPaths();
         this.eventClasses = x.getEventClasses();

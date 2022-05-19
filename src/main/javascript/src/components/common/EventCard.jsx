@@ -4,7 +4,11 @@ import Button from "react-bootstrap/Button";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { fetchDriverCount, fetchStatement } from "../utils/fetchUtils";
+import {
+  fetchDriverCount,
+  fetchLogo,
+  fetchStatement,
+} from "../utils/fetchUtils";
 import { Count } from "./Count";
 
 export const EventCard = ({
@@ -20,6 +24,7 @@ export const EventCard = ({
     new Date().getTime() > new Date(event.signDeadline).getTime();
   const [statementCount, setStatementCount] = useState(0);
   const [driverCount, setDriverCount] = useState(0);
+  const [logoDto, setLogoDto] = useState({});
 
   const signDeadlineCount = moment(event?.signDeadline).diff(
     new Date(),
@@ -41,6 +46,7 @@ export const EventCard = ({
     if (event) {
       fetchStatement(event.eventId, (data) => setStatementCount(data.length));
       fetchDriverCount(event.eventId, (data) => setDriverCount(data));
+      fetchLogo(event.eventId, (data) => setLogoDto(data));
     }
   }, []);
 
@@ -79,28 +85,23 @@ export const EventCard = ({
                 display: "flex",
               }}
             >
-              {event.logoPathFile ? (
+              {logoDto?.file ? (
                 <img
                   id={"eventImage" + event.eventId}
                   className="img-fluid rounded float-left"
                   style={{ objectFit: "contain" }}
-                  src={"data:image/jpg;base64," + event.logoPathFile}
-                  alt="Logo"
-                ></img>
-              ) : event.logoPath !== undefined && event.logoPath !== null ? (
-                <img
-                  className="img-fluid rounded float-left"
-                  style={{ objectFit: "contain" }}
-                  src={event.logoPath}
+                  src={"data:image/jpg;base64," + logoDto?.file}
                   alt="Logo"
                 ></img>
               ) : (
-                <img
-                  src="/akbpLogo.png"
-                  style={{ objectFit: "contain" }}
-                  className="img-fluid rounded float-left"
-                  alt="..."
-                />
+                event.logoPath && (
+                  <img
+                    className="img-fluid rounded float-left"
+                    style={{ objectFit: "contain" }}
+                    src={event.logoPath}
+                    alt="Logo"
+                  ></img>
+                )
               )}
             </div>
             <div className="col-lg-8 mt-3">

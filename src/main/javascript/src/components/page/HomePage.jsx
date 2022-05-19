@@ -142,7 +142,12 @@ const HomePage = (props) => {
             onJoin={() => setEventToTeamPanel(x)}
             onScore={() => {
               localStorage.setItem("eventId", x.eventId);
-              navigate("event", { state: { eventId: x.eventId } });
+              navigate({
+                pathname: "/event",
+                search: `?${x.eventId}`,
+                state: { eventId: x.eventId },
+              });
+              // navigate("event", { state: { eventId: x.eventId } });
             }}
             onTeamList={() => {
               checkReferee(x.eventId, (data) => setReferee(data));

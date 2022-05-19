@@ -32,6 +32,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
     awdClassification: false,
     rwdClassification: false,
     fwdClassification: false,
+    pzm: true,
   });
   const [stage, setStage] = useState({
     index: 0,
@@ -386,6 +387,18 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                 />
               </div>
             </div>
+            <Form.Check
+              label="Informacja o PZM w dokumentach"
+              name="pzm"
+              type={"checkbox"}
+              checked={myEvent.pzm}
+              onClick={(e) =>
+                setMyEvent({
+                  ...myEvent,
+                  pzm: e.target.checked,
+                })
+              }
+            />
           </Card.Body>
           <div className="col-lg-4 py-2  border-right shadow bg-white rounded">
             <div className="col-lg-12 border-right rounded">

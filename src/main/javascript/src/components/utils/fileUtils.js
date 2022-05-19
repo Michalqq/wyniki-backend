@@ -22,6 +22,7 @@ export function openFile(file, filename) {
   });
   var a = document.createElement("a");
   a.href = URL.createObjectURL(link);
+  a.target = "_blank";
   a.setAttribute("download", filename);
   a.click();
 }

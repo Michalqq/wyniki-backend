@@ -127,7 +127,7 @@ export const fetchDriverCount = (eventId, handleResponse) => {
   );
 };
 
-export const fetchLogoPath = (eventId, handleResponse) => {
+export const fetchLogo = (eventId, handleResponse) => {
   fetchGet(
     `${backendUrl()}/event/getLogoPath?eventId=${eventId}`,
     handleResponse

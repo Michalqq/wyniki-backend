@@ -16,8 +16,17 @@ import { MyButton } from "../common/Button";
 
 const StageScorePage = (props) => {
   const location = useLocation();
+  const eventRedirect = useLocation().search;
+  const index = eventRedirect.includes("&")
+    ? eventRedirect.indexOf("&")
+    : eventRedirect.length;
+  const eventFromRedirect = eventRedirect.substring(0, index).replace("?", "");
+
   const navigate = useNavigate();
-  const eventId = localStorage.getItem("eventId") || location.state.eventId;
+
+  const eventId = eventFromRedirect
+    ? eventFromRedirect
+    : localStorage.getItem("eventId") || location.state?.eventId;
 
   const GENERAL = "GENERALNA";
 

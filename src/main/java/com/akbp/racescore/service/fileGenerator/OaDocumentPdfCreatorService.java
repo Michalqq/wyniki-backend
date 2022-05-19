@@ -260,9 +260,10 @@ public class OaDocumentPdfCreatorService {
                 "imprezy oraz w materiałach informacyjnych imprezy. Uczestnik ma prawo wglądu, edycji oraz usunięcia swoich danych " +
                 "poprzez kontakt z biurem organizatora imprezy. Wyrażam zgodę na publikację zdjęć z moim udziałem z " +
                 "imprezy w której uczestniczę na stronie internetowej i profilach społecznościowych organizatora: " + event.getOrganizer() +
-                " i Polskiego Związku Motorowego. Niniejszym wyrażam zgodę na przetwarzanie przez " + event.getOrganizer() +
-                " i Polski Związek Motorowy moich danych osobowych zgodnie z ustawą o ochronie" +
-                "danych osobowych. (Dz. U. Nr 133/97, poz. 883)");
+                (!Boolean.FALSE.equals(event.getPzm()) ? " i Polskiego Związku Motorowego" : "") +
+                ". Niniejszym wyrażam zgodę na przetwarzanie przez " + event.getOrganizer() +
+                (!Boolean.FALSE.equals(event.getPzm()) ? " i Polski Związek Motorowy" : "") +
+                " moich danych osobowych zgodnie z ustawą o ochronie danych osobowych. (Dz. U. Nr 133/97, poz. 883)");
         p.add("\n\n\n");
         return p;
     }

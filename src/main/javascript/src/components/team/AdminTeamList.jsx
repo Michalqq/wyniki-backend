@@ -408,6 +408,10 @@ export const AdminTeamList = ({
                                                 item.team.currentCar
                                                   ?.driveTypeEnum
                                               }
+                                              line2={
+                                                item.team.currentCar
+                                                  ?.engineCapacity + " cm3"
+                                              }
                                             ></CarDiv>
                                           </td>
                                           <td
