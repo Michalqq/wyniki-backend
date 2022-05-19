@@ -1,6 +1,7 @@
 package com.akbp.racescore.service;
 
 import com.akbp.racescore.model.dto.EventDTO;
+import com.akbp.racescore.model.dto.EventWithLogoDTO;
 import com.akbp.racescore.model.dto.FileDto;
 import com.akbp.racescore.model.dto.PenaltyDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
@@ -281,9 +282,9 @@ public class EventService {
         return users.stream().map(x -> new RefereeOption(x)).collect(Collectors.toList());
     }
 
-    public EventDTO getEvent(Long eventId) {
+    public EventWithLogoDTO getEvent(Long eventId) {
         Event event = eventRepository.getById(eventId);
-        EventDTO eventDTO = new EventDTO(event);
+        EventWithLogoDTO eventDTO = new EventWithLogoDTO(event);
         eventDTO.setStages(event.getStages().stream().map(x -> new StageDTO(x)).collect(Collectors.toList()));
         eventDTO.setReferee(event.getReferee());
 

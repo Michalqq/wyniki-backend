@@ -5,12 +5,7 @@ import ResultTable from "../common/table/ResultTable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ScoreDiv, ScoreDivPenalty, TeamDiv, CarDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
-import {
-  backendUrl,
-  checkReferee,
-  fetchGetScores,
-  fetchLogo,
-} from "../utils/fetchUtils";
+import { backendUrl, checkReferee, fetchGetScores } from "../utils/fetchUtils";
 import PenaltyTable from "../tables/PenaltyTable";
 import DisqualificationTable from "../tables/DisqualificationTable";
 import { NrBadge } from "../common/NrBadge";
@@ -36,7 +31,6 @@ const StageScorePage = (props) => {
   const GENERAL = "GENERALNA";
 
   const [event, setEvent] = useState();
-  const [logoDto, setLogoDto] = useState({});
 
   const [scores, setScores] = useState([]);
   const [referee, setReferee] = useState(false);
@@ -119,7 +113,6 @@ const StageScorePage = (props) => {
   useEffect(() => {
     if (eventId === undefined) navigate("/");
     checkReferee(eventId, setReferee);
-    fetchLogo(eventId, (data) => setLogoDto(data));
   }, []);
 
   // useEffect(() => {
@@ -219,12 +212,12 @@ const StageScorePage = (props) => {
           {(event?.logoPathFile || event?.logoPath) && (
             <div className="col-6 align-self-center">
               <div className="m-2 text-center">
-                {logoDto?.file ? (
+                {event.logoPathFile ? (
                   <img
                     id={"eventImage" + event.eventId}
                     style={{ maxHeight: "120px" }}
                     className="img-fluid rounded float-left"
-                    src={"data:image/jpg;base64," + logoDto?.file}
+                    src={"data:image/jpg;base64," + event.logoPathFile}
                     alt="Logo"
                   ></img>
                 ) : (

@@ -5,7 +5,11 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import { backendUrl, fetchRemoveFromEvent } from "../utils/fetchUtils";
+import {
+  backendUrl,
+  fetchLogo,
+  fetchRemoveFromEvent,
+} from "../utils/fetchUtils";
 import { useNavigate } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import authHeader from "../../service/auth-header";
@@ -28,17 +32,22 @@ export const EventModal = ({ show, handleClose, event }) => {
   const [quickJoin, setQuickJoin] = useState();
   const [activeTab, setActiveTab] = useState(1);
   const [fillTeam, setFillTeam] = useState();
+  const [logoDto, setLogoDto] = useState({});
 
   const loggedUser = sessionStorage.getItem("username") !== null;
 
   useEffect(() => {
-    if (!show) return;
+    if (!show) {
+      setLogoDto({});
+      return;
+    }
 
     fetchGetTeam();
     setUploading(false);
     setFileMsg();
     setNotJoined(false);
     setMyEvent(event);
+    fetchLogo(event.eventId, (data) => setLogoDto(data));
   }, [show]);
 
   const signDeadlined = event
@@ -158,14 +167,14 @@ export const EventModal = ({ show, handleClose, event }) => {
                 </h6>
               </div>
               <div className="col-lg-5 py-1  align-items-center d-flex">
-                {event?.logoPathFile ? (
+                {logoDto?.file ? (
                   <img
-                    id={"eventImage" + event.eventId}
+                    id={"eventImage" + event?.eventId}
                     style={{
                       maxHeight: "450px",
                     }}
                     className="pt-2 img-fluid rounded float-left"
-                    src={"data:image/jpg;base64," + event.logoPathFile}
+                    src={"data:image/jpg;base64," + logoDto.file}
                     alt="Logo"
                   ></img>
                 ) : (

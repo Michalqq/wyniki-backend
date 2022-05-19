@@ -28,7 +28,7 @@ public class EventDTO {
     private Boolean joined = false;
     private String organizer;
     private String logoPath;
-    private byte[] logoPathFile;
+//    private byte[] logoPathFile;
     private Boolean started = false;
     private Boolean fwdClassification;
     private Boolean rwdClassification;

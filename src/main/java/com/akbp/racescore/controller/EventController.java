@@ -1,6 +1,7 @@
 package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.EventDTO;
+import com.akbp.racescore.model.dto.EventWithLogoDTO;
 import com.akbp.racescore.model.dto.FileDto;
 import com.akbp.racescore.model.dto.StgesAndClassesDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
@@ -206,7 +207,7 @@ public class EventController {
     }
 
     @GetMapping("getEvent")
-    public EventDTO getEvent(@RequestParam Long eventId) {
+    public EventWithLogoDTO getEvent(@RequestParam Long eventId) {
         try {
             return eventService.getEvent(eventId);
         } catch (Exception e) {
