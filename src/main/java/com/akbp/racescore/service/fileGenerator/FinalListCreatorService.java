@@ -107,8 +107,8 @@ public class FinalListCreatorService {
             table.addCell(getTeamNames(team));
             table.addCell(getClubs(team));
             table.addCell(Optional.ofNullable(et.getCarClass().getName()).orElse(""));
-            table.addCell(Optional.ofNullable(team.getCurrentCar().getModel()).orElse("") + " "
-                    + Optional.ofNullable(team.getCurrentCar().getBrand()).orElse(""));
+            table.addCell(Optional.ofNullable(team.getCurrentCar().getBrand()).orElse("") + " "
+                    + Optional.ofNullable(team.getCurrentCar().getModel()).orElse(""));
             table.addCell(Optional.ofNullable(team.getTeamName()).orElse(""));
             table.addCell(getTime());
         }
