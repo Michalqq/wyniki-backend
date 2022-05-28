@@ -97,7 +97,7 @@ public class FinalListCreatorService {
         table.addHeaderCell("Team");
         table.addHeaderCell("Czas startu");
 
-        eventTeams = eventTeams.stream().sorted(Comparator.comparingLong(EventTeam::getNumber)).collect(Collectors.toList());
+        eventTeams = eventTeams.stream().sorted(Comparator.comparingLong(EventTeam::getOrder)).collect(Collectors.toList());
 
         int count = 1;
         for (EventTeam et : eventTeams) {
