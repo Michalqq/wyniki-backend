@@ -221,11 +221,12 @@ public class EventService {
 
     @Transactional
     public Long createNew(Event event) {
-        if (event.getEventId() != null) eventPathsRepository.deleteByEventId(event.getEventId());
-
-        Event savedEvent = eventRepository.getById(event.getEventId());
-        removeStagesIfNeccesarry(savedEvent.getStages(), event.getStages());
-        removeEventClassesIfNeccesarry(savedEvent.getEventClasses(), event.getEventClasses());
+        if (event.getEventId() != null) {
+            eventPathsRepository.deleteByEventId(event.getEventId());
+            Event savedEvent = eventRepository.getById(event.getEventId());
+            removeStagesIfNeccesarry(savedEvent.getStages(), event.getStages());
+            removeEventClassesIfNeccesarry(savedEvent.getEventClasses(), event.getEventClasses());
+        }
 
         eventRepository.save(event);
 
