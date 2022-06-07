@@ -7,7 +7,7 @@ import { faStar, faEdit } from "@fortawesome/free-solid-svg-icons";
 import {
   fetchDriverCount,
   fetchLogo,
-  fetchStatement,
+  fetchStatementsCount,
 } from "../utils/fetchUtils";
 import { Count } from "./Count";
 
@@ -44,7 +44,7 @@ export const EventCard = ({
 
   useEffect(() => {
     if (event) {
-      fetchStatement(event.eventId, (data) => setStatementCount(data.length));
+      fetchStatementsCount(event.eventId, (data) => setStatementCount(data));
       fetchDriverCount(event.eventId, (data) => setDriverCount(data));
       fetchLogo(event.eventId, (data) => setLogoDto(data));
     }

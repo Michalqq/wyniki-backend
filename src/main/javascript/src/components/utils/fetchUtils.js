@@ -120,6 +120,13 @@ export const fetchStatement = (eventId, handleResponse) => {
   );
 };
 
+export const fetchStatementsCount = (eventId, handleResponse) => {
+  fetchGet(
+    `${backendUrl()}/statement/getStatementsCount?eventId=${eventId}`,
+    handleResponse
+  );
+};
+
 export const fetchDriverCount = (eventId, handleResponse) => {
   fetchGet(
     `${backendUrl()}/event/getDriverCount?eventId=${eventId}`,

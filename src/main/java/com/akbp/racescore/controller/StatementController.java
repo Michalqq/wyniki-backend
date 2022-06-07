@@ -33,6 +33,15 @@ public class StatementController {
         }
     }
 
+    @GetMapping("/getStatementsCount")
+    public Long getStatementsCount(@RequestParam("eventId") Long eventId) {
+        try {
+            return statementService.getStatementsCount(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return 0L;
+        }
+    }
     @PostMapping("/addStatement")
     public Long addStatement(Authentication auth, @RequestBody Statement statement) {
         try {

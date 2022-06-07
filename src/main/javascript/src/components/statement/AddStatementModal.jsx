@@ -143,7 +143,7 @@ export const AddStatementModal = ({ show, handleClose, eventId }) => {
                   <input
                     type="file"
                     name="file"
-                    accept="application/pdf,application/vnd.ms-excel"
+                    //accept="application/pdf,application/vnd.ms-excel"
                     onChange={(e) => addFile(e)}
                   />
                 </div>

@@ -9,4 +9,6 @@ public interface StatementRepository extends JpaRepository<Statement, Long> {
     List<Statement> findByEventId(Long eventId);
 
     List<Statement> findByName(String finalListName);
+
+    Long countByEventId(Long eventId);
 }

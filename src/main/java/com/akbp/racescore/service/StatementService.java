@@ -81,4 +81,8 @@ public class StatementService {
         if (eventRepository.checkIfUserIsReferee(statement.getEventId(), auth.getName()).isPresent())
             statementRepository.delete(statement);
     }
+
+    public Long getStatementsCount(Long eventId) {
+        return statementRepository.countByEventId(eventId);
+    }
 }

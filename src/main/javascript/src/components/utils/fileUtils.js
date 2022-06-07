@@ -18,7 +18,8 @@ export function openFile(file, filename) {
   //window.open(`data:application/${filename.split(".").pop()};base64, ` + file);
   var bytes = _base64ToArrayBuffer(file);
   var link = new Blob([bytes], {
-    type: "application/" + filename.split(".").pop(),
+    type: "application/octet-stream",
+    //type: "application/" + filename.split(".").pop(),
   });
   var a = document.createElement("a");
   a.href = URL.createObjectURL(link);
