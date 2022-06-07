@@ -29,7 +29,7 @@ public class InsuranceEmailNotify {
     private Long notify2DayCount;
 
     //@Scheduled(cron = "0/2 * * * * ?")
-    @Scheduled(cron = "0 0 19 * * ?")
+    @Scheduled(cron = "0 30 20 * * ?", zone = "Europe/Warsaw")
     public void sendEmail() {
         send(0L);
         send(notify1DayCount);
