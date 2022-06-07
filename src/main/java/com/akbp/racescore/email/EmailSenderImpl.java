@@ -1,6 +1,8 @@
 package com.akbp.racescore.email;
 
 import com.akbp.racescore.model.dto.MsgDto;
+import com.akbp.racescore.model.entity.Car;
+import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +11,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class EmailSenderImpl implements EmailSender {
+    public static final String EMAIL = "kraciukmichal@gmail.com";
+
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -25,8 +32,13 @@ public class EmailSenderImpl implements EmailSender {
     @Value("${racescore.email.from2}")
     private String emailFrom2;
 
+    @Value("${insurance.mubi.link}")
+    private String mubiLink;
+
     @Autowired
     private JwtUtils jwtUtils;
+
+    private static final String PATTERN_FORMAT = "dd-MM-yyyy";
 
     @Override
     public boolean sendEmail(Long attemptCount, String to, String title, String content) {
@@ -35,9 +47,17 @@ public class EmailSenderImpl implements EmailSender {
             MimeMessageHelper helper = new MimeMessageHelper(mail, true);
             helper.setTo(to);
             helper.setFrom(attemptCount == 1L ? emailFrom1 : emailFrom2);
-            helper.setReplyTo("kraciukmichal@gmail.com");
+            helper.setReplyTo(EMAIL);
             helper.setSubject(title);
             helper.setText(content, true);
+
+            MimeBodyPart imagePart = new MimeBodyPart();
+            imagePart.attachFile("src/main/resources/static/wynikiLogo.jpg");
+            imagePart.setContentID("<image>");
+            imagePart.setDisposition(MimeBodyPart.INLINE);
+            imagePart.setFileName("logo.jpg");
+
+            helper.getMimeMultipart().addBodyPart(imagePart);
             javaMailSender.send(mail);
             return true;
         } catch (Exception e) {
@@ -63,6 +83,36 @@ public class EmailSenderImpl implements EmailSender {
         return sendEmail(1L, user.getEmail(), "Wyniki.online - resetowanie hasła", content);
     }
 
+    public boolean sendInsuranceNotification(Team team, Car car) {
+        String content = getHtmlStart();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault());
+        String insuranceExpiryDate = formatter.format(car.getInsuranceExpiryDate());
+
+        content += "<h2>Cześć " + team.getDriver() + "</h2>";
+        content += "<p><br></br></p>";
+
+        content += "<h4>tutaj Michał ze strony: <a href=https://www.wyniki.online>www.wyniki.online</a> - Wyniki motorsportowe online AKBP</h4>";
+        content += "<p><br></br></p>";
+        content += "<h3>W Twojej rajdówce: " + car.getBrand() + " " + car.getModel() + " nr. rej. " + car.getLicensePlate() + " ubezpieczenie skończy się dnia: "
+                + insuranceExpiryDate + "</h3>";
+        content += "Już dziś wykup ubezpieczenie taniej.";
+
+        content += "<p>Stronę z wynikami stworzyłem hobbystycznie w celach promocyjnych amatorskich imprez samochodowych.<br></br>" +
+                "Jeśli podobają Ci się wyniki online czy zapisy na imprezy i chciałbyś mnie wesprzeć to możesz skorzystać z linku " +
+                "polecającego poniżej który pozwoli Ci kupić ubezpieczenie <b>150zł TANIEJ!!! za pomocą MUBI</b></p>";
+        content += "<p>Mubi to porównywarka ubezpieczeń z której sam korzystam.</p><br></br>";
+
+        content += "<h2><a href=" + mubiLink + ">" + mubiLink + "</a></h2>";
+        content += "<h3>Ubezpieczenie ze zwrotem 150zł !!! - będzie na wpisowe lub paliwo :)</h3>";
+
+        content += getHtmlEnd();
+
+        sendEmail(1L, EMAIL, "WYSłANO - Kończy się ubezpieczenie w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
+        
+        return sendEmail(1L, team.getEmail(), "Kończy się ubezpieczenie w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
+    }
+
     public boolean sendMsg(MsgDto msg) {
         String content = getHtmlStart();
 
@@ -79,10 +129,16 @@ public class EmailSenderImpl implements EmailSender {
     }
 
     private String getHtmlStart() {
-        return "<!DOCTYPE html> <html lang=\"en\"><head>";
+
+        return "<!DOCTYPE html> <html lang=\"en\"><head> <img src=\"cid:image\">";
     }
 
     private String getHtmlEnd() {
-        return "</head></html>";
+        String content = "<br></br>";
+        content = "__________________________________________________";
+        content += "<br></br>";
+        content += "<h6>Ten email został wygenerowany automatycznie.</h6>";
+        content += "</head></html>";
+        return content;
     }
 }
