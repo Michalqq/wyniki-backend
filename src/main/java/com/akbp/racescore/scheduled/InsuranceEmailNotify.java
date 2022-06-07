@@ -29,20 +29,18 @@ public class InsuranceEmailNotify {
     private Long notify2DayCount;
 
     //@Scheduled(cron = "0/2 * * * * ?")
-    @Scheduled(cron = "0 55 19 * * ?", zone = "Europe/Warsaw")
+    @Scheduled(cron = "0 00 19 * * ?", zone = "Europe/Warsaw")
     public void sendEmail() {
-        send(14L);
-//        send(notify1DayCount);
-//        send(notify2DayCount);
+        send(notify1DayCount);
+        send(notify2DayCount);
     }
 
     private void send(Long dayCount) {
         Instant startCount = Instant.now().plus(dayCount, ChronoUnit.DAYS);
         Instant start = startCount.minus(1, ChronoUnit.DAYS);
-        List<Car> cars = carRepository.findByInsuranceExpiryDateBetween(Instant.now(), startCount);
+        List<Car> cars = carRepository.findByInsuranceExpiryDateBetween(start, startCount);
 
-        emailSender.sendEmail(1L, "kraciukmichal@gmail.com", "Serwis sprawdził", "Znaleziono " + cars.size() + "przedział " + startCount + " do " + start);
-
+        emailSender.sendEmail(1L, "kraciukmichal@gmail.com", "Serwis sprawdził", "Znaleziono " + cars.size() + "przedział " + start + " do " + startCount);
         cars.stream().forEach(x -> emailSender.sendInsuranceNotification(teamRepository.findByTeamId(x.getTeamId()), x));
     }
 }
