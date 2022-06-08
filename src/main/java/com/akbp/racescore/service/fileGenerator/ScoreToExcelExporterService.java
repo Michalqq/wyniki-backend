@@ -10,6 +10,8 @@ import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.service.ScoreService;
 import com.akbp.racescore.utils.ScoreToString;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +49,7 @@ public class ScoreToExcelExporterService {
         List<StageScore> scores = stageScoreRepository.findByStageIdIn(event.getStages().stream().map(x -> x.getStageId()).collect(Collectors.toList()));
         LOGGER.info(scores.toString());
 
-        ByteArrayOutputStream out = getOutputStream(event.getEventTeams(), scores, event.getStages());
+        ByteArrayOutputStream out = getOutputStream(event, scores);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.ms-excel"));
@@ -57,35 +59,40 @@ public class ScoreToExcelExporterService {
         return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
     }
 
-    private ByteArrayOutputStream getOutputStream(List<EventTeam> eventTeams, List<StageScore> scores, List<Stage> stages) throws IOException {
+    private ByteArrayOutputStream getOutputStream(Event event, List<StageScore> scores) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         workbook = new XSSFWorkbook();
-        workbook = getScoresWorkbook(eventTeams, scores, stages);
+        workbook = getScoresWorkbook(event, scores);
         workbook.write(out);
         workbook.close();
 
         return out;
     }
 
-    private Workbook getScoresWorkbook(List<EventTeam> eventTeams, List<StageScore> scores, List<Stage> stages) {
-        createSheet("Klasyfikacja generalna", eventTeams, scores, stages);
+    private Workbook getScoresWorkbook(Event event, List<StageScore> scores) {
+        List<EventTeam> eventTeams = event.getEventTeams();
+        List<Stage> stages = event.getStages();
+
+        createSheet("Klasyfikacja generalna", eventTeams, scores, stages, event);
 
         Set<CarClass> classes = eventTeams.stream().map(x -> x.getCarClass()).collect(Collectors.toSet());
 
         for (CarClass cc : classes)
-            createSheet("Klasa - " + cc.getName(), eventTeams.stream().filter(x -> x.getCarClassId() == cc.getCarClassId()).collect(Collectors.toList()), scores, stages);
+            createSheet("Klasa - " + cc.getName(), eventTeams.stream().filter(x -> x.getCarClassId() == cc.getCarClassId()).collect(Collectors.toList()), scores, stages, event);
 
         return workbook;
     }
 
-    private void createSheet(String sheetName, List<EventTeam> eventTeams, List<StageScore> scores, List<Stage> stages) {
+    private void createSheet(String sheetName, List<EventTeam> eventTeams, List<StageScore> scores, List<Stage> stages, Event event) {
         Sheet sheet = workbook.createSheet("Wyniki - " + sheetName);
         setColumnWidth(sheet);
 
         stages = stages.stream().sorted(Comparator.comparing(x -> x.getStageId())).collect(Collectors.toList());
 
         AtomicInteger index = new AtomicInteger(1);
+
+        addEventNameAndLogo(sheet, event, index);
 
         createTitle(sheet, sheetName, index);
         createHeader(sheet, stages, index.getAndIncrement());
@@ -112,11 +119,31 @@ public class ScoreToExcelExporterService {
         row.createCell(9).setCellValue("Wyniki wygenerowane za pomocą aplikacji: www.wyniki.online");
     }
 
+    private void addEventNameAndLogo(Sheet sheet, Event event, AtomicInteger index) {
+        Row row = sheet.createRow(index.getAndIncrement());
+
+        row.createCell(4).setCellValue(event.getName());
+        row.getCell(4).setCellStyle(getFontBold(15));
+        sheet.createRow(index.getAndIncrement());
+        sheet.createRow(index.getAndIncrement());
+
+        if (event.getLogoPathFile() != null) {
+            XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
+            XSSFClientAnchor logoAnchor = new XSSFClientAnchor();
+            logoAnchor.setCol1(0);
+            logoAnchor.setRow1(0);
+
+            Picture pict = drawing.createPicture(logoAnchor, workbook.addPicture(event.getLogoPathFile(), Workbook.PICTURE_TYPE_JPEG));
+            pict.resize();
+            pict.resize(110.0 / pict.getImageDimension().height);
+        }
+    }
+
     private void createTitle(Sheet sheet, String title, AtomicInteger index) {
         Row row = sheet.createRow(index.getAndIncrement());
 
-        row.createCell(3).setCellValue(title);
-        row.getCell(3).setCellStyle(getFontBold());
+        row.createCell(4).setCellValue(title);
+        row.getCell(4).setCellStyle(getFontBold(11));
         sheet.createRow(index.getAndIncrement());
     }
 
@@ -170,7 +197,7 @@ public class ScoreToExcelExporterService {
         header.createCell(index.get()).setCellValue("");
         sheet.setColumnWidth(index.getAndIncrement(), 1 * 256);
         header.createCell(index.get()).setCellValue("Suma w min.");
-        sheet.setColumnWidth(index.getAndIncrement(), 11 * 256);
+        sheet.setColumnWidth(index.getAndIncrement(), 12 * 256);
 
         setStyle(index.get(), header, getHeaderStyle());
 
@@ -227,20 +254,21 @@ public class ScoreToExcelExporterService {
         cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
         cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-        cellStyle.setFont(getBold());
+        cellStyle.setFont(getBold(11));
 
         return cellStyle;
     }
 
-    private Font getBold() {
+    private Font getBold(int fontSize) {
         Font font = workbook.createFont();
         font.setBold(true);
+        font.setFontHeight((short) ((short) 20 * fontSize));
         return font;
     }
 
-    private CellStyle getFontBold() {
+    private CellStyle getFontBold(int fontSize) {
         CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setFont(getBold());
+        cellStyle.setFont(getBold(fontSize));
         return cellStyle;
     }
 
