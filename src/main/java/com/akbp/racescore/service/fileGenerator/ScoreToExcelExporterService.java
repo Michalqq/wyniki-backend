@@ -210,7 +210,7 @@ public class ScoreToExcelExporterService {
         scores = scores.stream().sorted(Comparator.comparing(x -> x.getStageId())).collect(Collectors.toList());
         LOGGER.info(scores.toString());
 
-        if (classificated) row.createCell(0).setCellValue(index - 3);
+        if (classificated) row.createCell(0).setCellValue(index - 6);
 
         AtomicInteger index2 = new AtomicInteger(1);
 
