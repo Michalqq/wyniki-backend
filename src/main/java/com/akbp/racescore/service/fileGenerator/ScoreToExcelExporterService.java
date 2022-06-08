@@ -123,11 +123,12 @@ public class ScoreToExcelExporterService {
     private void setColumnWidth(Sheet sheet) {
         sheet.setColumnWidth(0, 4 * 256);
         sheet.setColumnWidth(1, 4 * 256);
-        sheet.setColumnWidth(2, 17 * 256);
+        sheet.setColumnWidth(2, 18 * 256);
         sheet.setColumnWidth(3, 17 * 256);
-        sheet.setColumnWidth(4, 17 * 256);
-        sheet.setColumnWidth(5, 17 * 256);
-        sheet.setColumnWidth(6, 8 * 256);
+        sheet.setColumnWidth(4, 18 * 256);
+        sheet.setColumnWidth(5, 16 * 256);
+        sheet.setColumnWidth(6, 14 * 256);
+        sheet.setColumnWidth(7, 7 * 256);
     }
 
     private void createFinishedTeamScoreRow(Sheet sheet, StageScoreDTO stageScoreDTO, List<EventTeam> eventTeams, List<StageScore> scores, AtomicInteger index) {
@@ -150,6 +151,7 @@ public class ScoreToExcelExporterService {
         header.createCell(index.getAndIncrement()).setCellValue("Automobilklub");
         header.createCell(index.getAndIncrement()).setCellValue("Pilot");
         header.createCell(index.getAndIncrement()).setCellValue("Automobilklub");
+        header.createCell(index.getAndIncrement()).setCellValue("Samochód");
         header.createCell(index.getAndIncrement()).setCellValue("Klasa");
 
         stages.stream()
@@ -159,16 +161,16 @@ public class ScoreToExcelExporterService {
                 });
 
         header.createCell(index.get()).setCellValue("Suma kar");
-        sheet.setColumnWidth(index.getAndIncrement(), 13 * 256);
+        sheet.setColumnWidth(index.getAndIncrement(), 10 * 256);
         header.createCell(index.get()).setCellValue("");
-        sheet.setColumnWidth(index.getAndIncrement(), 2 * 256);
+        sheet.setColumnWidth(index.getAndIncrement(), 1 * 256);
 
         header.createCell(index.get()).setCellValue("Wynik suma");
-        sheet.setColumnWidth(index.getAndIncrement(), 13 * 256);
+        sheet.setColumnWidth(index.getAndIncrement(), 11 * 256);
         header.createCell(index.get()).setCellValue("");
-        sheet.setColumnWidth(index.getAndIncrement(), 2 * 256);
-        header.createCell(index.get()).setCellValue("Suma w minutach");
-        sheet.setColumnWidth(index.getAndIncrement(), 18 * 256);
+        sheet.setColumnWidth(index.getAndIncrement(), 1 * 256);
+        header.createCell(index.get()).setCellValue("Suma w min.");
+        sheet.setColumnWidth(index.getAndIncrement(), 11 * 256);
 
         setStyle(index.get(), header, getHeaderStyle());
 
@@ -190,6 +192,8 @@ public class ScoreToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getClub()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getCoDriver()).orElse("-"));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getCoClub()).orElse(""));
+        row.createCell(index2.getAndIncrement()).setCellValue(
+                Optional.ofNullable(et.getTeam().getCurrentCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
 
         scores.stream().forEach(x -> setScore(row, index2, x));
