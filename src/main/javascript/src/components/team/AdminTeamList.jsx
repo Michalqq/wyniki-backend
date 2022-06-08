@@ -33,6 +33,7 @@ import { download } from "../utils/fileUtils";
 import { MyButton } from "../common/Button";
 import { BkOaDiv, CarDiv, TeamDiv } from "../common/Div";
 import { FinalListModal } from "./FinalListModal";
+import { closeOnBack } from "../utils/utils";
 
 export const AdminTeamList = ({
   show,
@@ -68,6 +69,7 @@ export const AdminTeamList = ({
 
   useEffect(() => {
     if (show) {
+      closeOnBack(handleClose);
       fetchReferee();
       setLoading(true);
       setTeams([]);

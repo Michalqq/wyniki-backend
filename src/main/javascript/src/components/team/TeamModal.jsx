@@ -26,6 +26,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getCarLogo } from "../utils/car";
 import { OkModal } from "../common/Modal";
+import { closeOnBack } from "../utils/utils";
 
 export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [disable, setDisable] = useState(false);
@@ -42,6 +43,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   useEffect(() => {
     if (!show) return;
 
+    closeOnBack(handleClose);
     setMsg("");
     if (mode === undefined || mode === "teamPanel") fetchGetTeam();
     if (mode === "preview") {
@@ -138,7 +140,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (myEvent.carClassManual && !manualCarClass) {
+    if (myEvent?.carClassManual && !manualCarClass) {
       setMsg("Proszę wybrać klasę samochodu");
       return;
     }

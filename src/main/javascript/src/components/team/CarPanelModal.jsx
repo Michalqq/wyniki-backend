@@ -15,6 +15,7 @@ import {
   faIdBadge,
   faNewspaper,
 } from "@fortawesome/free-solid-svg-icons";
+import { closeOnBack } from "../utils/utils";
 
 export const CarPanelModal = ({
   show,
@@ -61,6 +62,7 @@ export const CarPanelModal = ({
 
   useEffect(() => {
     if (show) {
+      closeOnBack(handleClose);
       axios.get(`${backendUrl()}/team/getTeamOptionList`).then((res) => {
         setOptions(res.data);
       });

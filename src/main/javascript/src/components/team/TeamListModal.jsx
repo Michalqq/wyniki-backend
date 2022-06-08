@@ -10,6 +10,7 @@ import { NrBadge } from "../common/NrBadge";
 import { CarDiv, TeamDiv } from "../common/Div";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { closeOnBack } from "../utils/utils";
 
 export const TeamListModal = ({ show, handleClose, eventId, started }) => {
   const [teams, setTeams] = useState([]);
@@ -29,6 +30,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
 
   useEffect(() => {
     if (show) {
+      closeOnBack(handleClose);
       setLoading(true);
       setTeams([]);
     }

@@ -116,3 +116,13 @@ export const checkDate = (filename) => {
   var checkingDate = new Date(fileDate);
   return actualDate.getTime() <= checkingDate.getTime();
 };
+
+export const closeOnBack = (closeHandler) => {
+  window.history.pushState(null, "", window.location.href);
+  window.onpopstate = () => {
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = undefined;
+    window.history.back();
+    closeHandler();
+  };
+};

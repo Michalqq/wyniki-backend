@@ -15,6 +15,7 @@ import {
   faUserAstronaut,
   faUserClock,
 } from "@fortawesome/free-solid-svg-icons";
+import { closeOnBack } from "../utils/utils";
 
 export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
   const [msg, setMsg] = useState();
@@ -43,6 +44,8 @@ export const QuickJoinPanel = ({ show, handleClose, eventId }) => {
 
   useEffect(() => {
     if (show) {
+      closeOnBack(handleClose);
+
       axios.get(`${backendUrl()}/team/getTeamOptionList`).then((res) => {
         setOptions(res.data);
       });

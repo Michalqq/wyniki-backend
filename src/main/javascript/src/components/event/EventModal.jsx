@@ -19,6 +19,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { QuickJoinPanel } from "../join/QuickJoinPanel";
 import { TeamModal } from "../team/TeamModal";
 import { download } from "../utils/fileUtils";
+import { closeOnBack } from "../utils/utils";
 
 export const EventModal = ({ show, handleClose, event }) => {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ export const EventModal = ({ show, handleClose, event }) => {
       setLogoDto({});
       return;
     }
+    closeOnBack(handleClose);
 
     fetchGetTeam();
     setUploading(false);

@@ -14,6 +14,7 @@ import { CalendarContainer } from "react-datepicker";
 import { OkModal } from "../common/Modal";
 
 import moment from "moment";
+import { closeOnBack } from "../utils/utils";
 
 export const FinalListModal = ({ show, handleClose, eventId }) => {
   const [creating, setCreating] = useState(false);
@@ -26,6 +27,7 @@ export const FinalListModal = ({ show, handleClose, eventId }) => {
   useEffect(() => {
     if (!show) return;
 
+    closeOnBack(handleClose);
     setCreating(false);
     setFrequency(1);
     axios

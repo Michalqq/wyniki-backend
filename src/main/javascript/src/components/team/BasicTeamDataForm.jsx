@@ -15,6 +15,7 @@ import {
   faUserClock,
   faUserFriends,
 } from "@fortawesome/free-solid-svg-icons";
+import { closeOnBack } from "../utils/utils";
 
 export const BasicTeamDataForm = ({
   show,
@@ -31,6 +32,7 @@ export const BasicTeamDataForm = ({
 
   useEffect(() => {
     if (show) {
+      closeOnBack(handleClose);
       axios.get(`${backendUrl()}/team/getTeamOptionList`).then((res) => {
         setOptions(res.data);
       });

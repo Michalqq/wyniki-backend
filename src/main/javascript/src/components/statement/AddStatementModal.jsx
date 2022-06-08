@@ -9,6 +9,7 @@ import { CustomDatePicker } from "../common/DateInput";
 import { CalendarContainer } from "react-datepicker";
 import { backendUrl } from "../utils/fetchUtils";
 import authHeader from "../../service/auth-header";
+import { closeOnBack } from "../utils/utils";
 
 export const AddStatementModal = ({ show, handleClose, eventId }) => {
   const [loading, setLoading] = useState(false);
@@ -17,6 +18,9 @@ export const AddStatementModal = ({ show, handleClose, eventId }) => {
   const [postFile, setPostFile] = useState();
 
   useEffect(() => {
+    if (!show) return;
+
+    closeOnBack(handleClose);
     setMsg("");
     setLoading(false);
     setPostFile();

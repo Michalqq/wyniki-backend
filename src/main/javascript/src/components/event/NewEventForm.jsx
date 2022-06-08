@@ -16,6 +16,7 @@ import { Selector } from "../common/Selector";
 import authHeader from "../../service/auth-header";
 import { OkCancelModal } from "../common/Modal";
 import Form from "react-bootstrap/Form";
+import { closeOnBack } from "../utils/utils";
 
 export const NewEventForm = ({ show, handleClose, event }) => {
   const [myEvent, setMyEvent] = useState({
@@ -71,6 +72,8 @@ export const NewEventForm = ({ show, handleClose, event }) => {
 
   useEffect(() => {
     if (!show) return;
+
+    closeOnBack(handleClose);
 
     axios
       .get(`${backendUrl()}/event/getRefereeOptions`, {

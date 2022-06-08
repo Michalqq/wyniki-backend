@@ -17,6 +17,7 @@ import { openFile } from "../utils/fileUtils";
 import { OkCancelModal, OkModal } from "../common/Modal";
 import authHeader from "../../service/auth-header";
 import { Spinner } from "react-bootstrap";
+import { closeOnBack } from "../utils/utils";
 
 export const StatementModal = ({ show, handleClose, event }) => {
   const [addStatement, setAddStatement] = useState();
@@ -30,6 +31,7 @@ export const StatementModal = ({ show, handleClose, event }) => {
   useEffect(() => {
     if (!show) return;
 
+    closeOnBack(handleClose);
     if (event?.eventId !== undefined) checkReferee(event?.eventId, setReferee);
 
     fetchGetStatements();
