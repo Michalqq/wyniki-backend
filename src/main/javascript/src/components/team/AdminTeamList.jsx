@@ -7,7 +7,6 @@ import Button from "react-bootstrap/Button";
 import {
   backendUrl,
   fetchConfirmEntryFee,
-  fetchCreateFinalList,
   fetchRemoveFromEvent,
   fetchSaveTeam,
 } from "../utils/fetchUtils";
@@ -303,8 +302,8 @@ export const AdminTeamList = ({
                 <th className="">
                   <td style={{ width: "70px" }}>Edycja</td>
                   <td style={{ width: "60px" }}>Nr</td>
-                  <td style={{ width: "350px" }}>Kierowca</td>
-                  <td style={{ width: "350px" }}>Samochód</td>
+                  <td style={{ width: "400px" }}>Kierowca</td>
+                  <td style={{ width: "250px" }}>Samochód</td>
                   <td style={{ width: "100px" }}>Klasa</td>
                   <td style={{ width: "100px" }}>Zapłacone</td>
                   <td style={{ width: "110px" }}>Potwierdź wpisowe</td>
@@ -394,10 +393,10 @@ export const AdminTeamList = ({
                                               }
                                             />
                                           </td>
-                                          <td style={{ width: "270px" }}>
+                                          <td style={{ width: "250px" }}>
                                             <TeamDiv team={item.team}></TeamDiv>
                                           </td>
-                                          <td style={{ width: "270px" }}>
+                                          <td style={{ width: "250px" }}>
                                             <CarDiv
                                               line1={
                                                 (item.team.currentCar?.brand ||
@@ -418,11 +417,10 @@ export const AdminTeamList = ({
                                           </td>
                                           <td
                                             style={{
-                                              width: "100px",
+                                              width: "130px",
                                               display: "flex",
                                             }}
                                           >
-                                            {item.carClassId}
                                             {!refreshSelect && (
                                               <Selector
                                                 className={"m-0 p-0"}
@@ -455,7 +453,6 @@ export const AdminTeamList = ({
                                           <td
                                             style={{
                                               width: "90px",
-                                              textAlign: "center",
                                             }}
                                           >
                                             {item.entryFeePaid ? (
