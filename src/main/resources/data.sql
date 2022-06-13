@@ -46,3 +46,8 @@ CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --INSERT INTO race_score.penalty_dict values (6, 'Kara 1 min', false, '60');
 --INSERT INTO race_score.penalty_dict values (7, 'DYSKWALIFIKACJA', true, '0');
 --INSERT INTO race_score.penalty_dict values (8, 'Wycofanie', true, '0');
+
+
+update race_score.event_Team set driver = (select driver from race_score.team where race_score.event_Team.team_id = team_id);
+update race_score.event_Team set co_driver = (select co_driver from race_score.team where race_score.event_Team.team_id = team_id);
+update race_score.event_Team set car_id = (select current_car_id from race_score.team where race_score.event_Team.team_id = team_id);
