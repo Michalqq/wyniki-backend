@@ -47,6 +47,16 @@ public class EventTeam {
     @Column(name = "JOIN_DATE")
     private Instant joinDate;
 
+    @Column(name = "DRIVER")
+    private String driver;
+
+    @Column(name = "CO_DRIVER")
+    private String coDriver;
+
+    @ManyToOne
+    @JoinColumn(name = "CAR_ID", insertable = false, updatable = false)
+    private Car car;
+
     @Column(name = "ENTRY_FEE_FILE")
     @Basic(fetch = FetchType.LAZY)
     private byte[] entryFeeFile;
