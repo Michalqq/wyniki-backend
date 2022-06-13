@@ -188,11 +188,15 @@ public class EventService {
         et.setTeamName(team.getTeamName());
         et.setCar(team.getCurrentCar());
 
-        int number = eventTeamRepository.getMaxNumberByEventId(eventId);
-        et.setNumber(number + 1);
+        if (et.getNumber() == null) {
+            int number = eventTeamRepository.getMaxNumberByEventId(eventId);
+            et.setNumber(number + 1);
+        }
 
-        int order = eventTeamRepository.getMaxStartOrderByEventId(eventId);
-        et.setOrder(order + 1);
+        if (et.getOrder() == null) {
+            int order = eventTeamRepository.getMaxStartOrderByEventId(eventId);
+            et.setOrder(order + 1);
+        }
 
         eventTeamRepository.save(et);
 
