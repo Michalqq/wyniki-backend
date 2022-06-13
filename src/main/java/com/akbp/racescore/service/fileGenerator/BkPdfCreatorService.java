@@ -19,7 +19,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BkPdfCreatorService {
@@ -70,7 +72,7 @@ public class BkPdfCreatorService {
     }
 
     private byte[] createBkForEvent(Event event) {
-        List<EventTeam> teams = event.getEventTeams();
+        List<EventTeam> teams = event.getEventTeams().stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList());
 
         try {
             createPagesForTeams(teams);
@@ -90,6 +92,7 @@ public class BkPdfCreatorService {
         PdfReader reader = new PdfReader(BK_FORM_PATH);
         PdfCopy copy = new PdfSmartCopy(doc, new FileOutputStream(BK_FOR_EVENT_FORM_PATH));
         doc.open();
+
         for (int i = 1; i <= eventTeams.size(); i++)
             copy.addPage(copy.getImportedPage(reader, 1));
         doc.close();
