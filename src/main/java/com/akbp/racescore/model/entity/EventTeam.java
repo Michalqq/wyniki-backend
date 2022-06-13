@@ -50,11 +50,20 @@ public class EventTeam {
     @Column(name = "DRIVER")
     private String driver;
 
+    @Column(name = "CLUB")
+    private String club;
+
     @Column(name = "CO_DRIVER")
     private String coDriver;
 
+    @Column(name = "CO_CLUB")
+    private String coClub;
+
+    @Column(name = "TEAM_NAME")
+    private String teamName;
+
     @ManyToOne
-    @JoinColumn(name = "CAR_ID", insertable = false, updatable = false)
+    @JoinColumn(name = "CAR_ID")
     private Car car;
 
     @Column(name = "ENTRY_FEE_FILE")

@@ -181,6 +181,13 @@ public class EventService {
         et.setJoinDate(Instant.now());
         et.setTeamId(team.getTeamId());
         et.setEventId(eventId);
+        et.setDriver(team.getDriver());
+        et.setCoDriver(team.getCoDriver());
+        et.setClub(team.getClub());
+        et.setCoClub(team.getCoClub());
+        et.setTeamName(team.getTeamName());
+        et.setCar(team.getCurrentCar());
+
         int number = eventTeamRepository.getMaxNumberByEventId(eventId);
         et.setNumber(number + 1);
 

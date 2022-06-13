@@ -15,17 +15,12 @@ public class CarService {
 
     private static final String OPEN = "OPEN";
     private static final String QUEST = "GOŚĆ";
-    private static final String K1 = "K1";
-    private static final String K2 = "K2";
-    private static final String K3 = "K3";
-    private static final String K4 = "K4";
-    private static final String K5 = "K5";
 
     public void calculateClass(Team team, EventTeam et, Event event) {
         if (Boolean.TRUE.equals(event.getCarClassManual())) return;
 
         try {
-            Car car = team.getCurrentCar();
+            Car car = et.getCar();
             Double engine = car.getEngineCapacity();
 
             if (team.getSportLicense()) {
