@@ -2,7 +2,6 @@ package com.akbp.racescore.service.fileGenerator;
 
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
-import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.model.repository.EventRepository;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
@@ -149,43 +148,41 @@ public class BkPdfCreatorService {
         over.setTextMatrix(CLASS_X, NAME_ROW_Y);
         over.showText(et.getCarClass().getName());
 
-        Team team = et.getTeam();
-
         over.setTextMatrix(DRIVER_X, NAME_ROW_Y);
-        over.showText(team.getDriver());
+        over.showText(et.getDriver());
 
         over.setTextMatrix(CO_DRIVER_X, NAME_ROW_Y);
-        over.showText(team.getCoDriver());
+        over.showText(et.getCoDriver());
 
         fillEventInfo(over, event, bf);
         over.setFontAndSize(bf, 12);
 
         over.setTextMatrix(CAR_1_X, CAR_1_Y);
-        over.showText(team.getCurrentCar().getBrand());
+        over.showText(et.getCar().getBrand());
         over.setTextMatrix(CAR_1_X, CAR_2_Y);
-        over.showText(team.getCurrentCar().getModel());
+        over.showText(et.getCar().getModel());
         over.setTextMatrix(CAR_1_X, CAR_3_Y);
-        String engine = team.getCurrentCar().getEngineCapacity().toString();
+        String engine = et.getCar().getEngineCapacity().toString();
         over.showText(engine.substring(0, engine.indexOf('.')));
 
         over.setTextMatrix(CAR_2_X, CAR_1_Y);
-        over.showText(team.getCurrentCar().getLicensePlate().toUpperCase());
+        over.showText(et.getCar().getLicensePlate().toUpperCase());
         over.setTextMatrix(CAR_2_X, CAR_2_Y);
-        over.showText(team.getCurrentCar().getVin().toUpperCase());
+        over.showText(et.getCar().getVin().toUpperCase());
 
-        fillTurboInfo(over, team.getCurrentCar().getTurbo());
+        fillTurboInfo(over, et.getCar().getTurbo());
 
         over.setFontAndSize(bf, 10);
         over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y);
-        over.showText(team.getDrivingLicense());
+        over.showText(et.getTeam().getDrivingLicense());
 
         over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y - 19);
-        over.showText(team.getCoDrivingLicense());
+        over.showText(et.getTeam().getCoDrivingLicense());
 
         over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y - 58);
-        over.showText(team.getCurrentCar().getInsurance());
+        over.showText(et.getCar().getInsurance());
         over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y - 76);
-        over.showText(team.getCurrentCar().getInsurance());
+        over.showText(et.getCar().getInsurance());
 
         over.endText();
     }

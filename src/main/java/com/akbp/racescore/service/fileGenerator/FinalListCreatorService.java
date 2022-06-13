@@ -104,11 +104,11 @@ public class FinalListCreatorService {
             Team team = et.getTeam();
             table.addCell(String.valueOf(count++)).setBorder(Border.NO_BORDER);
             table.addCell(et.getNumber().toString());
-            table.addCell(getTeamNames(team));
-            table.addCell(getClubs(team));
+            table.addCell(getTeamNames(et));
+            table.addCell(getClubs(et));
             table.addCell(Optional.ofNullable(et.getCarClass().getName()).orElse(""));
-            table.addCell(Optional.ofNullable(team.getCurrentCar().getBrand()).orElse("") + " "
-                    + Optional.ofNullable(team.getCurrentCar().getModel()).orElse(""));
+            table.addCell(Optional.ofNullable(et.getCar().getBrand()).orElse("") + " "
+                    + Optional.ofNullable(et.getCar().getModel()).orElse(""));
             table.addCell(Optional.ofNullable(team.getTeamName()).orElse(""));
             table.addCell(getTime());
         }
@@ -129,14 +129,14 @@ public class FinalListCreatorService {
         table.getCell(1, 1).setHorizontalAlignment(HorizontalAlignment.CENTER);
     }
 
-    private String getTeamNames(Team team) {
-        String coDriver = team.getCoDriver() != null && team.getCoDriver() != "" ? " / " + team.getCoDriver() : "";
-        return Optional.ofNullable(team.getDriver()).map(x -> x + coDriver).orElse("");
+    private String getTeamNames(EventTeam et) {
+        String coDriver = et.getCoDriver() != null && et.getCoDriver() != "" ? " / " + et.getCoDriver() : "";
+        return Optional.ofNullable(et.getDriver()).map(x -> x + coDriver).orElse("");
     }
 
-    private String getClubs(Team team) {
-        String coClub = team.getCoClub() != null && team.getCoClub() != "" ? " / " + team.getCoClub() : "";
-        return Optional.ofNullable(team.getClub()).map(x -> x + coClub).orElse("");
+    private String getClubs(EventTeam et) {
+        String coClub = et.getCoClub() != null && et.getCoClub() != "" ? " / " + et.getCoClub() : "";
+        return Optional.ofNullable(et.getClub()).map(x -> x + coClub).orElse("");
     }
 
     private Image addLogo(byte[] logoPathFile) {

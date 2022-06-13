@@ -83,7 +83,7 @@ public class OaDocumentPdfCreatorService {
         doc.add(personalDataTable);
         personalDataTable.complete();
         doc.add(new Paragraph("\n\n Dane samochodu:"));
-        Table carDataTable = createCarDataTable(et.getTeam().getCurrentCar());
+        Table carDataTable = createCarDataTable(et.getCar());
         doc.add(carDataTable);
         carDataTable.complete();
         doc.add(createApprovalParagraph(event));
@@ -99,8 +99,6 @@ public class OaDocumentPdfCreatorService {
 
         img.setMaxWidth(100);
         img.setMaxHeight(100);
-
-        System.out.println(img.getImageHeight());
 
         float fixedHeight = img.getImageHeight() / 13;
 
@@ -188,7 +186,7 @@ public class OaDocumentPdfCreatorService {
         table.addCell("Model");
         table.addCell(Optional.ofNullable(car.getModel()).orElse(""));
         table.addCell("Nr rej.");
-        table.addCell(Optional.ofNullable(car.getLicensePlate()).map(x -> x.toUpperCase()).orElse(""));
+        table.addCell(Optional.ofNullable(car.getLicensePlate()).orElse("").toUpperCase());
         table.addCell("Rok produkcji");
         table.addCell(Optional.ofNullable(car.getYear()).orElse(""));
         table.addCell("Pojemność skokowa");
@@ -197,7 +195,7 @@ public class OaDocumentPdfCreatorService {
         table.addCell(Boolean.TRUE.equals(car.getTurbo()) ? "TAK" : "NIE");
 
         table.addCell("Nr VIN");
-        Cell vin = new Cell(1, 3).add(new Paragraph(Optional.ofNullable(car.getVin()).map(x -> x.toUpperCase()).orElse("")));
+        Cell vin = new Cell(1, 3).add(new Paragraph(Optional.ofNullable(car.getVin()).orElse("").toUpperCase()));
         table.addCell(vin);
 
         table.addCell("Data ważności przeglądu");

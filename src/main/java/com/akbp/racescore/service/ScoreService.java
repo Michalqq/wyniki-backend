@@ -105,7 +105,7 @@ public class ScoreService {
         StageScore stageScore = stageScores.get(0);
         EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
 
-        StageScoreDTO stageScoreDTO = new StageScoreDTO(stageScore, et.getCarClass().getName(), et.getNumber());
+        StageScoreDTO stageScoreDTO = new StageScoreDTO(stageScore, et);
         stageScoreDTO.setScoreFromTotalScore(stageScore);
         return stageScoreDTO;
     }

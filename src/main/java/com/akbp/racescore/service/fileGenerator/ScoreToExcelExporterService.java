@@ -215,12 +215,12 @@ public class ScoreToExcelExporterService {
         AtomicInteger index2 = new AtomicInteger(1);
 
         row.createCell(index2.getAndIncrement()).setCellValue(et.getNumber());
-        row.createCell(index2.getAndIncrement()).setCellValue(et.getTeam().getDriver());
-        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getClub()).orElse(""));
-        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getCoDriver()).orElse("-"));
-        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getCoClub()).orElse(""));
+        row.createCell(index2.getAndIncrement()).setCellValue(et.getDriver());
+        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getClub()).orElse(""));
+        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoDriver()).orElse("-"));
+        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoClub()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(
-                Optional.ofNullable(et.getTeam().getCurrentCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse(""));
+                Optional.ofNullable(et.getCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
 
         scores.stream().forEach(x -> setScore(row, index2, x));

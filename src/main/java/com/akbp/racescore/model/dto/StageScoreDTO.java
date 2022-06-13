@@ -1,5 +1,6 @@
 package com.akbp.racescore.model.dto;
 
+import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.entity.StageScore;
 import com.akbp.racescore.model.enums.DriveType;
 import com.akbp.racescore.utils.ScoreToString;
@@ -43,18 +44,18 @@ public class StageScoreDTO {
 
     private Long totalTimeWithPenalty;
 
-    public StageScoreDTO(StageScore score, String carClassName, Integer number) {
+    public StageScoreDTO(StageScore score, EventTeam et) {
         this.stageScoreId = score.getId();
-        this.driver = score.getTeam().getDriver();
-        this.coDriver = score.getTeam().getCoDriver();
-        this.teamName = score.getTeam().getTeamName();
-        this.club = score.getTeam().getClub();
-        this.brand = Optional.ofNullable(score.getTeam().getCurrentCar()).map(x -> x.getBrand()).orElse("");
-        this.coClub = score.getTeam().getCoClub();
+        this.driver = et.getDriver();
+        this.coDriver = et.getCoDriver();
+        this.teamName = et.getTeamName();
+        this.club = et.getClub();
+        this.brand = Optional.ofNullable(et.getCar()).map(x -> x.getBrand()).orElse("");
+        this.coClub = et.getCoClub();
 
-        this.car = Optional.ofNullable(score.getTeam().getCurrentCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse("");
-        this.className = carClassName;
-        this.number = number;
+        this.car = Optional.ofNullable(et.getCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse("");
+        this.className = et.getCarClass().getName();
+        this.number = et.getNumber();
 
         this.stageScore = ScoreToString.toString(score.getScore());
         this.timeTo = "-";

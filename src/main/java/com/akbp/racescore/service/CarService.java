@@ -30,7 +30,7 @@ public class CarService {
 
 //            //TODO
 //            Optional<DriveType> driveTypeOpt = Stream.of(DriveType.values())
-//                    .filter(v -> v.getId() == Long.valueOf(team.getCurrentCar().getDriveType())).findFirst();
+//                    .filter(v -> v.getId() == Long.valueOf(et.getCar().getDriveType())).findFirst();
 //            if (driveTypeOpt.isPresent() && driveTypeOpt.get().equals(DriveType.RWD)) {
 //                et.setCarClassId(carClassRepository.findByName(K5).getCarClassId());
 //                return;
