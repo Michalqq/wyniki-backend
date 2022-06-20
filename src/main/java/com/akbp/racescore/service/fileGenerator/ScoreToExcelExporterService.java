@@ -215,15 +215,15 @@ public class ScoreToExcelExporterService {
 
         row.createCell(index2.getAndIncrement()).setCellValue(et.getNumber());
         row.createCell(index2.getAndIncrement()).setCellValue(et.getDriver());
-        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getClub()).orElse(""));
-        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoDriver()).orElse("-"));
-        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoClub()).orElse(""));
-        row.createCell(index2.getAndIncrement()).setCellValue(
-                Optional.ofNullable(et.getCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse(""));
-        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
+//        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getClub()).orElse(""));
+//        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoDriver()).orElse("-"));
+//        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoClub()).orElse(""));
+//        row.createCell(index2.getAndIncrement()).setCellValue(
+//                Optional.ofNullable(et.getCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse(""));
+//        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
 
         scores.stream().forEach(x -> setScore(row, index2, x));
-        Long penalties = setPenaltiesSum(row, index2, scores);
+        Long penalties = 0L; //setPenaltiesSum(row, index2, scores);
         LOGGER.info("penalties: " + penalties);
 
         //Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
