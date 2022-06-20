@@ -154,7 +154,7 @@ public class EventController {
         return true;
     }
 
-    @PostMapping("confirmEntryFee")
+    @PostMapping("saveEventTeam")
     public void saveEventTeam(@RequestParam("eventId") Long eventId, @RequestBody Team team) {
         try {
             eventService.saveEventTeam(eventId, team);
