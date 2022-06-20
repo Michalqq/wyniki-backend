@@ -54,3 +54,5 @@ CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --update race_score.event_Team set club = (select club from race_score.team where race_score.event_Team.team_id = team_id);
 --update race_score.event_Team set co_club = (select co_club from race_score.team where race_score.event_Team.team_id = team_id);
 --update race_score.event_Team set team_name = (select team_name from race_score.team where race_score.event_Team.team_id = team_id);
+
+delete from race_score.stage_score where stage_id is null;
