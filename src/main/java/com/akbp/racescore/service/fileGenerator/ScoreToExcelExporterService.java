@@ -220,14 +220,13 @@ public class ScoreToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoClub()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(
                 Optional.ofNullable(et.getCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse(""));
-//        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
+        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
 
         scores.stream().forEach(x -> setScore(row, index2, x));
         Long penalties = 0L; //setPenaltiesSum(row, index2, scores);
         LOGGER.info("penalties: " + penalties);
 
-        //Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
-        Long sum = 10L;
+        Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
         LOGGER.info("sum: " + sum);
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
