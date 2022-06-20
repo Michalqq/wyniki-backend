@@ -3,6 +3,7 @@ package com.akbp.racescore.model.entity;
 import com.akbp.racescore.model.entity.dictionary.CarClass;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -10,6 +11,7 @@ import java.time.Instant;
 @Entity
 @Getter
 @Setter
+@ToString
 public class EventTeam {
     @Id
     @Column(name = "ID", nullable = false)
