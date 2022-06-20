@@ -223,7 +223,7 @@ public class ScoreToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
 
         scores.stream().forEach(x -> setScore(row, index2, x));
-        Long penalties = 0L; //setPenaltiesSum(row, index2, scores);
+        Long penalties = setPenaltiesSum(row, index2, scores);
         LOGGER.info("penalties: " + penalties);
 
         Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
@@ -294,7 +294,7 @@ public class ScoreToExcelExporterService {
         Long penaltiesSum = 0L;
         List<Penalty> penalties = penaltyRepository.findByStageIdInAndTeamId(scores.stream().map(x -> x.getStageId()).collect(Collectors.toList()), scores.get(0).getTeamId());
         if (!penalties.isEmpty()) {
-            penaltiesSum = penalties.stream().mapToLong(y -> y.getPenaltySec()).sum();
+            penaltiesSum = penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
             row.createCell(index2.get()).setCellValue(penaltiesSum + " sek");
         }
         index2.getAndIncrement();
