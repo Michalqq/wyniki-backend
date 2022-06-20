@@ -246,7 +246,7 @@ public class EventService {
             removeEventClassesIfNeccesarry(savedEvent.getEventClasses(), event.getEventClasses());
         }
 
-        eventRepository.save(event);
+        event = eventRepository.save(event);
 
         List<EventTeam> eventTeams = eventTeamRepository.findByEventId(event.getEventId());
 
