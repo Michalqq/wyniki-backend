@@ -58,6 +58,7 @@ public class EventService {
     private final EventClassesRepository eventClassesRepository;
 
     private final FinalListCreatorService finalListCreatorService;
+    private final PenaltyService penaltyService;
 
     private final StatementService statementService;
     private final CarService carService;
@@ -428,7 +429,7 @@ public class EventService {
 
         penalties = penalties.stream().filter(x -> x.getDescription().equals(bkDisq)).collect(Collectors.toList());
         if (penalties.size() > 0)
-            penalties.forEach(x -> penaltyRepository.delete(x));
+            penalties.forEach(x -> penaltyService.removeDisqualification(x));
     }
 
     private void addDisqualifiedPenalty(Long eventId, Long teamId, String desc) {
@@ -441,7 +442,7 @@ public class EventService {
         penalty.setDescription(desc);
         penalty.setTeamId(teamId);
 
-        penaltyRepository.save(penalty);
+        penaltyService.addPenalty(penalty, 0L);
     }
 
     public boolean removeFile(Long fileId, Long eventId) {

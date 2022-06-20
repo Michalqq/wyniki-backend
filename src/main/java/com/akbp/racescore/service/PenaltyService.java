@@ -109,6 +109,12 @@ public class PenaltyService {
         return true;
     }
 
+    public boolean removeDisqualification(Penalty penalty) {
+        setDisualifiedInStageScores(penalty, false);
+        penaltyRepository.delete(penalty);
+        return true;
+    }
+
     private void setDisualifiedInStageScores(Penalty penalty, boolean disqualified) {
         List<StageScore> stageScores = stageScoreRepository.findByTeamIdAndStageIdGreaterThanEqual(penalty.getTeamId(), penalty.getStageId());
         stageScores.stream().forEach(x -> {
