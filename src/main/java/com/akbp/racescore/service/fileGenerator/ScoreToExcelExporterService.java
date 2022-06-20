@@ -47,8 +47,6 @@ public class ScoreToExcelExporterService {
         Event event = eventRepository.getById(eventId);
 
         List<StageScore> scores = stageScoreRepository.findByStageIdIn(event.getStages().stream().map(x -> x.getStageId()).collect(Collectors.toList()));
-        LOGGER.info(scores.toString());
-
         ByteArrayOutputStream out = getOutputStream(event, scores);
 
         HttpHeaders headers = new HttpHeaders();
@@ -228,7 +226,8 @@ public class ScoreToExcelExporterService {
         Long penalties = setPenaltiesSum(row, index2, scores);
         LOGGER.info("penalties: " + penalties);
 
-        Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
+        //Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
+        Long sum = 10L;
         LOGGER.info("sum: " + sum);
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
