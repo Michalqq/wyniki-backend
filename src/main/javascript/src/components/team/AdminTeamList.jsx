@@ -395,24 +395,29 @@ export const AdminTeamList = ({
                                             />
                                           </td>
                                           <td style={{ width: "250px" }}>
-                                            <TeamDiv team={item.team}></TeamDiv>
+                                            <TeamDiv
+                                              team={{
+                                                driver: item.driver,
+                                                coDriver: item.coDriver,
+                                                club: item.club,
+                                                coClub: item.coClub,
+                                                teamName: item.teamName,
+                                              }}
+                                            ></TeamDiv>
                                           </td>
                                           <td style={{ width: "250px" }}>
                                             <CarDiv
                                               line1={
-                                                (item.team.currentCar?.brand ||
-                                                  "") +
+                                                (item.car?.brand || "") +
                                                 " " +
-                                                (item.team.currentCar?.model ||
-                                                  "")
+                                                (item.car?.model || "")
                                               }
                                               driveType={
-                                                item.team.currentCar
-                                                  ?.driveTypeEnum
+                                                item.car?.driveTypeEnum
                                               }
                                               line2={
-                                                item.team.currentCar
-                                                  ?.engineCapacity + " cm3"
+                                                item.car?.engineCapacity +
+                                                " cm3"
                                               }
                                             ></CarDiv>
                                           </td>

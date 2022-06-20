@@ -64,9 +64,18 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         width: "30%",
         id: "team",
         Header: "Załoga",
-        accessor: (cellInfo) => cellInfo.team,
         disableFilters: true,
-        Cell: (row) => <TeamDiv team={row.value}></TeamDiv>,
+        Cell: (row) => (
+          <TeamDiv
+            team={{
+              driver: row.row.original.driver,
+              coDriver: row.row.original.coDriver,
+              club: row.row.original.club,
+              coClub: row.row.original.coClub,
+              teamName: row.row.original.teamName,
+            }}
+          ></TeamDiv>
+        ),
       },
       {
         width: "30%",
