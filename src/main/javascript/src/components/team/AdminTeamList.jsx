@@ -8,6 +8,7 @@ import {
   backendUrl,
   fetchConfirmEntryFee,
   fetchRemoveFromEvent,
+  fetchSaveEventTeam,
   fetchSaveTeam,
 } from "../utils/fetchUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -215,7 +216,7 @@ export const AdminTeamList = ({
 
   const saveTeam = (team) => {
     setLoading(true);
-    fetchSaveTeam(team, () => {
+    fetchSaveEventTeam(eventId, team, () => {
       fetchTeams();
       setTeamToEdit();
     });

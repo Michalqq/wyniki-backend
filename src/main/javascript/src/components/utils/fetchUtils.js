@@ -34,6 +34,14 @@ export const fetchSaveTeam = (team, handleResponse) => {
   fetchPost(`${backendUrl()}/team/saveTeam`, team, handleResponse);
 };
 
+export const fetchSaveEventTeam = (eventId, team, handleResponse) => {
+  fetchPost(
+    `${backendUrl()}/event/saveEventTeam?eventId=${eventId}`,
+    team,
+    handleResponse
+  );
+};
+
 export const checkReferee = (eventId, handleResponse) => {
   fetchGet(
     `${backendUrl()}/event/checkReferee?eventId=${eventId}`,

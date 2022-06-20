@@ -9,6 +9,7 @@ import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
+import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,6 @@ import java.util.List;
 public class EventController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventController.class);
-
-    private static final String GENERAL = "GENERALNA";
 
     private final EventService eventService;
 
@@ -153,6 +152,15 @@ public class EventController {
             LOGGER.error(e.getMessage());
         }
         return true;
+    }
+
+    @PostMapping("confirmEntryFee")
+    public void saveEventTeam(@RequestParam("eventId") Long eventId, @RequestBody Team team) {
+        try {
+            eventService.saveEventTeam(eventId, team);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @PutMapping("createNew")

@@ -56,6 +56,7 @@ public class EventService {
     private final PenaltyRepository penaltyRepository;
     private final EventFileRepository eventFileRepository;
     private final EventClassesRepository eventClassesRepository;
+    private final CarRepository carRepository;
 
     private final FinalListCreatorService finalListCreatorService;
     private final PenaltyService penaltyService;
@@ -182,12 +183,8 @@ public class EventService {
         et.setJoinDate(Instant.now());
         et.setTeamId(team.getTeamId());
         et.setEventId(eventId);
-        et.setDriver(team.getDriver());
-        et.setCoDriver(team.getCoDriver());
-        et.setClub(team.getClub());
-        et.setCoClub(team.getCoClub());
-        et.setTeamName(team.getTeamName());
-        et.setCar(team.getCurrentCar());
+
+        setTeamData(et, team);
 
         if (et.getNumber() == null) {
             int number = eventTeamRepository.getMaxNumberByEventId(eventId);
@@ -206,6 +203,15 @@ public class EventService {
 
         for (Stage stage : event.getStages())
             createEmptyEventScoreIfNeccesarry(stage, et);
+    }
+
+    private void setTeamData(EventTeam et, Team team) {
+        et.setDriver(team.getDriver());
+        et.setCoDriver(team.getCoDriver());
+        et.setClub(team.getClub());
+        et.setCoClub(team.getCoClub());
+        et.setTeamName(team.getTeamName());
+        et.setCar(team.getCurrentCar());
     }
 
     @Transactional
@@ -535,4 +541,12 @@ public class EventService {
         return et.getCarClass().getName();
     }
 
+    public void saveEventTeam(Long eventId, Team team) {
+        EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, team.getTeamId());
+        if (et == null) return;
+        setTeamData(et, team);
+
+        eventTeamRepository.save(et);
+        carRepository.save(team.getCurrentCar());
+    }
 }
