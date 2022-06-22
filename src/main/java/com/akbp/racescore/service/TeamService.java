@@ -52,17 +52,18 @@ public class TeamService {
 
     public List<TeamOption> getTeamOptions(Long eventId, Long stageId, String mode) {
         List<EventTeam> eventTeams = eventTeamRepository.findByEventId(eventId);
+        List<Long> teamIds = eventTeams.stream().map(x -> x.getTeamId()).collect(Collectors.toList());
         List<StageScore> scores = new ArrayList<>();
         if (mode.equals("NEW"))
-            scores = stageScoreRepository.findByStageIdAndScoreIsNullAndDisqualifiedFalse(stageId);
+            scores = stageScoreRepository.findByStageIdAndScoreIsNullAndDisqualifiedFalseAndTeamIdIn(stageId, teamIds);
         else if (mode.equals("EDIT"))
-            scores = stageScoreRepository.findByStageIdAndScoreIsNotNullAndDisqualifiedFalse(stageId);
+            scores = stageScoreRepository.findByStageIdAndScoreIsNotNullAndDisqualifiedFalseAndTeamIdIn(stageId, teamIds);
         else if (mode.equals("PENALTY"))
-            scores = stageScoreRepository.findByStageIdAndDisqualifiedFalse(stageId);
+            scores = stageScoreRepository.findByStageIdAndDisqualifiedFalseAndTeamIdIn(stageId, teamIds);
 
         return scores.stream()
                 .sorted(Comparator.comparingLong(StageScore::getTeamNumber))
-                .map(x -> new TeamOption(x.getTeamNumber() + " - " + eventTeams.stream().filter(et -> et.getTeamId() == x.getTeamId()).findFirst().get().getDriver(), x.getTeam().getTeamId().toString(), false))
+                .map(x -> new TeamOption(x.getTeamNumber() + " - " + eventTeams.stream().filter(et -> et.getTeamId().equals(x.getTeamId())).findFirst().get().getDriver(), x.getTeam().getTeamId().toString(), false))
                 .collect(Collectors.toList());
     }
 

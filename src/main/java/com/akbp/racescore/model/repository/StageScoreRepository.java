@@ -15,11 +15,11 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
 
     List<StageScore> findByStageIdAndTeamId(Long stageId, Long teamId);
 
-    List<StageScore> findByStageIdAndScoreIsNullAndDisqualifiedFalse(Long stageId);
+    List<StageScore> findByStageIdAndScoreIsNullAndDisqualifiedFalseAndTeamIdIn(Long stageId, List<Long> teamIds);
 
-    List<StageScore> findByStageIdAndScoreIsNotNullAndDisqualifiedFalse(Long stageId);
+    List<StageScore> findByStageIdAndScoreIsNotNullAndDisqualifiedFalseAndTeamIdIn(Long stageId, List<Long> teamIds);
 
-    List<StageScore> findByStageIdAndDisqualifiedFalse(Long stageId);
+    List<StageScore> findByStageIdAndDisqualifiedFalseAndTeamIdIn(Long stageId, List<Long> teamIds);
 
     @Query(value = "select ss.score sumScore, sum(coalesce(pen.penalty_sec, 0)) penalty, " +
             "concat(c.brand, ' ', c.model) car, c.brand, c.drive_type driveType, " +
