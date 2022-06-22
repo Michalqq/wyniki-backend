@@ -47,7 +47,9 @@ export const AddPenaltyPage = (props) => {
   const fetchTeamsOptions = () => {
     setLoadingTeams(true);
     axios
-      .get(`${backendUrl()}/team/getTeamOptions?stageId=${stage}&mode=PENALTY`)
+      .get(
+        `${backendUrl()}/team/getTeamOptions?eventId=${eventId}&stageId=${stage}&mode=PENALTY`
+      )
       .then((res) => {
         setTeamOptions(res.data);
         setLoadingTeams(false);

@@ -184,7 +184,10 @@ const HomePage = (props) => {
               localStorage.setItem("eventId", x.eventId);
               navigate("event", { state: { eventId: x.eventId } });
             }}
-            onTeamList={() => setEventToTeamList(x)}
+            onTeamList={() => {
+              checkReferee(x.eventId, (data) => setReferee(data));
+              setEventToTeamList(x);
+            }}
             onStatement={() => setShowStatement(x)}
             onEdit={() => setCreateEvent(x)}
             mainAdmin={mainAdmin}

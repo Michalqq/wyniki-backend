@@ -56,7 +56,7 @@ export const AddScorePage = (props) => {
     setLoadingTeams(true);
     axios
       .get(
-        `${backendUrl()}/team/getTeamOptions?stageId=${stage}&mode=${editMode}`,
+        `${backendUrl()}/team/getTeamOptions?eventId=${eventId}&stageId=${stage}&mode=${editMode}`,
         {
           headers: authHeader(),
         }

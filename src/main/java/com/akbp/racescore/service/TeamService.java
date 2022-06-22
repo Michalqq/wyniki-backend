@@ -4,11 +4,13 @@ import com.akbp.racescore.model.dto.selectors.Options;
 import com.akbp.racescore.model.dto.selectors.TeamOption;
 import com.akbp.racescore.model.dto.selectors.TeamOptionList;
 import com.akbp.racescore.model.entity.Car;
+import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.entity.StageScore;
 import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.model.enums.DriveType;
 import com.akbp.racescore.model.enums.EnginePetrol;
 import com.akbp.racescore.model.repository.CarRepository;
+import com.akbp.racescore.model.repository.EventTeamRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.model.repository.TeamRepository;
 import com.akbp.racescore.security.model.entity.User;
@@ -30,22 +32,26 @@ public class TeamService {
     private final CarRepository carRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final EventTeamRepository eventTeamRepository;
 
     @Autowired
     public TeamService(EventService eventService,
                        StageScoreRepository stageScoreRepository,
                        CarRepository carRepository,
                        TeamRepository teamRepository,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       EventTeamRepository eventTeamRepository) {
         this.eventService = eventService;
         this.stageScoreRepository = stageScoreRepository;
         this.carRepository = carRepository;
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
+        this.eventTeamRepository = eventTeamRepository;
 
     }
 
-    public List<TeamOption> getTeamOptions(Long stageId, String mode) {
+    public List<TeamOption> getTeamOptions(Long eventId, Long stageId, String mode) {
+        List<EventTeam> eventTeams = eventTeamRepository.findByEventId(eventId);
         List<StageScore> scores = new ArrayList<>();
         if (mode.equals("NEW"))
             scores = stageScoreRepository.findByStageIdAndScoreIsNullAndDisqualifiedFalse(stageId);
@@ -56,7 +62,7 @@ public class TeamService {
 
         return scores.stream()
                 .sorted(Comparator.comparingLong(StageScore::getTeamNumber))
-                .map(x -> new TeamOption(x.getTeamNumber() + " - " + x.getTeam().getDriver(), x.getTeam().getTeamId().toString(), false))
+                .map(x -> new TeamOption(x.getTeamNumber() + " - " + eventTeams.stream().filter(et -> et.getTeamId() == x.getTeamId()).findFirst().get().getDriver(), x.getTeam().getTeamId().toString(), false))
                 .collect(Collectors.toList());
     }
 

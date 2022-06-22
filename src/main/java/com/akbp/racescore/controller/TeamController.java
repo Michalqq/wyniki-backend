@@ -68,8 +68,8 @@ public class TeamController {
     }
 
     @GetMapping("/getTeamOptions")
-    public List<TeamOption> getTeamOptions(@RequestParam("stageId") Long stageId, @RequestParam("mode") String mode) {
-        List<TeamOption> teamOptions = teamService.getTeamOptions(stageId, mode);
+    public List<TeamOption> getTeamOptions(@RequestParam("eventId") Long eventId, @RequestParam("stageId") Long stageId, @RequestParam("mode") String mode) {
+        List<TeamOption> teamOptions = teamService.getTeamOptions(eventId, stageId, mode);
         return teamOptions;
     }
 
