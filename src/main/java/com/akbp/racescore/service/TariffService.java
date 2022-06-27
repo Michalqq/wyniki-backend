@@ -47,9 +47,9 @@ public class TariffService {
             }
             if (eventTeamsByClassWith3Driver.isEmpty()) {
                 tempIndex = eventClassIndex;
-                while (eventTeamsByClassWith3Driver.size() < 2 && eventClasses.size() >= tempIndex) {
+                while (eventTeamsByClassWith3Driver.size() < 2 && eventClasses.size() > tempIndex) {
                     tempIndex++;
-                    if (eventClasses.size() >= tempIndex) {
+                    if (eventClasses.size() > tempIndex) {
                         int finalTempIndex = tempIndex;
                         eventTeamsByClassWith3Driver = eventTeams.stream().filter(x -> x.getCarClassId() == eventClasses.get(finalTempIndex).getCarClassId()).collect(Collectors.toList());
                     }
