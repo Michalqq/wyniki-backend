@@ -57,7 +57,7 @@ public class TariffService {
             }
             Long tariff;
             if (eventTeamsByClassWith3Driver.isEmpty())
-                tariff = scoresToTariff.stream().mapToLong(x -> x.getScore()).min().orElse(0L);
+                tariff = (long) 1.5 * scoresToTariff.stream().filter(y -> !y.getTeamId().equals(score.getTeamId())).mapToLong(x -> x.getScore()).min().orElse(0L);
             else
                 tariff = tariffByClass.get(eventTeamsByClassWith3Driver.get(0).getCarClass());
 
