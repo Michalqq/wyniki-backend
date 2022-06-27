@@ -55,14 +55,15 @@ public class TariffService {
                     }
                 }
             }
+            Long tariff;
+            if (eventTeamsByClassWith3Driver.isEmpty())
+                tariff = scoresToTariff.stream().mapToLong(x -> x.getScore()).min().orElse(0L);
+            else
+                tariff = tariffByClass.get(eventTeamsByClassWith3Driver.get(0).getCarClass());
 
-            if (eventTeamsByClassWith3Driver.isEmpty()) return;
-
-            Long tariff = tariffByClass.get(eventTeamsByClassWith3Driver.get(0).getCarClass());
             score.setScore(tariff);
             stageScoreRepository.save(score);
         }
-
     }
 
     private HashMap<CarClass, Long> getTariffByClass(Event event, Stage stage, List<EventClasses> eventClasses) {
