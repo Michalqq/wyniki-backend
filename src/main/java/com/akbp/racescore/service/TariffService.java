@@ -57,7 +57,7 @@ public class TariffService {
             }
             Long tariff;
             if (eventTeamsByClassWith3Driver.isEmpty())
-                tariff = (long) 1.5 * stageScoreRepository.findByStageIdAndDisqualifiedFalseAndPenaltyIsNullAndTeamIdIn(stage.getStageId(), eventTeams.stream().map(x -> x.getTeamId()).collect(Collectors.toList())).stream().mapToLong(x -> x.getScore()).min().orElse(0L);
+                tariff = (long) (1.5 * stageScoreRepository.findByStageIdAndDisqualifiedFalseAndPenaltyIsNullAndTeamIdIn(stage.getStageId(), eventTeams.stream().map(x -> x.getTeamId()).collect(Collectors.toList())).stream().mapToLong(x -> x.getScore()).min().orElse(0L));
             else
                 tariff = tariffByClass.get(eventTeamsByClassWith3Driver.get(0).getCarClass());
 
