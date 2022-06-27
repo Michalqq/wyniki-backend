@@ -73,7 +73,7 @@ public class StageScoreDTO {
         this.className = sssDTO.getCarClass();
         this.number = sssDTO.getNumber();
         this.driveType = Optional.ofNullable(DriveType.getById(sssDTO.getDriveType())).map(x -> x.getName()).orElse("");
-        this.totalPenalty = String.valueOf(sssDTO.getPenalty());
+        this.totalPenalty = sssDTO.getTariff() == null ? String.valueOf(sssDTO.getPenalty()) : "TARYFA";
         this.totalTimeWithPenalty = sssDTO.getSumScore() + (sssDTO.getPenalty() * 1000);
         this.stageScore = ScoreToString.toString(sssDTO.getSumScore());
         this.totalTime = ScoreToString.toString(this.totalTimeWithPenalty);

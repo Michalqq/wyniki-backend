@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
 
+    List<StageScore> findByStageIdAndPenaltyIsNotNull(Long stageId);
+
     List<StageScore> findByStageIdIn(List<Long> stagesId);
 
     List<StageScore> findByStageIdAndTeamId(Long stageId, Long teamId);
@@ -21,7 +23,9 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
 
     List<StageScore> findByStageIdAndDisqualifiedFalseAndTeamIdIn(Long stageId, List<Long> teamIds);
 
-    @Query(value = "select ss.score sumScore, sum(coalesce(pen.penalty_sec, 0)) penalty, " +
+    List<StageScore> findByStageIdAndDisqualifiedFalseAndPenaltyIsNullAndTeamIdIn(Long stageId, List<Long> teamIds);
+
+    @Query(value = "select ss.score sumScore, ss.penalty tariff, sum(coalesce(pen.penalty_sec, 0)) penalty, " +
             "concat(c.brand, ' ', c.model) car, c.brand, c.drive_type driveType, " +
             "et.number, et.driver, et.co_driver coDriver, et.team_name teamName, et.club, et.co_club coClub, cc.name carClass " +
             "from race_score.stage_score ss " +
@@ -33,11 +37,11 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "where ss.disqualified = FALSE and ss.team_id in (select team_id from race_score.stage_score " +
             "where stage_id = :stageId and score is not null ) " +
             "and ss.stage_id = :stageId and ss.score is not null " +
-            "group by ss.team_id, et.number, c.drive_type, c.brand, c.model, et.driver, et.co_driver, et.team_name, et.club, et.co_club, ss.score, cc.name  " +
+            "group by ss.team_id, ss.penalty, et.number, c.drive_type, c.brand, c.model, et.driver, et.co_driver, et.team_name, et.club, et.co_club, ss.score, cc.name  " +
             "order by sumScore", nativeQuery = true)
     List<StageScoreSumDTO> findScoresInStage(@Param("stageId") Long stageId);
 
-    @Query(value = "select sum(ss.score) sumScore, et.number, " +
+    @Query(value = "select sum(ss.score) sumScore, ss.penalty tariff, et.number, " +
             "concat(c.brand, ' ', c.model) car, c.brand, c.drive_type driveType, " +
             "et.driver, et.co_driver coDriver, et.team_name teamName, et.club, et.co_club coClub, cc.name carClass, " +
             "coalesce((select sum(coalesce(penalty_sec, 0)) from race_score.penalty " +
@@ -56,7 +60,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "                   (select team_id from race_score.stage_score " +
             "                       where score is null and stage_id < :stageId and stage_id in " +
             "                                               (select stage_id from race_score.stage where event_id = :eventId) ) " +
-            "group by ss.team_id, et.number, c.drive_type, c.brand, c.model, et.driver, et.co_driver, et.team_name, et.club, et.co_club, cc.name " +
+            "group by ss.team_id, ss.penalty, et.number, c.drive_type, c.brand, c.model, et.driver, et.co_driver, et.team_name, et.club, et.co_club, cc.name " +
             "order by sumScore", nativeQuery = true)
     List<StageScoreSumDTO> findSummedScoreByStageId(@Param("eventId") Long eventId, @Param("stageId") Long stageId);
 

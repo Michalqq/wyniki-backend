@@ -3,10 +3,8 @@ package com.akbp.racescore.service;
 import com.akbp.racescore.email.EmailSenderImpl;
 import com.akbp.racescore.model.dto.auth.AuthRequest;
 import com.akbp.racescore.model.dto.auth.JwtResponse;
-import com.akbp.racescore.security.model.entity.Role;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.jwt.JwtUtils;
-import com.akbp.racescore.security.model.repository.RoleRepository;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.akbp.racescore.security.model.entity.ERole.USER_ROLE;
 
 @Service
 public class AuthService {
@@ -32,8 +27,8 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+//    @Autowired
+//    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -86,12 +81,12 @@ public class AuthService {
 
         userRepository.save(user);
 
-        Set<Role> roles = new HashSet<>();
-        Role role = roleRepository.findByRole(USER_ROLE);
-        roles.add(role);
-        user.setRoles(roles);
+//        Set<Role> roles = new HashSet<>();
+//        Role role = roleRepository.findByRole(USER_ROLE);
+//        roles.add(role);
+//        user.setRoles(roles);
 
-        return ResponseEntity.ok(new JwtResponse(null, null, user.getUsername(), null, user.getRoles().stream().map(x -> x.getAuthority()).collect(Collectors.toList())));
+        return ResponseEntity.ok(new JwtResponse(null, null, user.getUsername(), null, Collections.emptyList()));
     }
 
     public ResponseEntity<?> updatePassword(AuthRequest signupRequest) {
@@ -104,7 +99,7 @@ public class AuthService {
         user.setPassword(encoder.encode(signupRequest.getPassword()));
         userRepository.save(user);
 
-        return ResponseEntity.ok(new JwtResponse(null, null, user.getUsername(), null, user.getRoles().stream().map(x -> x.getAuthority()).collect(Collectors.toList())));
+        return ResponseEntity.ok(new JwtResponse(null, null, user.getUsername(), null, Collections.emptyList()));
     }
 
     public ResponseEntity<?> remindPassword(String email) {

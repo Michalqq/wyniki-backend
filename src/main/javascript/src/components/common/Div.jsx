@@ -72,7 +72,7 @@ export const ScoreDivPenalty = ({ line1, line2 }) => {
         <></>
       ) : (
         <p className="font11 m-0 p-0 fw-bolder text-danger">
-          {"+" + line2 + " s"}
+          {line2 === "TARYFA" ? line2 : "+" + line2 + " s"}
         </p>
       )}
     </div>

@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/score/addScore", "/event/removeTeam",
                         "/event/confirmEntryFee", "/event/deleteEvent", "/event/teamChecked", "/event/saveNumbersAndClasses",
                         "/penalty/addPenalty", "/penalty/removePenalty", "/penalty/removeDisqualification", "/files/**",
-                        "/statement/deleteStatement", "/statement/addFileToStatement").authenticated()
+                        "/statement/deleteStatement", "/statement/addFileToStatement", "score/calculateTariff").authenticated()
                 .antMatchers("/**", "/auth/**", "/event/**", "/penalty/**", "/score/getStageScores", "/score/getStagesSumScores", "/team/**", "/statement/**").permitAll()
                 .anyRequest().authenticated();
 

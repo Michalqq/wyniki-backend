@@ -72,7 +72,9 @@ const PenaltyTable = (props) => {
               <>
                 <tr>
                   <td className="text-left fw-bolder" style={{ width: "20%" }}>
-                    {penalty.penaltySec + " s"}
+                    {penalty.description !== "Taryfa"
+                      ? penalty.penaltySec + " s"
+                      : ""}
                   </td>
                   <td className="text-left px-3" style={{ width: "45%" }}>
                     {penalty.description}

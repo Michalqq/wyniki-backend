@@ -3,15 +3,17 @@ package com.akbp.racescore.service;
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreSumDTO;
+import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
+import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.StageScore;
+import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.EventTeamRepository;
-import com.akbp.racescore.model.repository.StageRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import com.akbp.racescore.utils.ScoreToString;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -22,22 +24,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ScoreService {
-    private final StageRepository stageRepository;
     private final StageScoreRepository stageScoreRepository;
     private final UserRepository userRepository;
     private final EventTeamRepository eventTeamRepository;
-
-    @Autowired
-    public ScoreService(StageScoreRepository stageScoreRepository,
-                        StageRepository stageRepository,
-                        UserRepository userRepository,
-                        EventTeamRepository eventTeamRepository) {
-        this.stageScoreRepository = stageScoreRepository;
-        this.stageRepository = stageRepository;
-        this.userRepository = userRepository;
-        this.eventTeamRepository = eventTeamRepository;
-    }
+    private final EventRepository eventRepository;
+    private final TariffService tariffService;
 
     public String addScore(ScoreDTO score, Authentication auth) {
         List<StageScore> stageScores = stageScoreRepository.findByStageIdAndTeamId(score.getStageId(), score.getTeamId());
@@ -127,5 +120,12 @@ public class ScoreService {
         setUserMod(stageScore, auth);
         stageScore.setDateMod(Instant.now());
         stageScoreRepository.save(stageScore);
+    }
+
+    public void calculateTariff(Long eventId, Authentication auth) {
+        Event event = eventRepository.getById(eventId);
+
+        for (Stage stage : event.getStages())
+            tariffService.calculateStageTariffes(event, stage);
     }
 }

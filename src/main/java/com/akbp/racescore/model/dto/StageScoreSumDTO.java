@@ -4,6 +4,8 @@ public interface StageScoreSumDTO {
 
     Long getSumScore();
 
+    Long getTariff();
+
     Long getPenalty();
 
     Long getDriveType();

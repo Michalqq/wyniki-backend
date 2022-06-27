@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Selector } from "../common/Selector";
 import axios from "axios";
 import { InputLabeled } from "../common/InputLabeled";
-import { RadioButton } from "../common/Button";
+import { MyButton, RadioButton } from "../common/Button";
 import { backendUrl } from "../utils/fetchUtils";
 import { useLocation, useNavigate } from "react-router-dom";
 import authHeader from "../../service/auth-header";
@@ -40,6 +40,8 @@ export const AddScorePage = (props) => {
 
   const [valid, setValid] = useState(true);
   const [removingScore, setRemovingScore] = useState(false);
+
+  const [calculatingTariff, setCalculatingTariff] = useState(false);
 
   const fetchPsOptions = () => {
     axios
@@ -81,6 +83,17 @@ export const AddScorePage = (props) => {
         fetchTeamsOptions();
         setMsg(res.data);
         setTimeout(() => setMsg(), 10000);
+      });
+  };
+
+  const calcTariff = () => {
+    setCalculatingTariff(true);
+    axios
+      .post(`${backendUrl()}/score/calculateTariff?eventId=${eventId}`, {
+        headers: authHeader(),
+      })
+      .then((res) => {
+        setCalculatingTariff(false);
       });
   };
 
@@ -300,6 +313,13 @@ export const AddScorePage = (props) => {
         </div>
       </div>
       <div className="col-sm pt-3"></div>
+      <MyButton
+        variant="secondary"
+        isLoading={calculatingTariff}
+        onClick={() => calcTariff()}
+        msg="Przelicz wszystkie taryfy"
+        loadingMsg="Przeliczanie taryf"
+      />
       <Button
         className={"mx-2 py-1 px-2"}
         variant="primary"

@@ -25,6 +25,7 @@ public class PenaltyService {
     private final StageScoreRepository stageScoreRepository;
 
     private static final Long CUSTOM_PENALTY_ID = 100L;
+    private static final Long TARIFF_PENALTY_ID = 10L;
 
     @Autowired
     public PenaltyService(PenaltyRepository penaltyRepository,
@@ -47,7 +48,17 @@ public class PenaltyService {
 
         penaltyRepository.save(penalty);
 
+        if (penalty.getPenaltyDict().getId() == TARIFF_PENALTY_ID)
+            addPenaltyToScore(penalty);
+
         return 1L;
+    }
+
+    private void addPenaltyToScore(Penalty penalty) {
+        List<StageScore> stageScore = stageScoreRepository.findByStageIdAndTeamId(penalty.getStageId(), penalty.getTeamId());
+        if (stageScore.isEmpty()) return;
+
+        stageScore.stream().peek(x -> x.setPenalty(penalty.getPenaltySec())).forEach(x -> stageScoreRepository.save(x));
     }
 
     private String generateDescription(PenaltyDict penaltyDict, Penalty penalty) {
@@ -96,7 +107,7 @@ public class PenaltyService {
     }
 
     private String createPenaltyDesc(PenaltyDict x) {
-        if (x.getId() == 100L || x.getDisqualification())
+        if (x.getId() == CUSTOM_PENALTY_ID || x.getId() == TARIFF_PENALTY_ID || x.getDisqualification())
             return x.getDescription();
 
         return x.getDescription() + " [" + x.getPenaltySec() + "s]";
