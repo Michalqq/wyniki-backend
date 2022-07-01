@@ -79,7 +79,7 @@ public class OaDocumentPdfCreatorService {
 
         doc.add(createTitle(event));
         doc.add(new Paragraph("Dane zawodników:"));
-        Table personalDataTable = createPersonalDataTable(et.getTeam());
+        Table personalDataTable = createPersonalDataTable(et);
         doc.add(personalDataTable);
         personalDataTable.complete();
         doc.add(new Paragraph("\n\n Dane samochodu:"));
@@ -121,7 +121,7 @@ public class OaDocumentPdfCreatorService {
         return box;
     }
 
-    private Table createPersonalDataTable(Team team) {
+    private Table createPersonalDataTable(EventTeam et) {
         float[] columnWidths = new float[]{13f, 20f, 20f};
         Table table = new Table(columnWidths, true);
 
@@ -129,9 +129,13 @@ public class OaDocumentPdfCreatorService {
         table.addCell("Kierowca    ");
         table.addCell("Pilot       ");
 
+        Team team = et.getTeam();
+
+        boolean coDriverExists = et.getCoDriver() != null && et.getCoDriver() != "";
+
         table.addCell("Imię i nazwisko").setProperty(8, false);
-        table.addCell(Optional.ofNullable(team.getDriver()).orElse(""));
-        table.addCell(Optional.ofNullable(team.getCoDriver()).orElse(""));
+        table.addCell(Optional.ofNullable(et.getDriver()).orElse(""));
+        table.addCell(coDriverExists ? Optional.ofNullable(et.getCoDriver()).orElse("") : "");
 
         table.addCell("Adres");
         table.addCell("");
@@ -139,27 +143,27 @@ public class OaDocumentPdfCreatorService {
 
         table.addCell("Data urodzenia");
         table.addCell(team.getBirthDate() == null ? "" : fromInstant(team.getBirthDate()));
-        table.addCell(team.getCoBirthDate() == null ? "" : fromInstant(team.getCoBirthDate()));
+        table.addCell(!coDriverExists || team.getCoBirthDate() == null ? "" : fromInstant(team.getCoBirthDate()));
 
         table.addCell("Telefon");
         table.addCell(Optional.ofNullable(team.getPhone()).orElse(""));
-        table.addCell(Optional.ofNullable(team.getCoPhone()).orElse(""));
+        table.addCell(coDriverExists ? Optional.ofNullable(team.getCoPhone()).orElse("") : "");
 
         table.addCell("Email");
         table.addCell(Optional.ofNullable(team.getEmail()).orElse(""));
-        table.addCell(Optional.ofNullable(team.getCoEmail()).orElse(""));
+        table.addCell(coDriverExists ? Optional.ofNullable(team.getCoEmail()).orElse("") : "");
 
         table.addCell("Prawo jazdy");
         table.addCell(Optional.ofNullable(team.getDrivingLicense()).orElse(""));
-        table.addCell(Optional.ofNullable(team.getCoDrivingLicense()).orElse(""));
+        table.addCell(coDriverExists ? Optional.ofNullable(team.getCoDrivingLicense()).orElse("") : "");
 
         table.addCell("Klub");
         table.addCell(Optional.ofNullable(team.getClub()).orElse(""));
-        table.addCell(Optional.ofNullable(team.getCoClub()).orElse(""));
+        table.addCell(coDriverExists ? Optional.ofNullable(team.getCoClub()).orElse("") : "");
 
         table.addCell("Licencja sportu samoch.");
         table.addCell(Boolean.TRUE.equals(team.getSportLicense()) ? "TAK" : "NIE");
-        table.addCell(Boolean.TRUE.equals(team.getCoSportLicense()) ? "TAK" : "NIE");
+        table.addCell(coDriverExists ? Boolean.TRUE.equals(team.getCoSportLicense()) ? "TAK" : "NIE" : "");
 
         setBold(table);
 

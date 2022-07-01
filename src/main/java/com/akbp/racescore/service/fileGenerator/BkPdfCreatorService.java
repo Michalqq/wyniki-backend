@@ -144,6 +144,8 @@ public class BkPdfCreatorService {
     }
 
     private void fillData(PdfContentByte over, Event event, EventTeam et, BaseFont bf) {
+        boolean coDriverExists = et.getCoDriver() != null && et.getCoDriver() != "";
+
         over.beginText();
         over.setFontAndSize(bf, 12);
         over.setTextMatrix(NUMBER_X, NAME_ROW_Y);
@@ -155,7 +157,7 @@ public class BkPdfCreatorService {
         over.showText(et.getDriver());
 
         over.setTextMatrix(CO_DRIVER_X, NAME_ROW_Y);
-        over.showText(et.getCoDriver());
+        over.showText(coDriverExists ? et.getCoDriver() : "");
 
         fillEventInfo(over, event, bf);
         over.setFontAndSize(bf, 12);
@@ -180,7 +182,7 @@ public class BkPdfCreatorService {
         over.showText(et.getTeam().getDrivingLicense());
 
         over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y - 19);
-        over.showText(et.getTeam().getCoDrivingLicense());
+        over.showText(coDriverExists ? et.getTeam().getCoDrivingLicense() : "");
 
         over.setTextMatrix(DRIVING_LICENSE_X, DRIVING_LICENSE_Y - 58);
         over.showText(et.getCar().getInsurance());
