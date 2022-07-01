@@ -131,7 +131,7 @@ public class OaDocumentPdfCreatorService {
 
         Team team = et.getTeam();
 
-        boolean coDriverExists = et.getCoDriver() != null && et.getCoDriver() != "";
+        boolean coDriverExists = et.getCoDriver() != null && !et.getCoDriver().equals("");
 
         table.addCell("Imię i nazwisko").setProperty(8, false);
         table.addCell(Optional.ofNullable(et.getDriver()).orElse(""));

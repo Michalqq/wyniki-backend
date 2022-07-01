@@ -144,7 +144,7 @@ public class BkPdfCreatorService {
     }
 
     private void fillData(PdfContentByte over, Event event, EventTeam et, BaseFont bf) {
-        boolean coDriverExists = et.getCoDriver() != null && et.getCoDriver() != "";
+        boolean coDriverExists = et.getCoDriver() != null && !et.getCoDriver().equals("");
 
         over.beginText();
         over.setFontAndSize(bf, 12);
