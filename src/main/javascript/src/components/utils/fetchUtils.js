@@ -148,3 +148,10 @@ export const fetchLogo = (eventId, handleResponse) => {
     handleResponse
   );
 };
+
+export const fetchPsOptions = (eventId, handleResponse) => {
+  fetchGet(
+    `${backendUrl()}/event/getStagesAndClasses?eventId=${eventId}`,
+    handleResponse
+  );
+};

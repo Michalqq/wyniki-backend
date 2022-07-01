@@ -4,19 +4,22 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
-import { backendUrl } from "../utils/fetchUtils";
+import { backendUrl, fetchPsOptions } from "../utils/fetchUtils";
 import ResultTable from "../common/table/ResultTable";
 import { NrBadge } from "../common/NrBadge";
 import { CarDiv, TeamDiv } from "../common/Div";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { closeOnBack } from "../utils/utils";
+import { Selector } from "../common/Selector";
 
 export const TeamListModal = ({ show, handleClose, eventId, started }) => {
   const [teams, setTeams] = useState([]);
   const [startEvent, setStartEvent] = useState(false);
   const [loading, setLoading] = useState(true);
   const [referee, setReferee] = useState(false);
+  const [classesOptions, setClassesOptions] = useState([]);
+  const [classFilter, setClassFilter] = useState("0");
 
   const fetchTeams = () => {
     if (eventId === undefined) return;
@@ -33,6 +36,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
       closeOnBack(handleClose);
       setLoading(true);
       setTeams([]);
+      fetchPsOptionsFnc();
     }
     fetchTeams();
   }, [show]);
@@ -41,6 +45,22 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
     setTeams([]);
     fetchTeams();
   }, [referee]);
+
+  const fetchPsOptionsFnc = () => {
+    fetchPsOptions(eventId, (data) => {
+      const arr = [{ label: "WSZYSTKIE KLASY", value: "0", defValue: true }];
+      data.classesOptions
+        .filter((v) => v.label !== "GENERALNA")
+        .forEach((x) => arr.push(x));
+      setClassesOptions(arr || []);
+    });
+  };
+
+  const getEngineDesc = (car) => {
+    const turbo = car?.turbo ? " (T)" : "";
+
+    return car?.engineCapacity + " cm3" + turbo;
+  };
 
   const columns = useMemo(
     () => [
@@ -81,7 +101,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         width: "30%",
         id: "car",
         Header: "Samochód",
-        accessor: (cellInfo) => cellInfo.team.currentCar,
+        accessor: (cellInfo) => cellInfo.car,
         disableFilters: true,
         Cell: (row) => (
           <CarDiv
@@ -96,8 +116,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         width: "11%",
         id: "engine",
         Header: "Silnik",
-        accessor: (cellInfo) =>
-          cellInfo.team.currentCar?.engineCapacity + " cm3",
+        accessor: (cellInfo) => getEngineDesc(cellInfo.car),
         disableFilters: true,
       },
       {
@@ -143,14 +162,33 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
           <h2 className="text-center">Brak zgłoszeń - bądź pierwszy!</h2>
         )}
         {!loading && teams?.length > 0 && (
-          <ResultTable
-            columns={columns}
-            data={teams}
-            isLoading={false}
-            isFooter={false}
-            isHeader={true}
-            manualPagination={true}
-          />
+          <>
+            <div className="row pt-0 mx-0 card-body">
+              <div className="col-xl-4 px-0 pe-1"></div>
+              <div className="col-xl-4 px-0 pe-1">
+                <Selector
+                  label={"Filtruj klasami"}
+                  options={classesOptions}
+                  handleChange={(value) => {
+                    setClassFilter(value);
+                  }}
+                  isValid={true}
+                />
+              </div>
+            </div>
+            <ResultTable
+              columns={columns}
+              data={
+                classFilter !== "0"
+                  ? teams.filter((x) => x.carClass.name === classFilter)
+                  : teams
+              }
+              isLoading={false}
+              isFooter={false}
+              isHeader={true}
+              manualPagination={true}
+            />
+          </>
         )}
       </Modal.Body>
       <Modal.Footer className={"justify-content-center"}>

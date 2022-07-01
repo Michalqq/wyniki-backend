@@ -5,13 +5,17 @@ import ResultTable from "../common/table/ResultTable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ScoreDiv, ScoreDivPenalty, TeamDiv, CarDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
-import { backendUrl, checkReferee, fetchGetScores } from "../utils/fetchUtils";
+import {
+  backendUrl,
+  checkReferee,
+  fetchGetScores,
+  fetchPsOptions,
+} from "../utils/fetchUtils";
 import PenaltyTable from "../tables/PenaltyTable";
 import DisqualificationTable from "../tables/DisqualificationTable";
 import { NrBadge } from "../common/NrBadge";
 import Button from "react-bootstrap/Button";
 import { download } from "../utils/fileUtils";
-import Spinner from "react-bootstrap/Spinner";
 import { MyButton } from "../common/Button";
 
 const StageScorePage = (props) => {
@@ -72,13 +76,11 @@ const StageScorePage = (props) => {
       });
   };
 
-  const fetchPsOptions = () => {
-    axios
-      .get(`${backendUrl()}/event/getStagesAndClasses?eventId=${eventId}`)
-      .then((res) => {
-        setPsOptions(res.data.psOptions || []);
-        setClassesOptions(res.data.classesOptions || []);
-      });
+  const fetchPsOptionsFnc = () => {
+    fetchPsOptions(eventId, (data) => {
+      setPsOptions(data.psOptions || []);
+      setClassesOptions(data.classesOptions || []);
+    });
   };
 
   const fetchEvent = () => {
@@ -115,16 +117,12 @@ const StageScorePage = (props) => {
     checkReferee(eventId, setReferee);
   }, []);
 
-  // useEffect(() => {
-  //   setTimeout(() => fetchScoresAndUpdate(), 1000 * 20);
-  // }, [scores]);
-
   useEffect(() => {
     fetchData();
   }, [stage]);
 
   useEffect(() => {
-    fetchPsOptions();
+    fetchPsOptionsFnc();
     fetchData();
   }, []);
 

@@ -26,10 +26,10 @@ export const EventCard = ({
   const [driverCount, setDriverCount] = useState(0);
   const [logoDto, setLogoDto] = useState({});
 
-  const signDeadlineCount = moment(event?.signDeadline).diff(
-    new Date(),
-    "days"
-  );
+  const signDeadlineCount = moment(event?.signDeadline)
+    .startOf("day")
+    .diff(moment().startOf("day"), "days");
+
   const eventCount = moment(event?.date)
     .startOf("day")
     .diff(moment().startOf("day"), "days");

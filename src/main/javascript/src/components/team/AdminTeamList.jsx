@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import {
   backendUrl,
   fetchConfirmEntryFee,
+  fetchPsOptions,
   fetchRemoveFromEvent,
   fetchSaveEventTeam,
   fetchSaveTeam,
@@ -43,6 +44,7 @@ export const AdminTeamList = ({
   started,
 }) => {
   const [teams, setTeams] = useState([]);
+  const [teamsToTable, setTeamsToTable] = useState([]);
   const [startEvent, setStartEvent] = useState(false);
   const [loading, setLoading] = useState(true);
   const [referee, setReferee] = useState(false);
@@ -66,6 +68,8 @@ export const AdminTeamList = ({
   const [downloadingBK, setDownloadingBK] = useState(false);
 
   const [finalList, setFinalList] = useState(false);
+  const [classesOptions, setClassesOptions] = useState([]);
+  const [classFilter, setClassFilter] = useState("0");
 
   useEffect(() => {
     if (show) {
@@ -73,10 +77,26 @@ export const AdminTeamList = ({
       fetchReferee();
       setLoading(true);
       setTeams([]);
+      setTeamsToTable([]);
       fetchEvent();
+      fetchPsOptions(eventId, (data) => {
+        const arr = [{ label: "WSZYSTKIE KLASY", value: "0", defValue: true }];
+        data.classesOptions
+          .filter((v) => v.label !== "GENERALNA")
+          .forEach((x) => arr.push(x));
+        setClassesOptions(arr || []);
+      });
     }
     fetchTeams();
   }, [show]);
+
+  useEffect(() => {
+    setTeamsToTable(
+      classFilter !== "0"
+        ? teams.filter((x) => x.carClass.name === classFilter)
+        : teams
+    );
+  }, [classFilter]);
 
   const eraseTeamToRemove = () => {
     setTeamToRemove({
@@ -104,7 +124,9 @@ export const AdminTeamList = ({
     axios
       .get(`${backendUrl()}/event/getTeams?eventId=${eventId}`)
       .then((res) => {
-        setTeams(res.data.sort((a, b) => a.order - b.order));
+        const sortedTeams = res.data.sort((a, b) => a.order - b.order);
+        setTeams(sortedTeams);
+        setTeamsToTable(sortedTeams);
         setLoading(false);
       });
   };
@@ -201,8 +223,9 @@ export const AdminTeamList = ({
 
     let order = 1;
     items.map((x) => (x.order = order++));
-
-    setTeams(getOrdered(items));
+    const ordered = getOrdered(items);
+    setTeams(ordered);
+    setTeamsToTable(ordered);
     setRefreshSelect(false);
   };
 
@@ -299,6 +322,17 @@ export const AdminTeamList = ({
           )}
           {!loading && teams?.length > 0 && (
             <>
+              <div className="row pt-0 mx-0 card-body">
+                <div className="col-xl-4 px-0 pe-1"></div>
+                <div className="col-xl-4 px-0 pe-1">
+                  <Selector
+                    label={"Filtruj klasami"}
+                    options={classesOptions}
+                    handleChange={(value) => setClassFilter(value)}
+                    isValid={true}
+                  />
+                </div>
+              </div>
               <table style={{ minWidth: "600px" }}>
                 <th className="">
                   <td style={{ width: "70px" }}>Edycja</td>
@@ -329,13 +363,13 @@ export const AdminTeamList = ({
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                       >
-                        {teams?.map((item, index) => {
+                        {teamsToTable?.map((item, index) => {
                           return (
                             <Draggable
                               key={item.order}
                               draggableId={item.order.toString()}
                               index={index}
-                              draggable={true}
+                              isDragDisabled={classFilter !== "0"}
                             >
                               {(provided) => (
                                 <li
@@ -664,7 +698,8 @@ export const AdminTeamList = ({
             <div className="col-xl-12">
               <p className="font12 m-0 p-0">
                 Sortowanie można wykonać również ręcznie przesuwając zawodnika
-                za pomocą myszy - po zakończeniu ZAPISZ
+                za pomocą myszy (tylko jeśli filtr klasy ustawiony jest na
+                Wszystkie klasy) - po zakończeniu ZAPISZ
               </p>
               <p className="font12 m-0 p-0">
                 Zmiana kolejności zmienia numery startowe! Jeśli chcesz nadać
@@ -674,6 +709,7 @@ export const AdminTeamList = ({
                 className={"m-1"}
                 variant="info"
                 onClick={() => setDoSort(true)}
+                disabled={classFilter !== "0"}
               >
                 Sortuj wstępnie wg. klas
               </Button>
