@@ -111,6 +111,7 @@ public class ScoreService {
 
         StageScore stageScore = stageScores.get(0);
         saveStageScore(stageScore, null, auth);
+        stageScore.setPenalty(null);
 
         return "Usunięto wynik załogi: " + stageScore.getTeamNumber() + " - " + stageScore.getTeam().getDriver();
     }
