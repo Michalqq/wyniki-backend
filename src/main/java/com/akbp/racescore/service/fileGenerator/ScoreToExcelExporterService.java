@@ -303,8 +303,7 @@ public class ScoreToExcelExporterService {
     }
 
     private String getScore(StageScore stageScore) {
-        if (stageScore.getPenalty() != null && !stageScore.getPenalty().equals(0L))
-            return ScoreToString.toString(stageScore.getPenalty()) + " T";
-        return stageScore.getScore() == null ? "" : ScoreToString.toString(stageScore.getScore());
+        String score = stageScore.getScore() == null ? "" : ScoreToString.toString(stageScore.getScore());
+        return stageScore.getPenalty().equals(0L) ? score + " (T)" : score;
     }
 }
