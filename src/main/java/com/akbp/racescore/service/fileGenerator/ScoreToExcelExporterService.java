@@ -285,7 +285,7 @@ public class ScoreToExcelExporterService {
 
     private void setScore(Row row, AtomicInteger index2, StageScore x) {
         row.createCell(index2.getAndIncrement()).setCellValue(Boolean.TRUE.equals(x.getDisqualified()) ?
-                "NU" : getScore(x.getScore()));
+                "NU" : getScore(x));
     }
 
     private Long setPenaltiesSum(Row row, AtomicInteger index2, List<StageScore> scores) {
@@ -302,7 +302,9 @@ public class ScoreToExcelExporterService {
         return penaltiesSum;
     }
 
-    private String getScore(Long score) {
-        return score == null ? "" : ScoreToString.toString(score);
+    private String getScore(StageScore stageScore) {
+        if (stageScore.getPenalty() != null && !stageScore.getPenalty().equals(0L))
+            return ScoreToString.toString(stageScore.getPenalty()) + " T";
+        return stageScore.getScore() == null ? "" : ScoreToString.toString(stageScore.getScore());
     }
 }
