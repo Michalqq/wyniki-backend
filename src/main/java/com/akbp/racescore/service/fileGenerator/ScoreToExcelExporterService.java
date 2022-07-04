@@ -304,6 +304,9 @@ public class ScoreToExcelExporterService {
 
     private String getScore(StageScore stageScore) {
         String score = stageScore.getScore() == null ? "" : ScoreToString.toString(stageScore.getScore());
-        return stageScore.getPenalty().equals(0L) ? score + " (T)" : score;
+        if (stageScore.getPenalty() != null && stageScore.getPenalty().equals(0L))
+            return score + " (T)";
+
+        return score;
     }
 }
