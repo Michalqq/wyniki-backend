@@ -32,8 +32,8 @@ public class StageScoreDTO {
     private String driveType;
 
     private String stageScore;
-    private String timeTo;
-    private String timeToFirst;
+//    private String timeTo;
+//    private String timeToFirst;
 
     private String scoreMin;
     private String scoreSec;
@@ -58,8 +58,8 @@ public class StageScoreDTO {
         this.number = et.getNumber();
 
         this.stageScore = ScoreToString.toString(score.getScore());
-        this.timeTo = "-";
-        this.timeToFirst = "-";
+//        this.timeTo = "-";
+//        this.timeToFirst = "-";
     }
 
     public StageScoreDTO(StageScoreSumDTO sssDTO) {

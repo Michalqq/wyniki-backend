@@ -111,8 +111,6 @@ public class ScoreToExcelExporterService {
         }
         sheet.createRow(index.getAndIncrement());
         sheet.createRow(index.getAndIncrement());
-        sheet.createRow(index.getAndIncrement());
-        sheet.createRow(index.getAndIncrement());
         Row row = sheet.createRow(index.getAndIncrement());
         row.createCell(9).setCellValue("Wyniki wygenerowane za pomocą aplikacji: www.wyniki.online");
     }

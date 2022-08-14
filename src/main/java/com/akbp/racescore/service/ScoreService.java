@@ -72,19 +72,19 @@ public class ScoreService {
         if (scores.isEmpty())
             return Collections.emptyList();
 
-        Long leadTime = scores.get(0).getTotalTimeWithPenalty();
-
-        StageScoreDTO previousScore = null;
-        int place = 1;
-        for (StageScoreDTO score : scores) {
-            score.setPlace(place++);
-
-            if (previousScore != null) {
-                score.setTimeTo("+" + ScoreToString.toString(score.getTotalTimeWithPenalty() - previousScore.getTotalTimeWithPenalty()));
-                score.setTimeToFirst("+" + ScoreToString.toString(score.getTotalTimeWithPenalty() - leadTime));
-            }
-            previousScore = score;
-        }
+//        Long leadTime = scores.get(0).getTotalTimeWithPenalty();
+//
+//        StageScoreDTO previousScore = null;
+//        int place = 1;
+//        for (StageScoreDTO score : scores) {
+//            score.setPlace(place++);
+//
+//            if (previousScore != null) {
+//                score.setTimeTo("+" + ScoreToString.toString(score.getTotalTimeWithPenalty() - previousScore.getTotalTimeWithPenalty()));
+//                score.setTimeToFirst("+" + ScoreToString.toString(score.getTotalTimeWithPenalty() - leadTime));
+//            }
+//            previousScore = score;
+//        }
 
         return scores;
     }

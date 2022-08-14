@@ -17,6 +17,7 @@ import { NrBadge } from "../common/NrBadge";
 import Button from "react-bootstrap/Button";
 import { download } from "../utils/fileUtils";
 import { MyButton } from "../common/Button";
+import { calcTimeTo, timeToString } from "../utils/utils";
 
 const StageScorePage = (props) => {
   const location = useLocation();
@@ -37,9 +38,12 @@ const StageScorePage = (props) => {
   const [event, setEvent] = useState();
 
   const [scores, setScores] = useState([]);
+  const [scoresByClass, setScoresByClass] = useState([]);
   const [referee, setReferee] = useState(false);
 
   const [summedScores, setSummedScores] = useState([]);
+  const [summedScoresByClass, setSummedScoresByClass] = useState([]);
+
   const [psOptions, setPsOptions] = useState([]);
   const [classesOptions, setClassesOptions] = useState([]);
 
@@ -125,6 +129,28 @@ const StageScorePage = (props) => {
     fetchPsOptionsFnc();
     fetchData();
   }, []);
+
+  useEffect(() => {
+    let tempScores =
+      currentClass !== GENERAL
+        ? scores.filter(
+            (x) => x.className === currentClass || x.driveType === currentClass
+          )
+        : scores;
+
+    setScoresByClass(calcTimeTo(tempScores));
+  }, [scores, currentClass]);
+
+  useEffect(() => {
+    let tempScores =
+      currentClass !== GENERAL
+        ? summedScores.filter(
+            (x) => x.className === currentClass || x.driveType === currentClass
+          )
+        : summedScores;
+
+    setSummedScoresByClass(calcTimeTo(tempScores));
+  }, [summedScores, currentClass]);
 
   const columns = useMemo(
     () => [
@@ -310,15 +336,7 @@ const StageScorePage = (props) => {
             </div>
             <ResultTable
               columns={columns}
-              data={
-                currentClass !== GENERAL
-                  ? scores.filter(
-                      (x) =>
-                        x.className === currentClass ||
-                        x.driveType === currentClass
-                    )
-                  : scores
-              }
+              data={scoresByClass}
               pageCount={3}
               isLoading={loading}
               isFooter={false}
@@ -335,15 +353,7 @@ const StageScorePage = (props) => {
             </div>
             <ResultTable
               columns={columns}
-              data={
-                currentClass !== GENERAL
-                  ? summedScores.filter(
-                      (x) =>
-                        x.className === currentClass ||
-                        x.driveType === currentClass
-                    )
-                  : summedScores
-              }
+              data={summedScoresByClass}
               pageCount={3}
               isLoading={loading}
               isFooter={false}
