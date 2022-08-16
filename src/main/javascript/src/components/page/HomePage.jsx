@@ -81,7 +81,8 @@ const HomePage = (props) => {
               x.eventId ===
               Number(eventRedirect.substring(0, index).replace("?", ""))
           );
-          setEventToTeamPanel(event);
+          if (eventRedirect.includes("list")) setEventToTeamList(event);
+          else setEventToTeamPanel(event);
           eventRedirect = null;
           setRedirected(true);
         }
