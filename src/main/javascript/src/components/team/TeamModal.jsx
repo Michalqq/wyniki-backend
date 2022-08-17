@@ -27,6 +27,7 @@ import {
 import { getCarLogo } from "../utils/car";
 import { OkModal } from "../common/Modal";
 import { closeOnBack } from "../utils/utils";
+import { Form } from "react-bootstrap";
 
 export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
   const [disable, setDisable] = useState(false);
@@ -258,6 +259,37 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                           />
                         </div>
                       </div>
+                      <div className="row">
+                        <Form className="px-1">
+                          <span
+                            className={"py-0 mb-2 mt-1 mx-0 input-group-text"}
+                          >
+                            Licencja sportowa
+                          </span>
+                          <Form.Check
+                            inline
+                            label="TAK"
+                            name="sportLicense"
+                            type={"radio"}
+                            id={`inline-1`}
+                            checked={team.sportLicense}
+                            onClick={() =>
+                              setTeam({ ...team, sportLicense: true })
+                            }
+                          />
+                          <Form.Check
+                            inline
+                            label="NIE"
+                            name="sportLicense"
+                            type={"radio"}
+                            id={`inline-2`}
+                            checked={!team.sportLicense}
+                            onClick={() =>
+                              setTeam({ ...team, sportLicense: false })
+                            }
+                          />
+                        </Form>
+                      </div>
                       <div className="row mt-2">
                         <div className="col-lg-6 px-1">
                           <InputLabeled
@@ -390,6 +422,37 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                             icon={faBuilding}
                           />
                         </div>
+                      </div>
+                      <div className="row">
+                        <Form className="px-1">
+                          <span
+                            className={"py-0 mb-2 mt-1 mx-0 input-group-text"}
+                          >
+                            Licencja sportowa
+                          </span>
+                          <Form.Check
+                            inline
+                            label="TAK"
+                            name="coSportLicense"
+                            type={"radio"}
+                            id={`inline-1`}
+                            checked={team.coSportLicense}
+                            onClick={() =>
+                              setTeam({ ...team, coSportLicense: true })
+                            }
+                          />
+                          <Form.Check
+                            inline
+                            label="NIE"
+                            name="coSportLicense"
+                            type={"radio"}
+                            id={`inline-2`}
+                            checked={!team.coSportLicense}
+                            onClick={() =>
+                              setTeam({ ...team, coSportLicense: false })
+                            }
+                          />
+                        </Form>
                       </div>
                       <div className="row mt-2 ">
                         <div className="col-lg-6 px-1">
