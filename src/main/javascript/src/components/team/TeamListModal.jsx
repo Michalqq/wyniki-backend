@@ -180,7 +180,11 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
               columns={columns}
               data={
                 classFilter !== "0"
-                  ? teams.filter((x) => x.carClass.name === classFilter)
+                  ? teams.filter(
+                      (x) =>
+                        x.carClass.name === classFilter ||
+                        x.car.driveType === classFilter
+                    )
                   : teams
               }
               isLoading={false}
