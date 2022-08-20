@@ -183,7 +183,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
                   ? teams.filter(
                       (x) =>
                         x.carClass.name === classFilter ||
-                        x.car.driveType === classFilter
+                        x.car.driveTypeEnum === classFilter
                     )
                   : teams
               }
