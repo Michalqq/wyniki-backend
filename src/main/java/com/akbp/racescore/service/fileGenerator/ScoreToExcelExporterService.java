@@ -301,8 +301,10 @@ public class ScoreToExcelExporterService {
     }
 
     private void setSecScore(Row row, AtomicInteger index2, StageScore x) {
-        row.createCell(index2.getAndIncrement()).setCellValue(Boolean.TRUE.equals(x.getDisqualified()) ?
-                "NU" : getSecScore(x));
+        if (Boolean.TRUE.equals(x.getDisqualified()) )
+            row.createCell(index2.getAndIncrement()).setCellValue("NU");
+        else
+            row.createCell(index2.getAndIncrement()).setCellValue(getSecScore(x));
     }
 
     private Long setPenaltiesSum(Row row, AtomicInteger index2, List<StageScore> scores) {
@@ -328,19 +330,13 @@ public class ScoreToExcelExporterService {
     }
 
 
-    private String getSecScore(StageScore stageScore) {
+    private Double getSecScore(StageScore stageScore) {
         Double score = stageScore.getScore()/1000.0;
 
         List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
         if (!penalties.isEmpty())
             score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
 
-
-        String scoreString = stageScore.getScore() == null ? "" : String.valueOf(score).replace(".",",");
-        if (stageScore.getPenalty() != null && stageScore.getPenalty().equals(0L))
-            return scoreString + " (T)";
-
-
-        return scoreString;
+        return Math.round(score*100.0)/100.0;
     }
 }
