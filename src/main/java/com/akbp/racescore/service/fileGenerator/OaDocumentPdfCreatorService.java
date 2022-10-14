@@ -249,12 +249,12 @@ public class OaDocumentPdfCreatorService {
 
     private Paragraph createApprovalParagraph(Event event) {
         Paragraph p = new Paragraph().setFontSize(8).setVerticalAlignment(VerticalAlignment.BOTTOM);
-        p.add("\n\n\n");
+        p.add("\n\n");
         p.add("Zgłaszamy swój udział w imprezie samochodowej i stwierdzamy podpisami prawdziwość danych zawartych w " +
                 "zgłoszeniu.\n\n" +
 
                 "Jako kierowca oświadczam, że jestem właścicielem pojazdu w którym startuje w imprezie lub " +
-                "posiadam pisemną zgodę właściciela pojazdu i zobowiązuje się przekazać ją organizatorowi na jego żądanie.\n\n\n" +
+                "posiadam pisemną zgodę właściciela pojazdu i zobowiązuje się przekazać ją organizatorowi na jego żądanie.\n\n" +
                 "Oświadczamy, że jesteśmy świadomi ryzyka i niebezpieczeństwa podczas imprezy. W związku z moim uczestnictwem " +
                 "przyjmujemy na siebie pełną odpowiedzialność, jednocześnie zrzekamy się wszelkich późniejszych roszczeń w " +
                 "stosunku do organizatora. Oświadczamy, że znany jest nam Regulamin Imprezy i Regulamin Uzupełniający oraz " +

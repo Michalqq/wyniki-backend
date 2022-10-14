@@ -195,7 +195,17 @@ public class ScoreToExcelExporterService {
         header.createCell(index.get()).setCellValue("Suma w min.");
         sheet.setColumnWidth(index.getAndIncrement(), 12 * 256);
 
+
         setStyle(index.get(), header, getHeaderStyle());
+
+        header.createCell(index.getAndIncrement()).setCellValue("");
+        header.createCell(index.get()).setCellValue("Wyniki w sekundach z karami");
+        sheet.setColumnWidth(index.getAndIncrement(), 30 * 256);
+        stages.stream()
+                .forEach(x -> {
+                    header.createCell(index.get()).setCellValue( x.getName());
+                    sheet.setColumnWidth(index.getAndIncrement(), 10 * 256);
+                });
 
         return index;
     }
@@ -231,6 +241,10 @@ public class ScoreToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue(ScoreToString.toString(sum));
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(sum / 1000.0);
+
+        row.createCell(index2.getAndIncrement()).setCellValue("");
+        row.createCell(index2.getAndIncrement()).setCellValue("");
+        scores.stream().forEach(x -> setSecScore(row, index2, x));
 
         if (index % 2 == 0)
             setStyle(index2.get(), row, getDarkerStyle());
@@ -286,6 +300,11 @@ public class ScoreToExcelExporterService {
                 "NU" : getScore(x));
     }
 
+    private void setSecScore(Row row, AtomicInteger index2, StageScore x) {
+        row.createCell(index2.getAndIncrement()).setCellValue(Boolean.TRUE.equals(x.getDisqualified()) ?
+                "NU" : getSecScore(x));
+    }
+
     private Long setPenaltiesSum(Row row, AtomicInteger index2, List<StageScore> scores) {
         if (scores.isEmpty()) return 0L;
 
@@ -306,5 +325,22 @@ public class ScoreToExcelExporterService {
             return score + " (T)";
 
         return score;
+    }
+
+
+    private String getSecScore(StageScore stageScore) {
+        Double score = stageScore.getScore()/1000.0;
+
+        List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
+        if (!penalties.isEmpty())
+            score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
+
+
+        String scoreString = stageScore.getScore() == null ? "" : String.valueOf(score).replace(".",",");
+        if (stageScore.getPenalty() != null && stageScore.getPenalty().equals(0L))
+            return scoreString + " (T)";
+
+
+        return scoreString;
     }
 }
