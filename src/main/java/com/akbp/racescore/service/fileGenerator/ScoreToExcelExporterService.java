@@ -240,7 +240,7 @@ public class ScoreToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(ScoreToString.toString(sum));
         row.createCell(index2.getAndIncrement()).setCellValue("");
-        row.createCell(index2.getAndIncrement()).setCellValue(sum / 1000.0);
+        row.createCell(index2.getAndIncrement()).setCellValue(Math.round(sum*100.0) / 100000.0);
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue("");
