@@ -96,8 +96,19 @@ public class PenaltyService {
     }
 
     public boolean removePenalty(Long penaltyId) {
+        Penalty penalty = penaltyRepository.getById(penaltyId);
+        if (penalty!=null && penalty.getPenaltyDict().getId() == TARIFF_PENALTY_ID)
+            removeTariffFromScore(penalty);
+
         penaltyRepository.deleteById(penaltyId);
         return true;
+    }
+
+    private void removeTariffFromScore(Penalty penalty) {
+        List<StageScore> stageScore = stageScoreRepository.findByStageIdAndTeamId(penalty.getStageId(), penalty.getTeamId());
+        if (stageScore.isEmpty()) return;
+
+        stageScore.stream().peek(x -> x.setPenalty(null)).forEach(x -> stageScoreRepository.save(x));
     }
 
     public List<PenaltyOption> getPenaltyOptions() {
