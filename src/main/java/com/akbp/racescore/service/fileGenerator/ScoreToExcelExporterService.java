@@ -331,6 +331,8 @@ public class ScoreToExcelExporterService {
 
 
     private Double getSecScore(StageScore stageScore) {
+        if (stageScore.getScore()==null) return null;
+
         Double score = stageScore.getScore()/1000.0;
 
         List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
