@@ -244,7 +244,7 @@ public class ScoreToExcelExporterService {
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue("");
-        scores.stream().forEach(x -> setSecScore(row, index2, x));
+//        scores.stream().forEach(x -> setSecScore(row, index2, x));
 
         if (index % 2 == 0)
             setStyle(index2.get(), row, getDarkerStyle());
