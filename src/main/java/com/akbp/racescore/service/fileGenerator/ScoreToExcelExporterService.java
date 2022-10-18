@@ -301,7 +301,7 @@ public class ScoreToExcelExporterService {
     }
 
     private void setSecScore(Row row, AtomicInteger index2, StageScore x) {
-        if (Boolean.TRUE.equals(x.getDisqualified()) )
+        if (Boolean.TRUE.equals(x.getDisqualified() || x.getScore()==null) )
             row.createCell(index2.getAndIncrement()).setCellValue("NU");
         else
             row.createCell(index2.getAndIncrement()).setCellValue(getSecScore(x));
@@ -331,13 +331,11 @@ public class ScoreToExcelExporterService {
 
 
     private Double getSecScore(StageScore stageScore) {
-            if (stageScore.getScore()==null) return null;
-
             Double score = stageScore.getScore()/1000.0;
 
             List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
-//            if (!penalties.isEmpty())
-//                score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
+            if (!penalties.isEmpty())
+                score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
 
             return Math.round(score*100.0)/100.0;
     }
