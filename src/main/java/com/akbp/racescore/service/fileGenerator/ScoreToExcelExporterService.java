@@ -331,21 +331,14 @@ public class ScoreToExcelExporterService {
 
 
     private Double getSecScore(StageScore stageScore) {
-        try{
             if (stageScore.getScore()==null) return null;
 
             Double score = stageScore.getScore()/1000.0;
 
             List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
-            if (!penalties.isEmpty())
-                score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
+//            if (!penalties.isEmpty())
+//                score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
 
             return Math.round(score*100.0)/100.0;
-
-        }catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
-        return null;
     }
 }
