@@ -244,7 +244,7 @@ public class ScoreToExcelExporterService {
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue("");
-//        scores.stream().forEach(x -> setSecScore(row, index2, x));
+        scores.stream().forEach(x -> setSecScore(row, index2, x));
 
         if (index % 2 == 0)
             setStyle(index2.get(), row, getDarkerStyle());
@@ -331,14 +331,21 @@ public class ScoreToExcelExporterService {
 
 
     private Double getSecScore(StageScore stageScore) {
-        if (stageScore.getScore()==null) return null;
+        try{
+            if (stageScore.getScore()==null) return null;
 
-        Double score = stageScore.getScore()/1000.0;
+            Double score = stageScore.getScore()/1000.0;
 
-        List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
-        if (!penalties.isEmpty())
-            score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
+            List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
+            if (!penalties.isEmpty())
+                score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
 
-        return Math.round(score*100.0)/100.0;
+            return Math.round(score*100.0)/100.0;
+
+        }catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }
