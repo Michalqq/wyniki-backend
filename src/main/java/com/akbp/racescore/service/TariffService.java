@@ -22,14 +22,13 @@ public class TariffService {
 
         List<EventTeam> eventTeams = event.getEventTeams();
         List<EventClasses> eventClasses = event.getEventClasses().stream().sorted(Comparator.comparing(x -> x.getMaxEngineCapacity())).collect(Collectors.toList());
-        HashMap<CarClass, Long> tariffByClass = getTariffByClass(event, stage, eventClasses);
+        HashMap<CarClass, Long> tariffByClass = getTariffByClass(stage, eventClasses);
 
         for (StageScore score : scoresToTariff) {
             Optional<EventTeam> eventTeam = eventTeams.stream().filter(x -> x.getTeamId().equals(score.getTeamId())).findFirst();
             if (eventTeam.isEmpty())
                 continue;
 
-//            CarClass eventClass = eventTeams.stream().filter(x -> x.getTeamId().equals(score.getTeamId())).findFirst().get().getCarClass();
             int eventClassIndex = 0;
             for (EventClasses ec : eventClasses) {
                 if (ec.getCarClassId() == eventTeam.get().getCarClassId())
@@ -37,52 +36,51 @@ public class TariffService {
                 eventClassIndex++;
             }
 
-//            List<EventTeam> eventTeamsByClassWith3Driver = new ArrayList<>();
             int tempIndex = eventClassIndex;
-            while (tempIndex > -1 && tariffByClass.get(eventClasses.get(tempIndex).getCarClass()) == 0) {
+            while (tempIndex > -1 && tariffByClass.get(eventClasses.get(tempIndex).getCarClass()) == 0)
                 tempIndex--;
-                if (tempIndex > -1) {
-                    int finalTempIndex = tempIndex;
-//                    eventTeamsByClassWith3Driver = eventTeams.stream().filter(x -> x.getCarClassId() == eventClasses.get(finalTempIndex).getCarClassId()).collect(Collectors.toList());
-                }
-            }
+
             if (tempIndex == -1 || tariffByClass.get(eventClasses.get(tempIndex).getCarClass()) == 0) {
                 tempIndex = eventClassIndex;
-                while (eventClasses.size() > tempIndex && tariffByClass.get(eventClasses.get(tempIndex).getCarClass()) == 0) {
+                while (eventClasses.size() > tempIndex && tariffByClass.get(eventClasses.get(tempIndex).getCarClass()) == 0)
                     tempIndex++;
-                    if (eventClasses.size() > tempIndex) {
-                        int finalTempIndex = tempIndex;
-//                        eventTeamsByClassWith3Driver = eventTeams.stream().filter(x -> x.getCarClassId() == eventClasses.get(finalTempIndex).getCarClassId()).collect(Collectors.toList());
-                    }
-                }
             }
+
             Long tariff = tariffByClass.get(eventClasses.get(tempIndex).getCarClass());
             if (tariff == 0)
                 tariff = (long) (1.5 * stageScoreRepository.findByStageIdAndDisqualifiedFalseAndPenaltyIsNullAndTeamIdIn(stage.getStageId(), eventTeams.stream().map(x -> x.getTeamId()).collect(Collectors.toList())).stream().mapToLong(x -> x.getScore()).min().orElse(0L));
-//            else
-//                tariff = tariffByClass.get(eventTeamsByClassWith3Driver.get(0).getCarClass());
 
             score.setScore(tariff);
             stageScoreRepository.save(score);
         }
     }
 
-    private HashMap<CarClass, Long> getTariffByClass(Event event, Stage stage, List<EventClasses> eventClasses) {
+    private HashMap<CarClass, Long> getTariffByClass( Stage stage, List<EventClasses> eventClasses) {
         HashMap<CarClass, Long> scoresByClass = new HashMap<>();
 
         List<StageScoreSumDTO> stageScores = stageScoreRepository.findScoresInStage(stage.getStageId());
 
         for (EventClasses eventClass : eventClasses.stream().sorted(Comparator.comparingDouble(EventClasses::getMaxEngineCapacity)).collect(Collectors.toList())) {
-//            List<EventTeam> eventTeams = event.getEventTeams().stream().filter(x -> x.getCarClassId() == eventClass.getCarClassId()).collect(Collectors.toList());
             List<StageScoreSumDTO> stageScores2 = stageScores.stream().filter(x->x.getCarClass().equals(eventClass.getCarClass().getName())).collect(Collectors.toList());
-
-
-//            List<StageScore> scores = stageScoreRepository.findByStageIdAndDisqualifiedFalseAndPenaltyIsNullAndTeamIdIn(stage.getStageId(), eventTeams.stream().map(x -> x.getTeamId()).collect(Collectors.toList()));
-            Long minScore = stageScores2.size()>2 ? stageScores2.stream().mapToLong(x -> (x.getSumScore() + x.getPenalty()*1000)).min().orElse(0L) : 0L;
+            Long minScore = stageScores2.stream().mapToLong(x -> (x.getSumScore() + x.getPenalty()*1000)).min().orElse(0L);
             scoresByClass.put(eventClass.getCarClass(), (long) (minScore * 1.5));
         }
+
+        updateIfSlowerThanTariff(stageScores, scoresByClass, stage);
 
         return scoresByClass;
     }
 
+    private void updateIfSlowerThanTariff(List<StageScoreSumDTO> stageScores, HashMap<CarClass, Long> scoresByClass, Stage stage) {
+        for (CarClass carClass : scoresByClass.keySet()) {
+            List<StageScoreSumDTO> toHighScores = stageScores.stream()
+                    .filter(x->x.getCarClass().equals(carClass.getName()))
+                    .filter(x->(x.getSumScore() + x.getPenalty()*1000) > scoresByClass.get(carClass))
+                    .collect(Collectors.toList());
+            for (StageScoreSumDTO highScore : toHighScores){
+                stageScoreRepository.findByStageIdAndTeamNumber(stage.getStageId(),  highScore.getNumber())
+                        .stream().peek(x->x.setScore(scoresByClass.get(carClass))).forEach(stageScoreRepository::save);
+            }
+        }
+    }
 }
