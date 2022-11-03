@@ -46,7 +46,7 @@ public class TariffService {
 //                    eventTeamsByClassWith3Driver = eventTeams.stream().filter(x -> x.getCarClassId() == eventClasses.get(finalTempIndex).getCarClassId()).collect(Collectors.toList());
                 }
             }
-            if (tariffByClass.get(eventClasses.get(tempIndex).getCarClass()) == 0) {
+            if (tempIndex == -1 || tariffByClass.get(eventClasses.get(tempIndex).getCarClass()) == 0) {
                 tempIndex = eventClassIndex;
                 while (eventClasses.size() > tempIndex && tariffByClass.get(eventClasses.get(tempIndex).getCarClass()) == 0) {
                     tempIndex++;
