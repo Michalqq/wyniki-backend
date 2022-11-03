@@ -67,7 +67,7 @@ export const Selector = (props) => {
           placeholder={props.placeholder}
           isDisabled={props.disabled || props.isLoading}
           isLoading={props.isLoading}
-          isSearchable={false}
+          isSearchable={props.searchable || false}
           menuPlacement={"auto"}
           menuPosition={"fixed"}
         />

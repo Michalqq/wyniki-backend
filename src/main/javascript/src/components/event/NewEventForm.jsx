@@ -413,6 +413,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
                     handleChange={(value) => addReferee(value)}
                     isValid={true}
                     skipDefault={true}
+                    searchable={true}
                   />
                   <Table responsive>
                     <thead>
