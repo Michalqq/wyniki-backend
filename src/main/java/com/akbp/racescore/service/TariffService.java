@@ -73,9 +73,11 @@ public class TariffService {
 
     private void updateIfSlowerThanTariff(List<StageScoreSumDTO> stageScores, HashMap<CarClass, Long> scoresByClass, Stage stage) {
         for (CarClass carClass : scoresByClass.keySet()) {
+            if (scoresByClass.get(carClass)==0) continue;
+
             List<StageScoreSumDTO> toHighScores = stageScores.stream()
                     .filter(x->x.getCarClass().equals(carClass.getName()))
-                    .filter(x->(x.getSumScore() + x.getPenalty()*1000) > scoresByClass.get(carClass))
+                    .filter(x->(x.getSumScore()) > scoresByClass.get(carClass))
                     .collect(Collectors.toList());
             for (StageScoreSumDTO highScore : toHighScores){
                 stageScoreRepository.findByStageIdAndTeamNumber(stage.getStageId(),  highScore.getNumber())
