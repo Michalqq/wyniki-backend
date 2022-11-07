@@ -1,11 +1,14 @@
 package com.akbp.racescore.controller;
 
+import com.akbp.racescore.model.dto.StatementOutDto;
 import com.akbp.racescore.model.entity.Statement;
 import com.akbp.racescore.service.StatementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +27,7 @@ public class StatementController {
     private StatementService statementService;
 
     @GetMapping("/getStatements")
-    public List<Statement> getStatements(@RequestParam("eventId") Long eventId) {
+    public List<StatementOutDto> getStatements(@RequestParam("eventId") Long eventId) {
         try {
             return statementService.getStatements(eventId);
         } catch (Exception e) {
@@ -70,5 +73,16 @@ public class StatementController {
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
+    }
+
+    @GetMapping("/downloadFile")
+    public ResponseEntity<byte[]> downloadFile(@RequestParam("statementId") Long statementId) {
+        try {
+            return statementService.downloadFile(statementId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

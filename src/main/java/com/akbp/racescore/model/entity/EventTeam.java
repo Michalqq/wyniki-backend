@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -78,5 +79,4 @@ public class EventTeam {
     @ManyToOne
     @JoinColumn(name = "CAR_CLASS", insertable = false, updatable = false)
     private CarClass carClass;
-
 }

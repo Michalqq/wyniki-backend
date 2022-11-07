@@ -1,5 +1,6 @@
 package com.akbp.racescore.service;
 
+import com.akbp.racescore.model.dto.StatementOutDto;
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.Statement;
@@ -7,13 +8,20 @@ import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.StatementRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StatementService {
@@ -24,9 +32,18 @@ public class StatementService {
     private UserRepository userRepository;
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    public List<Statement> getStatements(Long eventId) {
-        return statementRepository.findByEventId(eventId);
+    public List<StatementOutDto> getStatements(Long eventId) {
+        return statementRepository.findByEventId(eventId).stream()
+                .sorted(Comparator.comparingInt(x-> (int) x.getDate().toEpochMilli()))
+                .map(x->{
+                    StatementOutDto statementOutDto = modelMapper.map(x, StatementOutDto.class);
+                    statementOutDto.setFileExist(x.getFile()!=null);
+                    return statementOutDto;
+                })
+                .collect(Collectors.toList());
     }
 
     public Long addStatement(Authentication auth, Statement statement) throws IOException {
@@ -84,5 +101,16 @@ public class StatementService {
 
     public Long getStatementsCount(Long eventId) {
         return statementRepository.countByEventId(eventId);
+    }
+
+    public ResponseEntity<byte[]> downloadFile(Long statementId) {
+        Statement statement = statementRepository.getById(statementId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.set("Content-Disposition", "attachment; filename=" + statement.getFileName());
+        headers.setContentLength(statement.getFile().length);
+
+        return new ResponseEntity<>(statement.getFile(), headers, HttpStatus.OK);
     }
 }

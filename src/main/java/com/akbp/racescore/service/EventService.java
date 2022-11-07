@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
+    @Service
+    @RequiredArgsConstructor
 public class EventService {
 
     private static final String GENERAL = "GENERALNA";
@@ -92,7 +92,11 @@ public class EventService {
 
        return eventOptional.get().getEventTeams().stream()
                .sorted(Comparator.comparingInt(x -> x.getOrder()))
-               .map(x-> modelMapper.map(x, EventTeamDto.class))
+               .map(x-> {
+                   EventTeamDto et = modelMapper.map(x, EventTeamDto.class);
+                    et.setEntryFeeFileExist(x.getEntryFeeFile()!=null);
+                    return et;
+               })
                .collect(Collectors.toList());
     }
 

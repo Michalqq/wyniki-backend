@@ -122,7 +122,7 @@ export const AdminTeamList = ({
   const fetchTeams = () => {
     if (eventId === undefined) return;
     axios
-      .get(`${backendUrl()}/event/getTeams?eventId=${eventId}`)
+      .get(`${backendUrl()}/event/getBasicTeams?eventId=${eventId}`)
       .then((res) => {
         const sortedTeams = res.data.sort((a, b) => a.order - b.order);
         setTeams(sortedTeams);
@@ -520,7 +520,7 @@ export const AdminTeamList = ({
                                             />
                                           </td>
                                           <td style={{ width: "90px" }}>
-                                            {item.entryFeeFile !== null ? (
+                                            {item.entryFeeFileExist ? (
                                               <FontAwesomeIcon
                                                 icon={faDownload}
                                                 onClick={() =>

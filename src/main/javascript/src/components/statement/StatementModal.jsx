@@ -13,7 +13,7 @@ import {
 import { AddStatementModal } from "./AddStatementModal";
 import { backendUrl, checkReferee, fetchStatement } from "../utils/fetchUtils";
 import moment from "moment";
-import { openFile } from "../utils/fileUtils";
+import { download, openFile } from "../utils/fileUtils";
 import { OkCancelModal, OkModal } from "../common/Modal";
 import authHeader from "../../service/auth-header";
 import { Spinner } from "react-bootstrap";
@@ -60,6 +60,13 @@ export const StatementModal = ({ show, handleClose, event }) => {
       .then((res) => fetchGetStatements());
   };
 
+  const downloadFile = (statementId, fileName) => {
+    download(
+      `${backendUrl()}/statement/downloadFile?statementId=${statementId}`,
+      fileName + ".pdf"
+    );
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -103,14 +110,14 @@ export const StatementModal = ({ show, handleClose, event }) => {
         accessor: (cellInfo) => cellInfo.fileName,
         disableFilters: true,
         Cell: (row) => {
-          return row.value && row.row.original.file ? (
+          return row.value && row.row.original.fileExist ? (
             <FontAwesomeIcon
               icon={faDownload}
               title={"Pobierz"}
               cursor={"pointer"}
-              onClick={() => {
-                openFile(row.row.original.file, row.value);
-              }}
+              onClick={() =>
+                downloadFile(row.row.original.statementId, row.value)
+              }
             />
           ) : (
             <></>

@@ -48,6 +48,8 @@ public class EventTeamDto {
 
     private String teamName;
 
+    private boolean entryFeeFileExist;
+
     private Car car;
 
     private Long carClassId;
