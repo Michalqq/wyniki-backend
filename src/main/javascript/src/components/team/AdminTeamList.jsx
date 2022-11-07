@@ -96,7 +96,7 @@ export const AdminTeamList = ({
         ? teams.filter((x) => x.carClass.name === classFilter)
         : teams
     );
-  }, [classFilter]);
+  }, [teams, classFilter]);
 
   const eraseTeamToRemove = () => {
     setTeamToRemove({
