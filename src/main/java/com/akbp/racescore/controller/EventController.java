@@ -1,6 +1,7 @@
 package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.EventDTO;
+import com.akbp.racescore.model.dto.EventTeamDto;
 import com.akbp.racescore.model.dto.EventWithLogoDTO;
 import com.akbp.racescore.model.dto.FileDto;
 import com.akbp.racescore.model.dto.StgesAndClassesDTO;
@@ -104,6 +105,16 @@ public class EventController {
     public List<EventTeam> getTeams(@RequestParam("eventId") Long eventId) {
         try {
             return eventService.getTeams(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return Collections.emptyList();
+    }
+
+    @GetMapping("/getBasicTeams")
+    public List<EventTeamDto> getBasicTeams(@RequestParam("eventId") Long eventId) {
+        try {
+            return eventService.getBasicTeams(eventId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

@@ -1,6 +1,7 @@
 package com.akbp.racescore.service;
 
 import com.akbp.racescore.model.dto.EventDTO;
+import com.akbp.racescore.model.dto.EventTeamDto;
 import com.akbp.racescore.model.dto.EventWithLogoDTO;
 import com.akbp.racescore.model.dto.FileDto;
 import com.akbp.racescore.model.dto.PenaltyDTO;
@@ -17,6 +18,8 @@ import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import com.akbp.racescore.service.fileGenerator.FinalListCreatorService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -63,6 +66,10 @@ public class EventService {
 
     private final StatementService statementService;
     private final CarService carService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     private int sortIndex = 0;
 
     public List<String> getStages(Long eventId) {
@@ -77,9 +84,16 @@ public class EventService {
     public List<EventTeam> getTeams(Long eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-        List<EventTeam> teams = eventOptional.get().getEventTeams().stream().sorted(Comparator.comparingInt(x -> x.getOrder())).collect(Collectors.toList());
+        return eventOptional.get().getEventTeams().stream().sorted(Comparator.comparingInt(x -> x.getOrder())).collect(Collectors.toList());
+    }
 
-        return teams;
+    public List<EventTeamDto> getBasicTeams(Long eventId) {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+       return eventOptional.get().getEventTeams().stream()
+               .sorted(Comparator.comparingInt(x -> x.getOrder()))
+               .map(x-> modelMapper.map(x, EventTeamDto.class))
+               .collect(Collectors.toList());
     }
 
     public List<PsOption> getPsOptions(Long eventId) {
