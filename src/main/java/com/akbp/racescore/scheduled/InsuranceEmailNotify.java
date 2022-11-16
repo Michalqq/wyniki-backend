@@ -40,7 +40,7 @@ public class InsuranceEmailNotify {
         Instant start = startCount.minus(1, ChronoUnit.DAYS);
         List<Car> cars = carRepository.findByInsuranceExpiryDateBetween(start, startCount);
 
-        emailSender.sendEmail(1L, "kraciukmichal@gmail.com", "Serwis sprawdził", "Znaleziono " + cars.size() + "przedział " + start + " do " + startCount);
+//        emailSender.sendEmail(1L, "kraciukmichal@gmail.com", "Serwis sprawdził", "Znaleziono " + cars.size() + "przedział " + start + " do " + startCount);
         cars.stream().forEach(x -> emailSender.sendInsuranceNotification(teamRepository.findByTeamId(x.getTeamId()), x));
     }
 }
