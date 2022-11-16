@@ -23,16 +23,23 @@ export const NavigationBar = () => {
   return (
     <Navbar expand="lg">
       <Container>
-        <Navbar.Brand className="text-white nav_bar" href="/">
+        <Navbar.Brand
+          role="button"
+          className="text-white nav_bar"
+          onClick={() => navigate(``)}
+        >
           Wyniki motorsportowe online AKBP
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link className="text-white" href="/">
+            <Nav.Link className="text-white" onClick={() => navigate(``)}>
               Lista wydarzeń
             </Nav.Link>
-            <Nav.Link className="text-white" href="/message">
+            <Nav.Link
+              className="text-white"
+              onClick={() => navigate(`message`)}
+            >
               Kontakt
             </Nav.Link>
 
@@ -66,10 +73,16 @@ export const NavigationBar = () => {
           <Nav>
             {sessionStorage.getItem("username") === null && (
               <>
-                <Nav.Link className="text-white" href="/login">
+                <Nav.Link
+                  className="text-white"
+                  onClick={() => navigate(`login`)}
+                >
                   Zaloguj
                 </Nav.Link>
-                <Nav.Link className="text-white" href="/register">
+                <Nav.Link
+                  className="text-white"
+                  onClick={() => navigate(`register`)}
+                >
                   Rejestracja
                 </Nav.Link>
               </>
@@ -78,7 +91,7 @@ export const NavigationBar = () => {
               <>
                 <Nav.Link
                   className="text-white"
-                  href="/teamPanel"
+                  onClick={() => navigate(`teamPanel`)}
                 >{`Panel zawodnika - ${sessionStorage.getItem(
                   "username"
                 )}`}</Nav.Link>
@@ -87,7 +100,7 @@ export const NavigationBar = () => {
                   className="text-white"
                   onClick={() => {
                     sessionStorage.removeItem("username");
-                    window.location.href = "/";
+                    navigate(``);
                   }}
                 >
                   Wyloguj

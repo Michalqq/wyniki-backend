@@ -20,6 +20,8 @@ const ResetPasswordPage = lazy(() =>
 );
 
 function App() {
+  document.body.style.backgroundImage = "url(fiesta.jpg)";
+
   return (
     <div>
       {/* <header className="App-header">RACE SCORE</header> */}

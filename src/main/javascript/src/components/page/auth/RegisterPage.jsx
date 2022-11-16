@@ -5,8 +5,10 @@ import axios from "axios";
 import { InputLabeled } from "../../common/InputLabeled";
 import { backendUrl } from "../../utils/fetchUtils";
 import Spinner from "react-bootstrap/Spinner";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterPage = (props) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     username: "",
     password: null,
@@ -118,7 +120,10 @@ export const RegisterPage = (props) => {
                 </form>
               </Card.Body>
               <Card.Footer className="text-muted">
-                Masz konto -<a href="login"> zaloguj się</a>
+                {`Masz konto - `}
+                <a role="button" class="a" onClick={() => navigate(`/login`)}>
+                  zaloguj się
+                </a>
               </Card.Footer>
             </Card>
           </div>

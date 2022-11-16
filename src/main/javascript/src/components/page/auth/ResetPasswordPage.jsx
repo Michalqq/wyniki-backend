@@ -5,9 +5,10 @@ import axios from "axios";
 import { InputLabeled } from "../../common/InputLabeled";
 import { backendUrl } from "../../utils/fetchUtils";
 import Spinner from "react-bootstrap/Spinner";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const ResetPasswordPage = (props) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     token: useLocation().search,
     username: "",
@@ -98,7 +99,10 @@ export const ResetPasswordPage = (props) => {
                 </form>
               </Card.Body>
               <Card.Footer className="text-muted">
-                Masz konto -<a href="login"> zaloguj się</a>
+                {`Masz konto - `}
+                <a role="button" class="a" onClick={() => navigate(`/login`)}>
+                  zaloguj się
+                </a>
               </Card.Footer>
             </Card>
           </div>

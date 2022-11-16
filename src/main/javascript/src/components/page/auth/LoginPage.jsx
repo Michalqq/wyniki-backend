@@ -85,9 +85,21 @@ export const LoginPage = (props) => {
                 </form>
               </Card.Body>
               <Card.Footer className="text-muted">
-                Nie masz konta -<a href="register"> zarejestruj się</a>
+                {`Nie masz konta - `}
+                <a
+                  role="button"
+                  class="a"
+                  onClick={() => navigate(`/register`)}
+                >
+                  zarejestruj się
+                </a>
                 <br></br>
-                <a style={{ fontSize: "13px" }} href="reminder">
+                <a
+                  style={{ fontSize: "13px" }}
+                  role="button"
+                  class="a"
+                  onClick={() => navigate(`/reminder`)}
+                >
                   Odzyskaj hasło
                 </a>
               </Card.Footer>
