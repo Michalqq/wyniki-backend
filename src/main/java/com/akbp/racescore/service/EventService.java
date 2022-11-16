@@ -32,10 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
     @Service
@@ -134,7 +131,9 @@ public class EventService {
         Instant today = Instant.now();
         today = today.atZone(ZoneOffset.UTC).withHour(0).withMinute(0).withSecond(1).toInstant();
 
-        return prepareEvents(eventRepository.findAllByDateLessThan(today), auth);
+        return Collections.emptyList();
+
+        //return prepareEvents(eventRepository.findAllByDateLessThan(today), auth);
     }
 
     public List<EventDTO> getAllFuture(Authentication auth) {
