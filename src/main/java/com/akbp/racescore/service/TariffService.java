@@ -66,7 +66,7 @@ public class TariffService {
             scoresByClass.put(eventClass.getCarClass(), (long) (minScore * 1.5));
         }
 
-        updateIfSlowerThanTariff(stageScores, scoresByClass, stage);
+//        updateIfSlowerThanTariff(stageScores, scoresByClass, stage);
 
         return scoresByClass;
     }
