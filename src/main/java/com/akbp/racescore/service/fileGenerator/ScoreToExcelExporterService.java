@@ -124,16 +124,16 @@ public class ScoreToExcelExporterService {
         sheet.createRow(index.getAndIncrement());
 
         try {
-            if (event.getLogoPathFile() != null) {
-                XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
-                XSSFClientAnchor logoAnchor = new XSSFClientAnchor();
-                logoAnchor.setCol1(0);
-                logoAnchor.setRow1(0);
-
-                Picture pict = drawing.createPicture(logoAnchor, workbook.addPicture(event.getLogoPathFile(), Workbook.PICTURE_TYPE_JPEG));
-                pict.resize();
-                pict.resize(110.0 / pict.getImageDimension().height);
-            }
+//            if (event.getLogoPathFile() != null) {
+//                XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
+//                XSSFClientAnchor logoAnchor = new XSSFClientAnchor();
+//                logoAnchor.setCol1(0);
+//                logoAnchor.setRow1(0);
+//
+//                Picture pict = drawing.createPicture(logoAnchor, workbook.addPicture(event.getLogoPathFile(), Workbook.PICTURE_TYPE_JPEG));
+//                pict.resize();
+//                pict.resize(110.0 / pict.getImageDimension().height);
+//            }
         } catch (Exception e){
             LOGGER.error("Error with logo: " + e.getMessage());
         }
