@@ -90,7 +90,7 @@ public class ScoreToExcelExporterService {
 
         AtomicInteger index = new AtomicInteger(1);
 
-//        addEventNameAndLogo(sheet, event, index);
+        addEventNameAndLogo(sheet, event, index);
 
         createTitle(sheet, sheetName, index);
         createHeader(sheet, stages, index.getAndIncrement());
@@ -123,15 +123,19 @@ public class ScoreToExcelExporterService {
         sheet.createRow(index.getAndIncrement());
         sheet.createRow(index.getAndIncrement());
 
-        if (event.getLogoPathFile() != null) {
-            XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
-            XSSFClientAnchor logoAnchor = new XSSFClientAnchor();
-            logoAnchor.setCol1(0);
-            logoAnchor.setRow1(0);
+        try {
+            if (event.getLogoPathFile() != null) {
+                XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
+                XSSFClientAnchor logoAnchor = new XSSFClientAnchor();
+                logoAnchor.setCol1(0);
+                logoAnchor.setRow1(0);
 
-            Picture pict = drawing.createPicture(logoAnchor, workbook.addPicture(event.getLogoPathFile(), Workbook.PICTURE_TYPE_JPEG));
-            pict.resize();
-            pict.resize(110.0 / pict.getImageDimension().height);
+                Picture pict = drawing.createPicture(logoAnchor, workbook.addPicture(event.getLogoPathFile(), Workbook.PICTURE_TYPE_JPEG));
+                pict.resize();
+                pict.resize(110.0 / pict.getImageDimension().height);
+            }
+        } catch (Exception e){
+            LOGGER.error("Error with logo: " + e.getMessage());
         }
     }
 
