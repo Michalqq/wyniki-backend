@@ -90,7 +90,7 @@ public class ScoreToExcelExporterService {
 
         AtomicInteger index = new AtomicInteger(1);
 
-        addEventNameAndLogo(sheet, event, index);
+//        addEventNameAndLogo(sheet, event, index);
 
         createTitle(sheet, sheetName, index);
         createHeader(sheet, stages, index.getAndIncrement());
