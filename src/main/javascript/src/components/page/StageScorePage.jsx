@@ -34,6 +34,7 @@ const StageScorePage = (props) => {
     : localStorage.getItem("eventId") || location.state?.eventId;
 
   const GENERAL = "GENERALNA";
+  const GUEST = "GOŚĆ";
 
   const [event, setEvent] = useState();
 
@@ -132,22 +133,26 @@ const StageScorePage = (props) => {
 
   useEffect(() => {
     let tempScores =
-      currentClass !== GENERAL
-        ? scores.filter(
+      currentClass === `${GENERAL}+${GUEST}`
+        ? scores
+        : currentClass === GENERAL
+        ? scores.filter((x) => x.className !== GUEST)
+        : scores.filter(
             (x) => x.className === currentClass || x.driveType === currentClass
-          )
-        : scores;
+          );
 
     setScoresByClass(calcTimeTo(tempScores));
   }, [scores, currentClass]);
 
   useEffect(() => {
     let tempScores =
-      currentClass !== GENERAL
-        ? summedScores.filter(
+      currentClass === `${GENERAL}+${GUEST}`
+        ? summedScores
+        : currentClass === GENERAL
+        ? summedScores.filter((x) => x.className !== GUEST)
+        : summedScores.filter(
             (x) => x.className === currentClass || x.driveType === currentClass
-          )
-        : summedScores;
+          );
 
     setSummedScoresByClass(calcTimeTo(tempScores));
   }, [summedScores, currentClass]);

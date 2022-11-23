@@ -32,38 +32,12 @@ const HomePage = (props) => {
   const navigate = useNavigate();
 
   const fetchEvents = () => {
+    fetchFuture();
+    if (archiveEvents.length === 0) fetchArchive();
+  };
+
+  const fetchFuture = () => {
     setLoadingFuture(true);
-    setLoadingBefore(true);
-
-    // let endDay = new Date();
-    // endDay.setHours(23, 59, 59, 999);
-    // endDay.setDate(new Date().getDate() - 1);
-
-    // axios
-    //   .get(`${backendUrl()}/event/getAll`, {
-    //     headers: authHeader(),
-    //   })
-    //   .then((res) => {
-    //     setFutureEvents(
-    //       res.data
-    //         .filter((x) => endDay.getTime() <= new Date(x.date).getTime())
-    //         .sort((x, y) => (x.date < y.date ? -1 : 1))
-    //     );
-    //     setArchiveEvents(
-    //       res.data
-    //         .filter((x) => endDay.getTime() > new Date(x.date).getTime())
-    //         .sort((x, y) => (x.date > y.date ? -1 : 1))
-    //     );
-    //     if (eventRedirect !== undefined && !redirected) {
-    //       const event = res.data.find(
-    //         (x) => x.eventId === Number(eventRedirect.replace("?", ""))
-    //       );
-    //       setEventToTeamPanel(event);
-    //       eventRedirect = null;
-    //       setRedirected(true);
-    //     }
-    //     setLoading(false);
-    //   });
 
     axios
       .get(`${backendUrl()}/event/getAllFuture`, {
@@ -88,6 +62,10 @@ const HomePage = (props) => {
         }
         setLoadingFuture(false);
       });
+  };
+
+  const fetchArchive = () => {
+    setLoadingBefore(true);
 
     axios
       .get(`${backendUrl()}/event/getAllBefore`, {

@@ -279,11 +279,12 @@ public class EventController {
     @GetMapping("/fetchCreateFinalList")
     public boolean fetchCreateFinalList(@RequestParam("eventId") Long eventId,
                                         @RequestParam("stageId") Long stageId,
+                                        @RequestParam("pkc") String pkc,
                                         @RequestParam("startTime") Instant startTime,
                                         @RequestParam("frequency") Long frequency,
                                         Authentication auth) {
         try {
-            return eventService.fetchCreateFinalList(auth, eventId, stageId, startTime, frequency);
+            return eventService.fetchCreateFinalList(auth, eventId, stageId, pkc, startTime, frequency);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

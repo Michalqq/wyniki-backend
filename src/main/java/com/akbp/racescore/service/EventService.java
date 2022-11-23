@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 public class EventService {
 
     private static final String GENERAL = "GENERALNA";
+    private static final String GUEST = "GOŚĆ";
     private static final Long DISQUALIFIED_PENALTY_ID = 7L;
 
     private static final String OA_DISQ = "Odbiór administracyjny!";
@@ -184,6 +185,9 @@ public class EventService {
             classesOptions.add(new ClassesOption(DriveType.RWD.getName(), DriveType.RWD.getName(), false));
         if (Boolean.TRUE.equals(event.getFwdClassification()))
             classesOptions.add(new ClassesOption(DriveType.FWD.getName(), DriveType.FWD.getName(), false));
+
+        if (classesOptions.stream().anyMatch(x->x.getLabel().equals(GUEST)))
+            classesOptions.add(new ClassesOption(GENERAL + "+" + GUEST, "ALL", false));
 
         return classesOptions;
     }
@@ -518,7 +522,7 @@ public class EventService {
         return eventTeamRepository.countByEventId(eventId);
     }
 
-    public boolean fetchCreateFinalList(Authentication auth, Long eventId, Long stageId, Instant startTime, Long frequency) throws IOException {
+    public boolean fetchCreateFinalList(Authentication auth, Long eventId, Long stageId, String pkc, Instant startTime, Long frequency) throws IOException {
         Event event = eventRepository.getById(eventId);
 
         Stage stage = event.getStages().stream().filter(x -> x.getStageId().equals(stageId)).findFirst().get();
@@ -532,10 +536,8 @@ public class EventService {
                 .filter(x -> !Boolean.FALSE.equals(x.getTeamChecked()) && !Boolean.FALSE.equals(x.getBkPositive()))
                 .filter(x -> !disqualifiedTeamIds.contains(x.getTeamId())).collect(Collectors.toList());
 
-        byte[] file = finalListCreatorService.createFinalListFile(event, stage, eventTeams, startTime, frequency);
+        byte[] file = finalListCreatorService.createFinalListFile(event, stage, eventTeams, pkc,  startTime, frequency);
         statementService.addFinalList(auth, file, event, stage);
-        //Path path = Paths.get("/test.pdf");
-        //Files.write(path, file);
 
         return true;
     }

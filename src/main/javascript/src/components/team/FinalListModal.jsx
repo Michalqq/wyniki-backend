@@ -23,6 +23,7 @@ export const FinalListModal = ({ show, handleClose, eventId }) => {
   const [frequency, setFrequency] = useState(1);
   const [psOptions, setPsOptions] = useState([]);
   const [startTime, setStartTime] = useState();
+  const [pkc, setPkc] = useState();
 
   useEffect(() => {
     if (!show) return;
@@ -90,8 +91,14 @@ export const FinalListModal = ({ show, handleClose, eventId }) => {
                     handleChange={(value) => setStage(value)}
                     isValid={true}
                   />
+                  <InputLabeled
+                    label="Pełna nazwa PKC"
+                    value={pkc}
+                    handleChange={(e) => setPkc(e.target.value)}
+                    big={true}
+                  />
                   <TimePicker
-                    label={"Czas startu odcinka"}
+                    label={"Czas startu na PKC"}
                     onChange={(value) => setStartTime(value)}
                     calendarContainer={DatePickerContainer}
                     selected={startTime}
@@ -117,6 +124,7 @@ export const FinalListModal = ({ show, handleClose, eventId }) => {
                 fetchCreateFinalList(
                   eventId,
                   stage,
+                  pkc,
                   getFormattedTime(startTime),
                   frequency,
                   (data) => {
@@ -125,7 +133,7 @@ export const FinalListModal = ({ show, handleClose, eventId }) => {
                   }
                 );
               }}
-              disabled={!stage || !frequency || !startTime}
+              disabled={!stage || !frequency || !startTime || !pkc}
               msg="Dodaj listę startową"
               loadingMsg="Dodawanie listy startowej"
             />

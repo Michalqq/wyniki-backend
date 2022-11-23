@@ -40,12 +40,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FinalListCreatorService {
 
-    private final StatementService statementService;
-
     private Instant startTime;
     private Long frequency;
 
-    public byte[] createFinalListFile(Event event, Stage stage, List<EventTeam> eventTeams, Instant startTime, Long frequency) throws IOException {
+    public byte[] createFinalListFile(Event event, Stage stage, List<EventTeam> eventTeams, String pkc, Instant startTime, Long frequency) throws IOException {
         this.startTime = startTime;
         this.frequency = frequency;
 
@@ -61,18 +59,18 @@ public class FinalListCreatorService {
             e.printStackTrace();
             throw e;
         }
-        createPage(doc, eventTeams, event, stage);
+        createPage(doc, eventTeams, event, stage, pkc);
 
         doc.close();
 
         return out.toByteArray();
     }
 
-    private void createPage(Document doc, List<EventTeam> eventTeams, Event event, Stage stage) {
+    private void createPage(Document doc, List<EventTeam> eventTeams, Event event, Stage stage, String pkc) {
         Image img = addLogo(event.getLogoPathFile());
         if (img != null) doc.add(img);
 
-        doc.add(createTitle(event, stage));
+        doc.add(createTitle(event, stage, pkc));
         Table table = createFinalListTable(eventTeams);
         setAlign(table);
         styleHeader(table);
@@ -153,13 +151,15 @@ public class FinalListCreatorService {
         return img;
     }
 
-    private Paragraph createTitle(Event event, Stage stage) {
+    private Paragraph createTitle(Event event, Stage stage, String pkc) {
         Paragraph p = new Paragraph(event.getName() + "\n").setFontSize(12).setPaddingLeft(80).setPaddingRight(80).setTextAlignment(TextAlignment.CENTER);
         p.setMarginTop(-10);
         p.add(fromInstant(event.getDate()) + "\n");
         p.add("Organizator: " + event.getOrganizer());
         p.add("\n\n");
         p.add("Lista startowa na odcinek: " + stage.getName());
+        p.add("\n");
+        p.add("Czas na punkcie kontroli: " + pkc);
 
         return p;
     }

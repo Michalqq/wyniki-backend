@@ -75,12 +75,13 @@ export const fetchBkChecked = (eventId, teamId, checked, handleResponse) => {
 export const fetchCreateFinalList = (
   eventId,
   stageId,
+  pkc,
   startTime,
   frequency,
   handleResponse
 ) => {
   fetchGet(
-    `${backendUrl()}/event/fetchCreateFinalList?eventId=${eventId}&stageId=${stageId}&startTime=${startTime}&frequency=${frequency}`,
+    `${backendUrl()}/event/fetchCreateFinalList?eventId=${eventId}&stageId=${stageId}&pkc=${pkc}&startTime=${startTime}&frequency=${frequency}`,
     handleResponse
   );
 };
