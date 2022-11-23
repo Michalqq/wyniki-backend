@@ -50,7 +50,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
     fetchPsOptions(eventId, (data) => {
       const arr = [{ label: "WSZYSTKIE KLASY", value: "0", defValue: true }];
       data.classesOptions
-        .filter((v) => v.label !== "GENERALNA")
+        .filter((v) => v.label !== "GENERALNA" && v.label !== "GENERALNA+GOŚĆ")
         .forEach((x) => arr.push(x));
       setClassesOptions(arr || []);
     });

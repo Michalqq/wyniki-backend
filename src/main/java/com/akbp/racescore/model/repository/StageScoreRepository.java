@@ -62,7 +62,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "and et.team_id not in " +
             "                   (select team_id from race_score.stage_score " +
             "                       where stage_id <= :stageId and stage_id in " +
-            "                                               (select stage_id from race_score.stage where event_id = :eventId) and (score is null or disqualified = true)) " +
+            "                                               (select stage_id from race_score.stage where event_id = :eventId and (score is null or disqualified = true))) " +
             "group by ss.team_id, et.number, c.drive_type, c.brand, c.model, et.driver, et.co_driver, et.team_name, et.club, et.co_club, cc.name " +
             "order by sumScore", nativeQuery = true)
     List<StageScoreSumDTO> findSummedScoreByStageId(@Param("eventId") Long eventId, @Param("stageId") Long stageId);
