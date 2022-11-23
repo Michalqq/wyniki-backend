@@ -3,10 +3,14 @@ package com.akbp.racescore.service;
 import com.akbp.racescore.model.dto.PenaltyByTeamDTO;
 import com.akbp.racescore.model.dto.PenaltyDTO;
 import com.akbp.racescore.model.dto.selectors.PenaltyOption;
+import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.Penalty;
+import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.StageScore;
 import com.akbp.racescore.model.entity.dictionary.PenaltyDict;
+import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.PenaltyRepository;
+import com.akbp.racescore.model.repository.StageRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.model.repository.dictionary.PenaltyDictRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +26,9 @@ import java.util.stream.Collectors;
 public class PenaltyService {
     private final PenaltyRepository penaltyRepository;
     private final PenaltyDictRepository penaltyDictRepository;
+    private final StageRepository stageRepository;
     private final StageScoreRepository stageScoreRepository;
+    private final EventRepository eventRepository;
 
     private static final Long CUSTOM_PENALTY_ID = 100L;
     private static final Long TARIFF_PENALTY_ID = 10L;
@@ -30,10 +36,12 @@ public class PenaltyService {
     @Autowired
     public PenaltyService(PenaltyRepository penaltyRepository,
                           PenaltyDictRepository penaltyDictRepository,
-                          StageScoreRepository stageScoreRepository) {
+                          StageRepository stageRepository, StageScoreRepository stageScoreRepository, EventRepository eventRepository) {
         this.penaltyRepository = penaltyRepository;
         this.penaltyDictRepository = penaltyDictRepository;
+        this.stageRepository = stageRepository;
         this.stageScoreRepository = stageScoreRepository;
+        this.eventRepository = eventRepository;
     }
 
     @Transactional
@@ -138,7 +146,10 @@ public class PenaltyService {
     }
 
     private void setDisualifiedInStageScores(Penalty penalty, boolean disqualified) {
-        List<StageScore> stageScores = stageScoreRepository.findByTeamIdAndStageIdGreaterThanEqual(penalty.getTeamId(), penalty.getStageId());
+        Stage stage = stageRepository.findByStageId(penalty.getStageId());
+        Event event = eventRepository.getById(stage.getEventId());
+        List<Long> stagesId =  event.getStages().stream().filter(x->x.getStageId()>=penalty.getStageId()).map(x->x.getStageId()).collect(Collectors.toList());
+        List<StageScore> stageScores = stageScoreRepository.findByTeamIdAndStageIdIn(penalty.getTeamId(), stagesId);
         stageScores.stream().forEach(x -> {
             x.setDisqualified(disqualified);
             stageScoreRepository.save(x);

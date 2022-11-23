@@ -67,7 +67,7 @@ public interface StageScoreRepository extends JpaRepository<StageScore, Long> {
             "order by sumScore", nativeQuery = true)
     List<StageScoreSumDTO> findSummedScoreByStageId(@Param("eventId") Long eventId, @Param("stageId") Long stageId);
 
-    List<StageScore> findByTeamIdAndStageIdGreaterThanEqual(Long teamId, Long stageId);
+    List<StageScore> findByTeamIdAndStageIdIn(Long teamId, List<Long> stagesId);
 
     @Modifying
     @Query(value = "delete from race_score.stage_score ss " +
