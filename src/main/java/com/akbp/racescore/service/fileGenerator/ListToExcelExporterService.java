@@ -34,7 +34,7 @@ public class ListToExcelExporterService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.ms-excel"));
-        headers.set("Content-Disposition", "attachment; filename=" + "lista_zawodnikow" + event.getEventId() + ".xls");
+        headers.set("Content-Disposition", "attachment; filename=" + "lista_zawodnikow" + event.getName() + ".xls");
         headers.setContentLength(out.toByteArray().length);
 
         return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
@@ -67,7 +67,9 @@ public class ListToExcelExporterService {
 
         createTitle(sheet, sheetName, index);
         createHeader(sheet, index.getAndIncrement());
-        event.getEventTeams().forEach(x->createDataRow(sheet, x, index.getAndIncrement()));
+        List<EventTeam> teams = event.getEventTeams();
+        teams.sort(Comparator.comparing(x->x.getNumber()));
+        teams.forEach(x->createDataRow(sheet, x, index.getAndIncrement()));
 
         sheet.createRow(index.getAndIncrement());
         sheet.createRow(index.getAndIncrement());
@@ -126,7 +128,7 @@ public class ListToExcelExporterService {
         sheet.setColumnWidth(6, 20 * 256);
         sheet.setColumnWidth(7, 10 * 256);
         sheet.setColumnWidth(8, 15 * 256);
-        sheet.setColumnWidth(9, 15 * 256);
+        sheet.setColumnWidth(9, 35 * 256);
         sheet.setColumnWidth(10, 25 * 256);
         sheet.setColumnWidth(11, 25 * 256);
     }
