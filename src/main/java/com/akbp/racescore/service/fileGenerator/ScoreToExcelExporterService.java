@@ -10,8 +10,6 @@ import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.service.ScoreService;
 import com.akbp.racescore.utils.ScoreToString;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,5 +1,6 @@
 package com.akbp.racescore.controller;
 
+import com.akbp.racescore.service.fileGenerator.ListToExcelExporterService;
 import com.akbp.racescore.service.fileGenerator.OaDocumentPdfCreatorService;
 import com.akbp.racescore.service.fileGenerator.ScoreToExcelExporterService;
 import com.akbp.racescore.service.fileGenerator.BkPdfCreatorService;
@@ -24,6 +25,8 @@ public class FileController {
     private ScoreToExcelExporterService scoreExporter;
     @Autowired
     private BkPdfCreatorService bkPdfCreatorService;
+    @Autowired
+    private ListToExcelExporterService listToExcelExporterService;
 
     @GetMapping("getEventTeamsData")
     public ResponseEntity<byte[]> getEventTeamsData(Long eventId) {
@@ -48,6 +51,19 @@ public class FileController {
 
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping("getEventTeamExcelData")
+    public ResponseEntity<byte[]> getEventTeamExcelData(Long eventId) {
+        LOGGER.info("getEventTeamExcelData");
+        try {
+            return listToExcelExporterService.getEventTeamData(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     @GetMapping("getBkFiles")
     public ResponseEntity<byte[]> getBkFiles(Long eventId) {
