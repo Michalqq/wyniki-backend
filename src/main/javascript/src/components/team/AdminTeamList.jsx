@@ -95,7 +95,11 @@ export const AdminTeamList = ({
   useEffect(() => {
     setTeamsToTable(
       classFilter !== "0"
-        ? teams.filter((x) => x.carClass.name === classFilter)
+        ? teams.filter(
+            (x) =>
+              x.carClass.name === classFilter ||
+              x.car?.driveTypeEnum === classFilter
+          )
         : teams
     );
   }, [teams, classFilter]);
