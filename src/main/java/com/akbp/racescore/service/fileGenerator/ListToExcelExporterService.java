@@ -104,12 +104,14 @@ public class ListToExcelExporterService {
         header.createCell(index.getAndIncrement()).setCellValue("Numer startowy");
         header.createCell(index.getAndIncrement()).setCellValue("Kierowca");
         header.createCell(index.getAndIncrement()).setCellValue("Automobilklub");
+        header.createCell(index.getAndIncrement()).setCellValue("Numer telefonu");
         header.createCell(index.getAndIncrement()).setCellValue("Pilot");
         header.createCell(index.getAndIncrement()).setCellValue("Pilot automobilklub");
+        header.createCell(index.getAndIncrement()).setCellValue("Numer telefonu - pilot");
         header.createCell(index.getAndIncrement()).setCellValue("Samochód");
         header.createCell(index.getAndIncrement()).setCellValue("Klasa");
-        header.createCell(index.getAndIncrement()).setCellValue("Numer telefonu");
         header.createCell(index.getAndIncrement()).setCellValue("Email");
+        header.createCell(index.getAndIncrement()).setCellValue("");
         header.createCell(index.getAndIncrement()).setCellValue("Osoba kontaktowa - wypadek");
         header.createCell(index.getAndIncrement()).setCellValue("Numer telefonu - wypadek");
 
@@ -124,13 +126,15 @@ public class ListToExcelExporterService {
         sheet.setColumnWidth(2, 22 * 256);
         sheet.setColumnWidth(3, 20 * 256);
         sheet.setColumnWidth(4, 22 * 256);
-        sheet.setColumnWidth(5, 20 * 256);
+        sheet.setColumnWidth(5, 22 * 256);
         sheet.setColumnWidth(6, 20 * 256);
-        sheet.setColumnWidth(7, 10 * 256);
-        sheet.setColumnWidth(8, 15 * 256);
-        sheet.setColumnWidth(9, 35 * 256);
-        sheet.setColumnWidth(10, 25 * 256);
-        sheet.setColumnWidth(11, 25 * 256);
+        sheet.setColumnWidth(7, 22 * 256);
+        sheet.setColumnWidth(8, 10 * 256);
+        sheet.setColumnWidth(9, 15 * 256);
+        sheet.setColumnWidth(10, 35 * 256);
+        sheet.setColumnWidth(11, 10 * 256);
+        sheet.setColumnWidth(12, 25 * 256);
+        sheet.setColumnWidth(13, 25 * 256);
     }
 
     private void createDataRow(Sheet sheet, EventTeam et, int index) {
@@ -144,13 +148,15 @@ public class ListToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue(et.getNumber());
         row.createCell(index2.getAndIncrement()).setCellValue(et.getDriver());
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getClub()).orElse(""));
+        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getPhone()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoDriver()).orElse("-"));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCoClub()).orElse(""));
+        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getCoPhone()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(
                 Optional.ofNullable(et.getCar()).map(x -> x.getBrand() + " " + x.getModel()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getCarClass().getName()).orElse("-"));
-        row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getPhone()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getEmail()).orElse(""));
+        row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getEmergencyPerson()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getEmergencyPhone()).orElse(""));
     }
