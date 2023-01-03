@@ -60,3 +60,5 @@ CREATE SEQUENCE IF NOT EXISTS race_score.hibernate_sequence START 1;
 --delete from race_score.stage_score where stage_id is null;
 
 --update race_score.event_Team set car_id = 1328, team_id = 1327, club = 'Rzemieślnik' where id = 478
+
+delete from race_Score.penalty where stage_id not in (select stage_id from race_score.stage_score);

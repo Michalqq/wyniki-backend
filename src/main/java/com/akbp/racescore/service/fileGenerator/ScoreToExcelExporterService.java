@@ -132,7 +132,7 @@ public class ScoreToExcelExporterService {
 //                pict.resize();
 //                pict.resize(110.0 / pict.getImageDimension().height);
 //            }
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("Error with logo: " + e.getMessage());
         }
     }
@@ -205,7 +205,7 @@ public class ScoreToExcelExporterService {
         sheet.setColumnWidth(index.getAndIncrement(), 30 * 256);
         stages.stream()
                 .forEach(x -> {
-                    header.createCell(index.get()).setCellValue( x.getName());
+                    header.createCell(index.get()).setCellValue(x.getName());
                     sheet.setColumnWidth(index.getAndIncrement(), 10 * 256);
                 });
 
@@ -242,7 +242,7 @@ public class ScoreToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(ScoreToString.toString(sum));
         row.createCell(index2.getAndIncrement()).setCellValue("");
-        row.createCell(index2.getAndIncrement()).setCellValue(Math.round(sum/10.0) / 100.0);
+        row.createCell(index2.getAndIncrement()).setCellValue(Math.round(sum / 10.0) / 100.0);
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue("");
@@ -303,7 +303,7 @@ public class ScoreToExcelExporterService {
     }
 
     private void setSecScore(Row row, AtomicInteger index2, StageScore x) {
-        if (Boolean.TRUE.equals(x.getDisqualified() || x.getScore()==null) )
+        if (Boolean.TRUE.equals(x.getDisqualified() || x.getScore() == null))
             row.createCell(index2.getAndIncrement()).setCellValue("NU");
         else
             row.createCell(index2.getAndIncrement()).setCellValue(getSecScore(x));
@@ -333,12 +333,12 @@ public class ScoreToExcelExporterService {
 
 
     private Double getSecScore(StageScore stageScore) {
-            Double score = stageScore.getScore()/1000.0;
+        Double score = stageScore.getScore() / 1000.0;
 
-            List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
-            if (!penalties.isEmpty())
-                score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
+        List<Penalty> penalties = penaltyRepository.findByStageIdAndTeamId(stageScore.getStageId(), stageScore.getTeamId());
+        if (!penalties.isEmpty())
+            score = score + penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
 
-            return Math.round(score*100.0)/100.0;
+        return Math.round(score * 100.0) / 100.0;
     }
 }

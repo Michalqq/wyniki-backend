@@ -35,8 +35,8 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
-    @Service
-    @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class EventService {
 
     private static final String GENERAL = "GENERALNA";
@@ -88,14 +88,14 @@ public class EventService {
     public List<EventTeamDto> getBasicTeams(Long eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-       return eventOptional.get().getEventTeams().stream()
-               .sorted(Comparator.comparingInt(x -> x.getOrder()))
-               .map(x-> {
-                   EventTeamDto et = modelMapper.map(x, EventTeamDto.class);
-                    et.setEntryFeeFileExist(x.getEntryFeeFile()!=null);
+        return eventOptional.get().getEventTeams().stream()
+                .sorted(Comparator.comparingInt(x -> x.getOrder()))
+                .map(x -> {
+                    EventTeamDto et = modelMapper.map(x, EventTeamDto.class);
+                    et.setEntryFeeFileExist(x.getEntryFeeFile() != null);
                     return et;
-               })
-               .collect(Collectors.toList());
+                })
+                .collect(Collectors.toList());
     }
 
     public List<PsOption> getPsOptions(Long eventId) {
@@ -186,7 +186,7 @@ public class EventService {
         if (Boolean.TRUE.equals(event.getFwdClassification()))
             classesOptions.add(new ClassesOption(DriveType.FWD.getName(), DriveType.FWD.getName(), false));
 
-        if (classesOptions.stream().anyMatch(x->x.getLabel().equals(GUEST)))
+        if (classesOptions.stream().anyMatch(x -> x.getLabel().equals(GUEST)))
             classesOptions.add(new ClassesOption(GENERAL + "+" + GUEST, "ALL", false));
 
         return classesOptions;
@@ -330,6 +330,8 @@ public class EventService {
     }
 
     public Boolean deleteEvent(Long eventId) {
+        Event event = eventRepository.getById(eventId);
+        penaltyRepository.deleteByStageIdIn(event.getStages().stream().map(Stage::getStageId).collect(Collectors.toList()));
         eventRepository.deleteById(eventId);
         return true;
     }
@@ -536,7 +538,7 @@ public class EventService {
                 .filter(x -> !Boolean.FALSE.equals(x.getTeamChecked()) && !Boolean.FALSE.equals(x.getBkPositive()))
                 .filter(x -> !disqualifiedTeamIds.contains(x.getTeamId())).collect(Collectors.toList());
 
-        byte[] file = finalListCreatorService.createFinalListFile(event, stage, eventTeams, pkc,  startTime, frequency);
+        byte[] file = finalListCreatorService.createFinalListFile(event, stage, eventTeams, pkc, startTime, frequency);
         statementService.addFinalList(auth, file, event, stage);
 
         return true;
