@@ -1,10 +1,6 @@
 package com.akbp.racescore.controller;
 
-import com.akbp.racescore.model.dto.EventDTO;
-import com.akbp.racescore.model.dto.EventTeamDto;
-import com.akbp.racescore.model.dto.EventWithLogoDTO;
-import com.akbp.racescore.model.dto.FileDto;
-import com.akbp.racescore.model.dto.StgesAndClassesDTO;
+import com.akbp.racescore.model.dto.*;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -15,6 +11,7 @@ import com.akbp.racescore.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -322,6 +319,7 @@ public class EventController {
     }
 
     @GetMapping("/getLogoPath")
+    @Cacheable(value = "logoPaths")
     public FileDto getLogoPath(@RequestParam("eventId") Long eventId) {
         try {
             return eventService.getLogoPath(eventId);

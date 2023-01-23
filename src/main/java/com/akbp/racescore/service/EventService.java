@@ -1,10 +1,6 @@
 package com.akbp.racescore.service;
 
-import com.akbp.racescore.model.dto.EventDTO;
-import com.akbp.racescore.model.dto.EventTeamDto;
-import com.akbp.racescore.model.dto.EventWithLogoDTO;
-import com.akbp.racescore.model.dto.FileDto;
-import com.akbp.racescore.model.dto.PenaltyDTO;
+import com.akbp.racescore.model.dto.*;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -20,6 +16,7 @@ import com.akbp.racescore.service.fileGenerator.FinalListCreatorService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +29,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
