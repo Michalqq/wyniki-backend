@@ -11,6 +11,7 @@ import com.akbp.racescore.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -183,6 +184,7 @@ public class EventController {
     }
 
     @PostMapping("addLogoFile")
+    @CachePut(cacheNames="logoPaths", key="#eventId")
     public boolean addLogoFile(@RequestBody MultipartFile file,
                                @RequestParam("eventId") Long eventId) {
         try {
@@ -319,7 +321,7 @@ public class EventController {
     }
 
     @GetMapping("/getLogoPath")
-    @Cacheable(value = "logoPaths")
+    @Cacheable(value = "logoPaths", key="#eventId")
     public FileDto getLogoPath(@RequestParam("eventId") Long eventId) {
         try {
             return eventService.getLogoPath(eventId);
