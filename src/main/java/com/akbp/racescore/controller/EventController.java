@@ -184,7 +184,7 @@ public class EventController {
     }
 
     @PostMapping("addLogoFile")
-    @CachePut(cacheNames="logoPaths")
+//    @CachePut(cacheNames="logoPaths")
     public boolean addLogoFile(@RequestBody MultipartFile file,
                                @RequestParam("eventId") Long eventId) {
         try {
@@ -321,7 +321,7 @@ public class EventController {
     }
 
     @GetMapping("/getLogoPath")
-    @Cacheable(value = "logoPaths")
+//    @Cacheable(value = "logoPaths")
     public FileDto getLogoPath(@RequestParam("eventId") Long eventId) {
         try {
             return eventService.getLogoPath(eventId);
