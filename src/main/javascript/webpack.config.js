@@ -4,6 +4,9 @@ const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const path = require("path");
 
 module.exports = {
+  output: {
+    clean: true,
+  },
   devtool: "source-map",
   module: {
     rules: [
