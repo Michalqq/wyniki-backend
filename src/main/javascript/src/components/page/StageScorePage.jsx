@@ -246,8 +246,6 @@ const StageScorePage = (props) => {
   );
 
   const handleMarked = (number) => {
-    console.log(number);
-
     if (!markedNumbers.includes(number)) markedNumbers.push(number);
     else markedNumbers.splice(markedNumbers.indexOf(number), 1);
 
