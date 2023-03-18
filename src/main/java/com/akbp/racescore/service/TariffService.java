@@ -7,7 +7,10 @@ import com.akbp.racescore.model.repository.StageScoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,17 +58,16 @@ public class TariffService {
         }
     }
 
-    private HashMap<CarClass, Long> getTariffByClass( Stage stage, List<EventClasses> eventClasses) {
+    private HashMap<CarClass, Long> getTariffByClass(Stage stage, List<EventClasses> eventClasses) {
         HashMap<CarClass, Long> scoresByClass = new HashMap<>();
 
-        List<StageScoreSumDTO> stageScores = stageScoreRepository.findScoresInStage(stage.getStageId());
+        List<StageScoreSumDTO> stageScores = stageScoreRepository.findScoresInStage(stage.getStageId()).stream().filter(x->x.getTariff()==null).collect(Collectors.toList());
 
         for (EventClasses eventClass : eventClasses.stream().sorted(Comparator.comparingDouble(EventClasses::getMaxEngineCapacity)).collect(Collectors.toList())) {
-            List<StageScoreSumDTO> stageScores2 = stageScores.stream().filter(x->x.getCarClass().equals(eventClass.getCarClass().getName())).collect(Collectors.toList());
-            Long minScore = stageScores2.stream().mapToLong(x -> (x.getSumScore() + x.getPenalty()*1000)).min().orElse(0L);
+            List<StageScoreSumDTO> stageScores2 = stageScores.stream().filter(x -> x.getCarClass().equals(eventClass.getCarClass().getName())).collect(Collectors.toList());
+            Long minScore = stageScores2.stream().mapToLong(x -> (x.getSumScore() + x.getPenalty() * 1000)).min().orElse(0L);
             scoresByClass.put(eventClass.getCarClass(), (long) (minScore * 1.5));
         }
-
 //        updateIfSlowerThanTariff(stageScores, scoresByClass, stage);
 
         return scoresByClass;
@@ -73,15 +75,15 @@ public class TariffService {
 
     private void updateIfSlowerThanTariff(List<StageScoreSumDTO> stageScores, HashMap<CarClass, Long> scoresByClass, Stage stage) {
         for (CarClass carClass : scoresByClass.keySet()) {
-            if (scoresByClass.get(carClass)==0) continue;
+            if (scoresByClass.get(carClass) == 0) continue;
 
             List<StageScoreSumDTO> toHighScores = stageScores.stream()
-                    .filter(x->x.getCarClass().equals(carClass.getName()))
-                    .filter(x->(x.getSumScore()) > scoresByClass.get(carClass))
+                    .filter(x -> x.getCarClass().equals(carClass.getName()))
+                    .filter(x -> (x.getSumScore()) > scoresByClass.get(carClass))
                     .collect(Collectors.toList());
-            for (StageScoreSumDTO highScore : toHighScores){
-                stageScoreRepository.findByStageIdAndTeamNumber(stage.getStageId(),  highScore.getNumber())
-                        .stream().peek(x->x.setScore(scoresByClass.get(carClass))).forEach(stageScoreRepository::save);
+            for (StageScoreSumDTO highScore : toHighScores) {
+                stageScoreRepository.findByStageIdAndTeamNumber(stage.getStageId(), highScore.getNumber())
+                        .stream().peek(x -> x.setScore(scoresByClass.get(carClass))).forEach(stageScoreRepository::save);
             }
         }
     }

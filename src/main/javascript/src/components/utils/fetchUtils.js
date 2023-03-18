@@ -56,6 +56,13 @@ export const fetchGetScores = (stageId, handleResponse) => {
   );
 };
 
+export const fetchGetCompareScores = (eventId, numbers, handleResponse) => {
+  fetchGet(
+    `${backendUrl()}/score/getCompareScores?eventId=${eventId}&numbers=${numbers}`,
+    handleResponse
+  );
+};
+
 export const fetchTeamChecked = (eventId, teamId, checked, handleResponse) => {
   fetchPost(
     `${backendUrl()}/event/teamChecked?eventId=${eventId}&teamId=${teamId}&checked=${checked}`,

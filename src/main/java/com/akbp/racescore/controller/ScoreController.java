@@ -2,6 +2,7 @@ package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.ScoreDTO;
 import com.akbp.racescore.model.dto.StageScoreDTO;
+import com.akbp.racescore.model.entity.StageScore;
 import com.akbp.racescore.service.ScoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,5 +70,10 @@ public class ScoreController {
     @GetMapping("getStagesSumScores")
     public List<StageScoreDTO> getStagesSumScores(@RequestParam("eventId") Long eventId, @RequestParam("stageId") Long stageId) {
         return scoreService.getStagesSumScores(eventId, stageId);
+    }
+
+    @GetMapping("getCompareScores")
+    public List<StageScore> getCompareScores(@RequestParam("eventId") Long eventId, @RequestParam("numbers") List<Long> numbers) {
+        return scoreService.getCompareScores(eventId, numbers);
     }
 }

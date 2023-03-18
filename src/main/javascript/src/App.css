@@ -14,6 +14,72 @@ body {
   /* background-attachment: fixed; */
 }
 
+/* small device */
+@media (max-width: 767px) {
+  .device-big {
+    display: none !important;
+  }
+  .tab-pane {
+    width: auto;
+  }
+  .my-pe-1 {
+    padding-right: 0px !important;
+  }
+  .my-ps-1 {
+    padding-left: 0px !important;
+  }
+  .my-px-3 {
+    padding-left: 0rem !important;
+    padding-right: 0rem !important;
+  }
+}
+/* big device */
+@media only screen and (min-width: 768px) {
+  .device-big,
+  .tab-content > .tab-pane {
+    display: block !important;
+  }
+  .device-small {
+    display: none !important;
+  }
+  .tab-content > .tab-pane {
+    display: block !important;
+  }
+  .tab-content {
+    display: flex !important;
+  }
+  .tab-pane {
+    width: inherit;
+  }
+  .my-pe-1 {
+    padding-right: 0.25rem !important;
+  }
+  .my-ps-1 {
+    padding-left: 0.25rem !important;
+  }
+  .my-px-3 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+.tab-content {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.nav-tabs .nav-item .nav-link {
+  background-color: #4e634c;
+  color: #fff;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #004603;
+  border-color: #004603;
+}
+
 @media all and (min-width: 0) and (max-width: 567px) {
   body {
     background-size: cover;
@@ -64,6 +130,10 @@ body {
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2) !important;
   border-radius: 5px;
   margin-left: 5px;
+}
+
+.bg-light-gray {
+  background-color: #ebebeb;
 }
 
 .logLevelLabel.undefined {
@@ -329,6 +399,7 @@ body {
 
 .card-body {
   background-color: #ffffffe2 !important;
+  padding: 0.6rem 0.6rem !important;
 }
 
 .opacity-95 {

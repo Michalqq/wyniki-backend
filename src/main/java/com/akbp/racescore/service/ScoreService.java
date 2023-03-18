@@ -129,4 +129,8 @@ public class ScoreService {
         for (Stage stage : event.getStages())
             tariffService.calculateStageTariffes(event, stage);
     }
+
+    public List<StageScore> getCompareScores(Long eventId, List<Long> numbers) {
+        return stageScoreRepository.findAllByEventIdAndTeamNumbers(eventId, numbers);
+    }
 }

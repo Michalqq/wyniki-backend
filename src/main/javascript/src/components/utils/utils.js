@@ -137,8 +137,8 @@ export const calcTimeTo = (tempScores) => {
       let timeTo = element.totalTimeWithPenalty - score.totalTimeWithPenalty;
       let timeToFirst =
         element.totalTimeWithPenalty - firstScore.totalTimeWithPenalty;
-      element.timeTo = timeToString(timeTo);
-      element.timeToFirst = timeToString(timeToFirst);
+      element.timeTo = "+" + timeToString(timeTo);
+      element.timeToFirst = "+" + timeToString(timeToFirst);
     } else {
       element.timeTo = "";
       element.timeToFirst = "";
@@ -157,7 +157,6 @@ export const timeToString = (time) => {
 
   let milis = Math.floor((time - minutes * 60000 - seconds * 1000) / 10);
   return (
-    "+" +
     (minutes > 0 ? `${minutes}:` : "") +
     `${padTo2Digits(seconds)}.${padTo2Digits(milis)}`
   );

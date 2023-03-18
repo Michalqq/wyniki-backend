@@ -17,9 +17,15 @@ import { NrBadge } from "../common/NrBadge";
 import Button from "react-bootstrap/Button";
 import { download } from "../utils/fileUtils";
 import { MyButton } from "../common/Button";
-import { calcTimeTo, timeToString } from "../utils/utils";
+import { calcTimeTo } from "../utils/utils";
+import Tabs from "react-bootstrap/Tabs";
+import Tab from "react-bootstrap/Tab";
+import { CompareScoresModal } from "../scores/CompareScoresModal";
 
 const StageScorePage = (props) => {
+  const [activeTab, setActiveTab] = useState(1);
+  const [markedNumbers, setMarkedNumbers] = useState([]);
+  const [showCompareScoresModal, setShowCompareScoresModal] = useState(false);
   const location = useLocation();
   const eventRedirect = useLocation().search;
   const index = eventRedirect.includes("&")
@@ -175,7 +181,13 @@ const StageScorePage = (props) => {
         accessor: (cellInfo) => cellInfo.number,
         disableFilters: true,
         disableSortBy: true,
-        Cell: (row) => <NrBadge value={row.value}></NrBadge>,
+        Cell: (row) => (
+          <NrBadge
+            value={row.value}
+            isBold={markedNumbers.includes(row.value)}
+            onClick={() => handleMarked(row.value)}
+          ></NrBadge>
+        ),
       },
       {
         width: "30%",
@@ -232,6 +244,19 @@ const StageScorePage = (props) => {
     ],
     []
   );
+
+  const handleMarked = (number) => {
+    console.log(number);
+
+    if (!markedNumbers.includes(number)) markedNumbers.push(number);
+    else markedNumbers.splice(markedNumbers.indexOf(number), 1);
+
+    setMarkedNumbers(Array.from(markedNumbers));
+  };
+
+  const highlightRow = (row) => {
+    if (markedNumbers.includes(row.values.nr)) return "yellow";
+  };
 
   return (
     <>
@@ -327,47 +352,61 @@ const StageScorePage = (props) => {
             >
               Odśwież
             </Button>
+            <Button
+              className={"m-1"}
+              variant="success"
+              onClick={() => setShowCompareScoresModal(true)}
+            >
+              Porównaj wyniki
+            </Button>
           </div>
         </div>
       </div>
-      <div className="row pt-2 mx-0 card-body">
-        <div className="col-xl-6 px-0 pe-1">
-          <div className="shadow bg-body rounded">
-            <div
-              className="fw-bold alert alert-secondary p-1 m-0 "
-              role="alert"
-            >
-              {`Czas NA odcinku - ${stageName}`}
+      <div className="row pt-0 mx-0 card-body">
+        <div
+          className="fw-bold alert alert-secondary p-1 mb-2"
+          role="alert"
+        >{`${stageName}`}</div>
+        <Tabs
+          activeKey={activeTab}
+          onSelect={(key) => setActiveTab(key)}
+          className="mb-1 fw-bold text-dark device-small"
+        >
+          <Tab eventKey={1} title="Czas NA" className="alert-secondary">
+            <div className="my-pe-1">
+              <div className="shadow bg-body rounded">
+                <ResultTable
+                  columns={columns}
+                  data={scoresByClass}
+                  pageCount={3}
+                  isLoading={loading}
+                  isFooter={false}
+                  isHeader={true}
+                  cursor={"pointer"}
+                  manualPagination={true}
+                  highlightRow={(row) => highlightRow(row)}
+                />
+              </div>
             </div>
-            <ResultTable
-              columns={columns}
-              data={scoresByClass}
-              pageCount={3}
-              isLoading={loading}
-              isFooter={false}
-              isHeader={true}
-              cursor={"pointer"}
-              manualPagination={true}
-            />
-          </div>
-        </div>
-        <div className="col-xl-6 px-0 ps-1">
-          <div className="shadow bg-body rounded">
-            <div className="fw-bold alert alert-secondary p-1 m-0" role="alert">
-              {`Suma czasów PO odcinku - ${stageName}`}
+          </Tab>
+          <Tab eventKey={2} title="Suma PO">
+            <div className="my-ps-1">
+              <div className="shadow bg-body rounded">
+                <ResultTable
+                  columns={columns}
+                  data={summedScoresByClass}
+                  pageCount={3}
+                  isLoading={loading}
+                  isFooter={false}
+                  isHeader={true}
+                  cursor={"pointer"}
+                  manualPagination={true}
+                  highlightRow={(row) => highlightRow(row)}
+                />
+              </div>
             </div>
-            <ResultTable
-              columns={columns}
-              data={summedScoresByClass}
-              pageCount={3}
-              isLoading={loading}
-              isFooter={false}
-              isHeader={true}
-              cursor={"pointer"}
-              manualPagination={true}
-            />
-          </div>
-        </div>
+          </Tab>
+        </Tabs>
         <div className="col-xl-12 px-1">
           <div className="shadow bg-body rounded mt-4 p-0">
             <div className="fw-bold alert alert-secondary p-1 m-0" role="alert">
@@ -391,6 +430,14 @@ const StageScorePage = (props) => {
           </div>
         </div>
       </div>
+      {showCompareScoresModal && (
+        <CompareScoresModal
+          show={true}
+          handleClose={() => setShowCompareScoresModal()}
+          eventId={eventId}
+          markedNumbers={markedNumbers}
+        />
+      )}
     </>
   );
 };

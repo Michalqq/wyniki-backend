@@ -70,6 +70,7 @@ export const Selector = (props) => {
           isSearchable={props.searchable || false}
           menuPlacement={"auto"}
           menuPosition={"fixed"}
+          maxMenuHeight={1000}
         />
       </div>
     </>
