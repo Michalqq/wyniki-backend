@@ -129,6 +129,7 @@ export const closeOnBack = (closeHandler) => {
 
 export const calcTimeTo = (tempScores) => {
   if (tempScores.length === 0) return [];
+  tempScores = JSON.parse(JSON.stringify(tempScores));
 
   let score;
   let firstScore = tempScores[0];

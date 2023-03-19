@@ -21,6 +21,10 @@ import { calcTimeTo } from "../utils/utils";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import { CompareScoresModal } from "../scores/CompareScoresModal";
+import {
+  useGetScoresQuery,
+  useGetSummedScoresQuery,
+} from "../../service/rtk-fetch-api";
 
 const StageScorePage = (props) => {
   const [activeTab, setActiveTab] = useState(1);
@@ -44,11 +48,11 @@ const StageScorePage = (props) => {
 
   const [event, setEvent] = useState();
 
-  const [scores, setScores] = useState([]);
+  // const [scores, setScores] = useState([]);
   const [scoresByClass, setScoresByClass] = useState([]);
   const [referee, setReferee] = useState(false);
 
-  const [summedScores, setSummedScores] = useState([]);
+  // const [summedScores, setSummedScores] = useState([]);
   const [summedScoresByClass, setSummedScoresByClass] = useState([]);
 
   const [psOptions, setPsOptions] = useState([]);
@@ -62,30 +66,42 @@ const StageScorePage = (props) => {
   const [loading, setLoading] = useState(true);
   const [loadingScoreFile, setLoadingScoreFile] = useState(false);
 
+  const { data: scores = [], isFetching } = useGetScoresQuery(stage, {
+    skip: stage === undefined,
+  });
+
+  const { data: summedScores = [], isFetching: summedScoresFetching } =
+    useGetSummedScoresQuery(
+      { eventId: eventId, stageId: stage },
+      {
+        skip: stage === undefined && eventId === undefined,
+      }
+    );
+
   const fetchScores = () => {
-    fetchGetScores(stage, (data) => {
-      setScores(data);
-      setLoading(false);
-    });
+    // fetchGetScores(stage, (data) => {
+    //   // setScores(data);
+    //   setLoading(false);
+    // });
   };
 
-  const fetchScoresAndUpdate = () => {
-    fetchGetScores(stage, (data) => {
-      setScores(data);
-      fetchSummedScores();
-    });
-  };
+  // const fetchScoresAndUpdate = () => {
+  //   fetchGetScores(stage, (data) => {
+  //     // setScores(data);
+  //     fetchSummedScores();
+  //   });
+  // };
 
-  const fetchSummedScores = () => {
-    axios
-      .get(
-        `${backendUrl()}/score/getStagesSumScores?eventId=${eventId}&stageId=${stage}`
-      )
-      .then((res) => {
-        setSummedScores(res.data);
-        setLoading(false);
-      });
-  };
+  // const fetchSummedScores = () => {
+  //   axios
+  //     .get(
+  //       `${backendUrl()}/score/getStagesSumScores?eventId=${eventId}&stageId=${stage}`
+  //     )
+  //     .then((res) => {
+  //       setSummedScores(res.data);
+  //       setLoading(false);
+  //     });
+  // };
 
   const fetchPsOptionsFnc = () => {
     fetchPsOptions(eventId, (data) => {
@@ -106,10 +122,10 @@ const StageScorePage = (props) => {
       });
   };
   const fetchData = () => {
-    setLoading(true);
+    // setLoading(true);
     if (stage !== undefined) {
       fetchScores();
-      fetchSummedScores();
+      // fetchSummedScores();
       fetchEvent();
     }
   };
@@ -138,7 +154,9 @@ const StageScorePage = (props) => {
   }, []);
 
   useEffect(() => {
-    let tempScores =
+    if (isFetching || scores.length === 0) return;
+
+    const tempScores =
       currentClass === `${GENERAL}+${GUEST}`
         ? scores
         : currentClass === GENERAL
@@ -151,6 +169,8 @@ const StageScorePage = (props) => {
   }, [scores, currentClass]);
 
   useEffect(() => {
+    if (summedScoresFetching || summedScores.length === 0) return;
+
     let tempScores =
       currentClass === `${GENERAL}+${GUEST}`
         ? summedScores
@@ -377,7 +397,7 @@ const StageScorePage = (props) => {
                   columns={columns}
                   data={scoresByClass}
                   pageCount={3}
-                  isLoading={loading}
+                  isLoading={isFetching}
                   isFooter={false}
                   isHeader={true}
                   cursor={"pointer"}
@@ -394,7 +414,7 @@ const StageScorePage = (props) => {
                   columns={columns}
                   data={summedScoresByClass}
                   pageCount={3}
-                  isLoading={loading}
+                  isLoading={summedScoresFetching}
                   isFooter={false}
                   isHeader={true}
                   cursor={"pointer"}

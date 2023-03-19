@@ -4,12 +4,9 @@ import Button from "react-bootstrap/Button";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faEdit } from "@fortawesome/free-solid-svg-icons";
-import {
-  fetchDriverCount,
-  fetchLogo,
-  fetchStatementsCount,
-} from "../utils/fetchUtils";
+import { fetchDriverCount, fetchStatementsCount } from "../utils/fetchUtils";
 import { Count } from "./Count";
+import { useGetLogoPathByEventIdQuery } from "../../service/rtk-fetch-api";
 
 export const EventCard = ({
   event,
@@ -24,7 +21,9 @@ export const EventCard = ({
     new Date().getTime() > new Date(event.signDeadline).getTime();
   const [statementCount, setStatementCount] = useState(0);
   const [driverCount, setDriverCount] = useState(0);
-  const [logoDto, setLogoDto] = useState({});
+  const { data: logoDto } = useGetLogoPathByEventIdQuery(event.eventId, {
+    skip: event === undefined,
+  });
 
   const signDeadlineCount = moment(event?.signDeadline)
     .startOf("day")
@@ -46,18 +45,18 @@ export const EventCard = ({
     if (event) {
       fetchStatementsCount(event.eventId, (data) => setStatementCount(data));
       fetchDriverCount(event.eventId, (data) => setDriverCount(data));
-      fetchLogo(event.eventId, (data) => setLogoDto(data));
+      // fetchLogo(event.eventId, (data) => setLogoDto(data));
     }
   }, []);
 
-  useEffect(() => {
-    if (logoDto.file === undefined) {
-      setTimeout(
-        () => fetchLogo(event.eventId, (data) => setLogoDto(data)),
-        3000
-      );
-    }
-  }, [logoDto]);
+  // useEffect(() => {
+  //   if (logoDto.file === undefined) {
+  //     setTimeout(
+  //       () => fetchLogo(event.eventId, (data) => setLogoDto(data)),
+  //       3000
+  //     );
+  //   }
+  // }, [logoDto]);
 
   return (
     <div className="col-lg-6 py-1 px-1 no-opacity-hover opacity-90a">

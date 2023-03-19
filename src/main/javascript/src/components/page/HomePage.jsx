@@ -13,19 +13,21 @@ import authHeader from "../../service/auth-header";
 import { AdminTeamList } from "../team/AdminTeamList";
 import Spinner from "react-bootstrap/Spinner";
 import { StatementModal } from "../statement/StatementModal";
+import { useGetAllBeforeQuery } from "../../service/rtk-fetch-api";
 
 const HomePage = (props) => {
   const [futureEvents, setFutureEvents] = useState([]);
-  const [archiveEvents, setArchiveEvents] = useState([]);
   const [createEvent, setCreateEvent] = useState();
   const [eventToTeamList, setEventToTeamList] = useState();
   const [eventToTeamPanel, setEventToTeamPanel] = useState();
   const [loadingFuture, setLoadingFuture] = useState(true);
-  const [loadingBefore, setLoadingBefore] = useState(true);
   const [mainAdmin, setMainAdmin] = useState(false);
   const [redirected, setRedirected] = useState(false);
   const [showStatement, setShowStatement] = useState();
   const [referee, setReferee] = useState(false);
+
+  const { data: archiveEvents = [], isFetching: fetchingBefore } =
+    useGetAllBeforeQuery();
 
   let eventRedirect = useLocation().search;
 
@@ -33,7 +35,6 @@ const HomePage = (props) => {
 
   const fetchEvents = () => {
     fetchFuture();
-    if (archiveEvents.length === 0) fetchArchive();
   };
 
   const fetchFuture = () => {
@@ -64,18 +65,18 @@ const HomePage = (props) => {
       });
   };
 
-  const fetchArchive = () => {
-    setLoadingBefore(true);
+  // const fetchArchive = () => {
+  //   setLoadingBefore(true);
 
-    axios
-      .get(`${backendUrl()}/event/getAllBefore`, {
-        headers: authHeader(),
-      })
-      .then((res) => {
-        setArchiveEvents(res.data.sort((x, y) => (x.date > y.date ? -1 : 1)));
-        setLoadingBefore(false);
-      });
-  };
+  //   axios
+  //     .get(`${backendUrl()}/event/getAllBefore`, {
+  //       headers: authHeader(),
+  //     })
+  //     .then((res) => {
+  //       setArchiveEvents(res.data.sort((x, y) => (x.date > y.date ? -1 : 1)));
+  //       setLoadingBefore(false);
+  //     });
+  // };
 
   const fetchMainAdmin = () => {
     if (sessionStorage.getItem("username") !== null)
@@ -149,7 +150,7 @@ const HomePage = (props) => {
       </Card>
 
       <div className="row mx-0 justify-content-center card-body">
-        {loadingBefore && archiveEvents.length === 0 && (
+        {fetchingBefore && archiveEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />
           </div>

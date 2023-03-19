@@ -132,7 +132,7 @@ public class EventService {
         Instant today = Instant.now();
         today = today.atZone(ZoneOffset.UTC).withHour(0).withMinute(0).withSecond(1).toInstant();
 
-        return prepareEvents(eventRepository.findAllByDateLessThan(today), auth);
+        return prepareEvents(eventRepository.findAllByDateLessThan(today), auth).stream().sorted(Comparator.comparing(EventDTO::getDate).reversed()).collect(Collectors.toList());
     }
 
     public List<EventDTO> getAllFuture(Authentication auth) {
