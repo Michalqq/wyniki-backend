@@ -36,7 +36,6 @@ export const CompareScoresModal = ({
       fetchTeams();
       fetchGetCompareScores(eventId, markedNumbers, (data) => {
         setScores(data);
-        setLoading(false);
       });
     }
   }, [show]);
@@ -49,6 +48,12 @@ export const CompareScoresModal = ({
         setTeams(res.data);
       });
   };
+
+  useEffect(() => {
+    if (teams.length > 0 && scores.length > 0) {
+      setLoading(false);
+    }
+  }, [teams, scores]);
 
   return (
     <>
