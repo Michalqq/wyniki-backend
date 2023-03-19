@@ -66,17 +66,24 @@ const StageScorePage = (props) => {
   const [loading, setLoading] = useState(true);
   const [loadingScoreFile, setLoadingScoreFile] = useState(false);
 
-  const { data: scores = [], isFetching } = useGetScoresQuery(stage, {
+  const {
+    data: scores = [],
+    isFetching,
+    refetch: scoresRefetch,
+  } = useGetScoresQuery(stage, {
     skip: stage === undefined,
   });
 
-  const { data: summedScores = [], isFetching: summedScoresFetching } =
-    useGetSummedScoresQuery(
-      { eventId: eventId, stageId: stage },
-      {
-        skip: stage === undefined && eventId === undefined,
-      }
-    );
+  const {
+    data: summedScores = [],
+    isFetching: summedScoresFetching,
+    refetch: summedScoreRefetch,
+  } = useGetSummedScoresQuery(
+    { eventId: eventId, stageId: stage },
+    {
+      skip: stage === undefined && eventId === undefined,
+    }
+  );
 
   const fetchScores = () => {
     // fetchGetScores(stage, (data) => {
@@ -366,7 +373,10 @@ const StageScorePage = (props) => {
             <Button
               className={"m-1"}
               variant="primary"
-              onClick={() => fetchData()}
+              onClick={() => {
+                summedScoreRefetch();
+                scoresRefetch();
+              }}
             >
               Odśwież
             </Button>
