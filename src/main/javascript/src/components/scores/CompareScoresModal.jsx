@@ -4,15 +4,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
-import {
-  backendUrl,
-  checkReferee,
-  fetchGetCompareScores,
-  fetchStatement,
-} from "../utils/fetchUtils";
-import moment from "moment";
-import { download, openFile } from "../utils/fileUtils";
-import authHeader from "../../service/auth-header";
+import { backendUrl, fetchGetCompareScores } from "../utils/fetchUtils";
 import { Spinner } from "react-bootstrap";
 import { closeOnBack, timeToString } from "../utils/utils";
 import { CarDiv, ScoreDivPenalty, TeamDiv } from "../common/Div";
