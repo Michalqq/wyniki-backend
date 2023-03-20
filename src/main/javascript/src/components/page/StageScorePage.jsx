@@ -138,12 +138,16 @@ const StageScorePage = (props) => {
   };
 
   const getScoresFile = () => {
-    setLoadingScoreFile(true);
-    download(
+    // setLoadingScoreFile(true);
+    window.open(
       `${backendUrl()}/file/getScoresFile?eventId=${eventId}`,
-      "wyniki_" + event.name + ".xlsx",
-      () => setLoadingScoreFile(false)
+      "_blank"
     );
+    // download(
+    //   `${backendUrl()}/file/getScoresFile?eventId=${eventId}`,
+    //   "wyniki_" + event.name + ".xlsx",
+    //   () => setLoadingScoreFile(false)
+    // );
   };
 
   useEffect(() => {
