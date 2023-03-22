@@ -250,7 +250,7 @@ const StageScorePage = (props) => {
   };
 
   const highlightRow = (row) => {
-    if (markedNumbers.includes(row.values.nr)) return "yellow";
+    if (markedNumbers.includes(row.values.nr)) return "#c9e9a7";
   };
 
   return (

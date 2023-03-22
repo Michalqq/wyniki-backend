@@ -75,15 +75,22 @@ export const CompareScoresModal = ({
               <div className="row pt-0 my-px-3 bg-light">
                 {markedNumbers.map((number) => {
                   const eventTeam = teams.find((x) => x.number === number);
-                  const team = eventTeam?.team;
                   return (
                     <div className="col p-1 ps-4" style={{ scale: "1.1" }}>
-                      {team && (
+                      {eventTeam && (
                         <div className="d-flex">
                           <div className="align-self-center pe-2">
                             <NrBadge value={number}></NrBadge>
                           </div>
-                          <TeamDiv team={team}></TeamDiv>
+                          <TeamDiv
+                            team={{
+                              driver: eventTeam.driver,
+                              coDriver: eventTeam.coDriver,
+                              club: eventTeam.club,
+                              coClub: eventTeam.coClub,
+                              teamName: eventTeam.teamName,
+                            }}
+                          ></TeamDiv>
                         </div>
                       )}
                     </div>
@@ -96,11 +103,10 @@ export const CompareScoresModal = ({
               >
                 {markedNumbers.map((number) => {
                   const eventTeam = teams.find((x) => x.number === number);
-                  const team = eventTeam?.team;
                   const car = eventTeam?.car;
                   return (
                     <div className="col p-3 ps-4" style={{ scale: "1.1" }}>
-                      {team && (
+                      {eventTeam && (
                         <CarDiv
                           line1={(car?.brand || "") + " " + (car?.model || "")}
                           line2={eventTeam.carClass.name}
