@@ -1,8 +1,8 @@
 export const getCarLogo = (carBrand, height) => {
   let brand = carBrand?.toLowerCase().replace(/ /g, "");
+  if (brand === undefined) return;
 
   if (brand === "vw") brand = "volkswagen";
-
   const path = `https://vehapi.com/img/car-logos/${brand}.png`;
 
   return (

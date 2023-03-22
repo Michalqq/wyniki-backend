@@ -46,7 +46,7 @@ public class StatementService {
                 .collect(Collectors.toList());
     }
 
-    public Long addStatement(Authentication auth, Statement statement) throws IOException {
+    public Long addStatement(Authentication auth, Statement statement) {
         User user = userRepository.findByUsername(auth.getName());
         if (user != null)
             statement.setUserMod(user.getUserId());

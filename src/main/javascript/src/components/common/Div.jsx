@@ -1,3 +1,5 @@
+import { getCarLogo } from "../utils/car";
+
 export const TeamDiv = ({ team }) => {
   const getWithBracketIfNotEmpty = (value) => {
     if (value !== undefined && value !== null && value !== "")
@@ -29,22 +31,11 @@ export const TeamDiv = ({ team }) => {
   );
 };
 export const CarDiv = ({ line1, line2, carBrand, driveType }) => {
-  let brand = carBrand?.toLowerCase().replace(/ /g, "");
-
-  if (brand === "vw") brand = "volkswagen";
-
-  const path = `https://vehapi.com/img/car-logos/${brand}.png`;
+  const carImg = carBrand ? getCarLogo(carBrand, 23) : <></>;
 
   return (
     <div className="col-12 d-flex">
-      <div className="col-xl-3 col-4 py-2 align-self-center">
-        <img
-          className="img-fluid"
-          style={{ height: "23px" }}
-          src={path}
-          alt=""
-        ></img>
-      </div>
+      <div className="col-xl-3 col-4 py-2 align-self-center">{carImg}</div>
       <div className="col-xl-9 col-7">
         <h6 className="font13 fw-bolder m-0">{line1}</h6>
         {driveType && <p className="font12 m-0 p-0">{driveType}</p>}

@@ -5,17 +5,11 @@ import ResultTable from "../common/table/ResultTable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ScoreDiv, ScoreDivPenalty, TeamDiv, CarDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
-import {
-  backendUrl,
-  checkReferee,
-  fetchGetScores,
-  fetchPsOptions,
-} from "../utils/fetchUtils";
+import { backendUrl, checkReferee, fetchPsOptions } from "../utils/fetchUtils";
 import PenaltyTable from "../tables/PenaltyTable";
 import DisqualificationTable from "../tables/DisqualificationTable";
 import { NrBadge } from "../common/NrBadge";
 import Button from "react-bootstrap/Button";
-import { download } from "../utils/fileUtils";
 import { MyButton } from "../common/Button";
 import { calcTimeTo } from "../utils/utils";
 import Tabs from "react-bootstrap/Tabs";
@@ -81,34 +75,9 @@ const StageScorePage = (props) => {
   } = useGetSummedScoresQuery(
     { eventId: eventId, stageId: stage },
     {
-      skip: stage === undefined && eventId === undefined,
+      skip: stage === undefined || eventId === undefined,
     }
   );
-
-  const fetchScores = () => {
-    // fetchGetScores(stage, (data) => {
-    //   // setScores(data);
-    //   setLoading(false);
-    // });
-  };
-
-  // const fetchScoresAndUpdate = () => {
-  //   fetchGetScores(stage, (data) => {
-  //     // setScores(data);
-  //     fetchSummedScores();
-  //   });
-  // };
-
-  // const fetchSummedScores = () => {
-  //   axios
-  //     .get(
-  //       `${backendUrl()}/score/getStagesSumScores?eventId=${eventId}&stageId=${stage}`
-  //     )
-  //     .then((res) => {
-  //       setSummedScores(res.data);
-  //       setLoading(false);
-  //     });
-  // };
 
   const fetchPsOptionsFnc = () => {
     fetchPsOptions(eventId, (data) => {
@@ -129,10 +98,7 @@ const StageScorePage = (props) => {
       });
   };
   const fetchData = () => {
-    // setLoading(true);
     if (stage !== undefined) {
-      fetchScores();
-      // fetchSummedScores();
       fetchEvent();
     }
   };
@@ -404,7 +370,7 @@ const StageScorePage = (props) => {
           onSelect={(key) => setActiveTab(key)}
           className="mb-1 fw-bold text-dark device-small"
         >
-          <Tab eventKey={1} title="Czas NA" className="alert-secondary">
+          <Tab eventKey={1} title="Czas NA" className="custom-tab">
             <div className="my-pe-1">
               <div className="shadow bg-body rounded">
                 <ResultTable
@@ -421,7 +387,7 @@ const StageScorePage = (props) => {
               </div>
             </div>
           </Tab>
-          <Tab eventKey={2} title="Suma PO">
+          <Tab eventKey={2} title="Suma PO" className="custom-tab">
             <div className="my-ps-1">
               <div className="shadow bg-body rounded">
                 <ResultTable

@@ -10,7 +10,6 @@ import {
   fetchPsOptions,
   fetchRemoveFromEvent,
   fetchSaveEventTeam,
-  fetchSaveTeam,
 } from "../utils/fetchUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -400,7 +399,15 @@ export const AdminTeamList = ({
                                             <FontAwesomeIcon
                                               icon={faUserEdit}
                                               onClick={() =>
-                                                setTeamToEdit(item.team)
+                                                setTeamToEdit({
+                                                  teamId: item.teamId,
+                                                  driver: item.driver,
+                                                  coDriver: item.coDriver,
+                                                  club: item.club,
+                                                  coClub: item.coClub,
+                                                  teamName: item.teamName,
+                                                  currentCar: item.car,
+                                                })
                                               }
                                               title={"Edytuj dane"}
                                               cursor={"pointer"}
@@ -531,8 +538,8 @@ export const AdminTeamList = ({
                                                 icon={faDownload}
                                                 onClick={() =>
                                                   fetchEntryFeeFile(
-                                                    item.team.teamId,
-                                                    item.team.driver
+                                                    item.teamId,
+                                                    item.driver
                                                   )
                                                 }
                                                 title={"Pobierz plik"}
@@ -548,9 +555,7 @@ export const AdminTeamList = ({
                                                 className={"text-success"}
                                                 icon={faClipboard}
                                                 onClick={() =>
-                                                  setTeamToPreview(
-                                                    item.team.teamId
-                                                  )
+                                                  setTeamToPreview(item.teamId)
                                                 }
                                                 title={"Podgląd danych"}
                                                 cursor={"pointer"}
@@ -559,9 +564,7 @@ export const AdminTeamList = ({
                                               <FontAwesomeIcon
                                                 icon={faClipboard}
                                                 onClick={() =>
-                                                  setTeamToPreview(
-                                                    item.team.teamId
-                                                  )
+                                                  setTeamToPreview(item.teamId)
                                                 }
                                                 title={"Podgląd danych"}
                                                 cursor={"pointer"}

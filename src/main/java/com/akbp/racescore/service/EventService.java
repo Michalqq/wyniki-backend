@@ -16,7 +16,6 @@ import com.akbp.racescore.service.fileGenerator.FinalListCreatorService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -86,9 +85,7 @@ public class EventService {
     }
 
     public List<EventTeamDto> getBasicTeams(Long eventId) {
-        Optional<Event> eventOptional = eventRepository.findById(eventId);
-
-        return eventOptional.get().getEventTeams().stream()
+        return eventTeamRepository.findByEventId(eventId).stream()
                 .sorted(Comparator.comparingInt(x -> x.getOrder()))
                 .map(x -> {
                     EventTeamDto et = modelMapper.map(x, EventTeamDto.class);
@@ -563,6 +560,15 @@ public class EventService {
     public void saveEventTeam(Long eventId, Team team) {
         EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, team.getTeamId());
         if (et == null) return;
+
+        Car car = et.getCar();
+        car.setBrand(team.getCurrentCar().getBrand());
+        car.setModel(team.getCurrentCar().getModel());
+        car.setEngineCapacity(team.getCurrentCar().getEngineCapacity());
+        car.setTurbo(team.getCurrentCar().getTurbo());
+        car.setDriveType(team.getCurrentCar().getDriveType());
+        team.setCurrentCar(car);
+
         setTeamData(et, team);
 
         eventTeamRepository.save(et);

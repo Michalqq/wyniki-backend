@@ -24,6 +24,9 @@ export const rtkQueryApi = createApi({
     getAllBefore: builder.query({
       query: () => "event/getAllBefore",
     }),
+    getAllFuture: builder.query({
+      query: () => "event/getAllFuture",
+    }),
 
     getScores: builder.query({
       query: (stageId) => `/score/getStageScores?stageId=${stageId}`,
@@ -33,12 +36,29 @@ export const rtkQueryApi = createApi({
       query: (args) =>
         `/score/getStagesSumScores?eventId=${args.eventId}&stageId=${args.stageId}`,
     }),
+    getBasicTeams: builder.query({
+      query: (eventId) => `/event/getBasicTeams?eventId=${eventId}`,
+    }),
+    getStatements: builder.query({
+      query: (eventId) => `/statement/getStatements?eventId=${eventId}`,
+    }),
+    getStatementsCount: builder.query({
+      query: (eventId) => `/statement/getStatementsCount?eventId=${eventId}`,
+    }),
+    getDriversCount: builder.query({
+      query: (eventId) => `/event/getDriverCount?eventId=${eventId}`,
+    }),
   }),
 });
 
 export const {
   useGetLogoPathByEventIdQuery,
   useGetAllBeforeQuery,
+  useGetAllFutureQuery,
   useGetScoresQuery,
   useGetSummedScoresQuery,
+  useGetBasicTeamsQuery,
+  useGetStatementsQuery,
+  useGetStatementsCountQuery,
+  useGetDriversCountQuery,
 } = rtkQueryApi;
