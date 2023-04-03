@@ -117,10 +117,10 @@ export const AdminTeamList = ({
     });
   };
 
-  const getDriverAndTeamId = (team) => {
+  const getDriverAndTeamId = (eventTeam) => {
     return {
-      teamId: team.teamId,
-      driver: team.driver + " / " + team.coDriver,
+      teamId: eventTeam.teamId,
+      driver: eventTeam.driver + " / " + eventTeam.coDriver,
     };
   };
 
@@ -525,7 +525,7 @@ export const AdminTeamList = ({
                                               icon={faCoins}
                                               onClick={() =>
                                                 setTeamToEntryFee(
-                                                  getDriverAndTeamId(item.team)
+                                                  getDriverAndTeamId(item)
                                                 )
                                               }
                                               title={"Potwierdź wpisowe"}
@@ -589,7 +589,7 @@ export const AdminTeamList = ({
                                               icon={faTimesCircle}
                                               onClick={() =>
                                                 setTeamToRemove(
-                                                  getDriverAndTeamId(item.team)
+                                                  getDriverAndTeamId(item)
                                                 )
                                               }
                                               title={"Usuń załoge"}
