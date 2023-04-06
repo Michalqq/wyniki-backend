@@ -385,7 +385,14 @@ public class EventService {
     }
 
     public boolean saveNumbersAndClasses(List<EventTeam> teams, Long eventId) {
-        teams.stream().forEach(x -> eventTeamRepository.save(x));
+        teams.stream().forEach(x -> {
+            EventTeam etEntity = eventTeamRepository.findByEventIdAndTeamId(eventId, x.getTeamId());
+            etEntity.setNumber(x.getNumber());
+            etEntity.setOrder(x.getOrder());
+            etEntity.setForcedNumber(x.getForcedNumber());
+            etEntity.setCarClassId(x.getCarClassId());
+            eventTeamRepository.save(etEntity);
+        });
 
         List<StageScore> stageScores = stageScoreRepository.findAllByEventId(eventId);
 

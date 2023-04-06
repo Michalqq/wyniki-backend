@@ -239,6 +239,7 @@ export const AdminTeamList = ({
 
     if (teams[index].carClassId === newCarClassId) return;
     teams[index].carClassId = newCarClassId;
+    teams[index].carClass.carClassId = newCarClassId;
     setTeams(teams);
   };
 
@@ -485,7 +486,7 @@ export const AdminTeamList = ({
                                                   );
                                                 }}
                                                 isValid={true}
-                                                value={item.carClassId}
+                                                value={item.carClass.carClassId}
                                               />
                                             )}
                                             {refreshSelect && (
