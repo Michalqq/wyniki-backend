@@ -96,7 +96,7 @@ export const AdminTeamList = ({
       classFilter !== "0"
         ? teams.filter(
             (x) =>
-              x.carClass.name === classFilter ||
+              x.carClass?.name === classFilter ||
               x.car?.driveTypeEnum === classFilter
           )
         : teams
@@ -142,7 +142,7 @@ export const AdminTeamList = ({
       .then((res) => {
         setEventClasses(
           res.data.eventClasses.map((x) => {
-            return { ...x, value: x.carClassId, label: x.carClass.name };
+            return { ...x, value: x.carClassId, label: x.carClass?.name };
           })
         );
       });

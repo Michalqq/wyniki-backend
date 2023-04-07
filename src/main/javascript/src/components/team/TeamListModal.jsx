@@ -92,7 +92,7 @@ export const TeamListModal = ({ show, handleClose, eventId }) => {
         Cell: (row) => (
           <CarDiv
             line1={(row.value?.brand || "") + " " + (row.value?.model || "")}
-            line2={row.row.original.carClass.name}
+            line2={row.row.original.carClass?.name}
             carBrand={row.value?.brand}
             driveType={row.value?.driveTypeEnum}
           ></CarDiv>
@@ -168,7 +168,7 @@ export const TeamListModal = ({ show, handleClose, eventId }) => {
                 classFilter !== "0"
                   ? teams.filter(
                       (x) =>
-                        x.carClass.name === classFilter ||
+                        x.carClass?.name === classFilter ||
                         x.car.driveTypeEnum === classFilter
                     )
                   : teams

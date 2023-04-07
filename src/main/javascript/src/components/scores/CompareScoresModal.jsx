@@ -109,7 +109,7 @@ export const CompareScoresModal = ({
                       {eventTeam && (
                         <CarDiv
                           line1={(car?.brand || "") + " " + (car?.model || "")}
-                          line2={eventTeam.carClass.name}
+                          line2={eventTeam.carClass?.name}
                           carBrand={car?.brand}
                           driveType={car?.driveTypeEnum}
                         ></CarDiv>
