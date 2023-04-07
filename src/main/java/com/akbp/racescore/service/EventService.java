@@ -390,7 +390,9 @@ public class EventService {
             etEntity.setNumber(x.getNumber());
             etEntity.setOrder(x.getOrder());
             etEntity.setForcedNumber(x.getForcedNumber());
-            etEntity.setCarClassId(x.getCarClassId());
+            if (x.getCarClassId() != null)
+                etEntity.setCarClassId(x.getCarClassId());
+
             eventTeamRepository.save(etEntity);
         });
 
