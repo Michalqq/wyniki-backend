@@ -486,7 +486,9 @@ export const AdminTeamList = ({
                                                   );
                                                 }}
                                                 isValid={true}
-                                                value={item.carClass.carClassId}
+                                                value={
+                                                  item.carClass?.carClassId
+                                                }
                                               />
                                             )}
                                             {refreshSelect && (
