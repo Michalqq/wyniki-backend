@@ -123,6 +123,8 @@ const StageScorePage = (props) => {
 
   useEffect(() => {
     fetchData();
+    setScoresByClass([]);
+    setSummedScoresByClass([]);
   }, [stage]);
 
   useEffect(() => {
