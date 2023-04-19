@@ -67,7 +67,11 @@ export const RegisterPage = (props) => {
               </Card.Body>
               <Card.Footer className="text-muted">
                 {`Masz konto - `}
-                <a role="button" class="a" onClick={() => navigate(`/login`)}>
+                <a
+                  role="button"
+                  className="a"
+                  onClick={() => navigate(`/login`)}
+                >
                   zaloguj się
                 </a>
               </Card.Footer>

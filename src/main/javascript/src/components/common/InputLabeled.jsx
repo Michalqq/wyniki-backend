@@ -62,10 +62,10 @@ export const InputLabeled = ({
           <>
             {required ? (
               <>
-                <div class="input-group mb-0">
+                <div className="input-group mb-0">
                   {icon !== undefined && (
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="basic-addon1">
                         <FontAwesomeIcon
                           className={"fa-lg my-1 text-muted"}
                           icon={icon}
@@ -92,10 +92,10 @@ export const InputLabeled = ({
               </>
             ) : (
               <>
-                <div class="input-group mb-0">
+                <div className="input-group mb-0">
                   {icon !== undefined && (
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="basic-addon1">
                         <FontAwesomeIcon
                           className={"fa-lg my-1 text-muted"}
                           icon={icon}

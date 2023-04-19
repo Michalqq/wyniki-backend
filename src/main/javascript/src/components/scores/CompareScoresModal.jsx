@@ -102,22 +102,26 @@ export const CompareScoresModal = ({
                 className="row pt-0 my-px-3"
                 style={{ backgroundColor: "lightgray" }}
               >
-                {markedNumbers.map((number) => {
-                  const eventTeam = teams.find((x) => x.number === number);
-                  const car = eventTeam?.car;
-                  return (
-                    <div className="col p-3 ps-4" style={{ scale: "1.1" }}>
-                      {eventTeam && (
-                        <CarDiv
-                          line1={(car?.brand || "") + " " + (car?.model || "")}
-                          line2={eventTeam.carClass?.name}
-                          carBrand={car?.brand}
-                          driveType={car?.driveTypeEnum}
-                        ></CarDiv>
-                      )}
-                    </div>
-                  );
-                })}
+                {markedNumbers
+                  .sort((a, b) => (a < b ? -1 : 1))
+                  .map((number) => {
+                    const eventTeam = teams.find((x) => x.number === number);
+                    const car = eventTeam?.car;
+                    return (
+                      <div className="col p-3 ps-4" style={{ scale: "1.1" }}>
+                        {eventTeam && (
+                          <CarDiv
+                            line1={
+                              (car?.brand || "") + " " + (car?.model || "")
+                            }
+                            line2={eventTeam.carClass?.name}
+                            carBrand={car?.brand}
+                            driveType={car?.driveTypeEnum}
+                          ></CarDiv>
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
               <div className="row pt-1 px-3">
                 <table className="table table-stripe">
@@ -139,7 +143,7 @@ export const CompareScoresModal = ({
                       const bg = i % 2 === 0 ? "bg-light-gray " : "";
                       let scoresLine = scores
                         .filter((x) => x.stageId === Number(psOption.value))
-                        .sort((a, b) => (a.teamNumber > b.teamNumber ? -1 : 1));
+                        .sort((a, b) => (a.teamNumber < b.teamNumber ? -1 : 1));
 
                       let totalScore1 =
                         scoresLine[0]?.score + scoresLine[0]?.penalty * 1000;
