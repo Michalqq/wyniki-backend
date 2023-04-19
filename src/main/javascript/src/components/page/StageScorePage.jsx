@@ -88,7 +88,7 @@ const StageScorePage = (props) => {
 
   const fetchEvent = () => {
     axios
-      .get(`${backendUrl()}/event/getEvent?eventId=${eventId}`)
+      .get(`${backendUrl()}/event/getBasicEvent?eventId=${eventId}`)
       .then((res) => {
         setEvent({
           ...res.data,
@@ -97,6 +97,7 @@ const StageScorePage = (props) => {
         });
       });
   };
+
   const fetchData = () => {
     if (stage !== undefined) {
       fetchEvent();
@@ -436,6 +437,7 @@ const StageScorePage = (props) => {
           handleClose={() => setShowCompareScoresModal()}
           eventId={eventId}
           markedNumbers={markedNumbers}
+          psOptions={psOptions}
         />
       )}
     </>

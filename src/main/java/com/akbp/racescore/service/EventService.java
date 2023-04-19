@@ -1,6 +1,9 @@
 package com.akbp.racescore.service;
 
 import com.akbp.racescore.model.dto.*;
+import com.akbp.racescore.model.dto.event.BasicEventDto;
+import com.akbp.racescore.model.dto.event.EventDTO;
+import com.akbp.racescore.model.dto.event.EventWithLogoDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -321,9 +324,13 @@ public class EventService {
         Event event = eventRepository.getById(eventId);
         EventWithLogoDTO eventDTO = new EventWithLogoDTO(event);
         eventDTO.setStages(event.getStages().stream().map(x -> new StageDTO(x)).collect(Collectors.toList()));
-        eventDTO.setReferee(event.getReferee());
+        eventDTO.setReferee(event.getReferee().stream().map(x->new RefereeDto(x.getUserId(), x.getUsername())).collect(Collectors.toList()));
 
         return eventDTO;
+    }
+
+    public BasicEventDto getBasicEvent(Long eventId) {
+        return new BasicEventDto(eventRepository.getById(eventId));
     }
 
     public Boolean deleteEvent(Long eventId) {

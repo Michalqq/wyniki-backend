@@ -1,5 +1,6 @@
-package com.akbp.racescore.model.dto;
+package com.akbp.racescore.model.dto.event;
 
+import com.akbp.racescore.model.dto.RefereeDto;
 import com.akbp.racescore.model.dto.selectors.StageDTO;
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventClasses;
@@ -28,7 +29,6 @@ public class EventDTO {
     private Boolean joined = false;
     private String organizer;
     private String logoPath;
-//    private byte[] logoPathFile;
     private Boolean started = false;
     private Boolean fwdClassification;
     private Boolean rwdClassification;
@@ -36,7 +36,7 @@ public class EventDTO {
     private Boolean carClassManual;
     private Boolean pzm;
 
-    private List<User> referee;
+    private List<RefereeDto> referee;
     private List<StageDTO> stages;
     private List<EventClasses> eventClasses;
     private List<EventPath> eventPaths;
@@ -53,7 +53,6 @@ public class EventDTO {
         this.signDeadline = x.getSignDeadline();
         this.organizer = x.getOrganizer();
         this.logoPath = x.getLogoPath();
-//        this.logoPathFile = x.getLogoPathFile();
         this.started = x.getStarted();
         this.fwdClassification = x.getFwdClassification();
         this.rwdClassification = x.getRwdClassification();

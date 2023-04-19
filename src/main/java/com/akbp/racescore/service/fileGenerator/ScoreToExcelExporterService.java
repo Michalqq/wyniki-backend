@@ -313,7 +313,7 @@ public class ScoreToExcelExporterService {
         if (scores.isEmpty()) return 0L;
 
         Long penaltiesSum = 0L;
-        List<Penalty> penalties = penaltyRepository.findByStageIdInAndTeamId(scores.stream().map(x -> x.getStageId()).collect(Collectors.toList()), scores.get(0).getTeamId());
+        List<Penalty> penalties = penaltyRepository.findByStageIdInAndTeamIdIn(scores.stream().map(x -> x.getStageId()).collect(Collectors.toList()), List.of(scores.get(0).getTeamId()));
         if (!penalties.isEmpty()) {
             penaltiesSum = penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
             row.createCell(index2.get()).setCellValue(penaltiesSum + " sek");

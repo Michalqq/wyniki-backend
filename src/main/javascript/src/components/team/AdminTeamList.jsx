@@ -65,6 +65,8 @@ export const AdminTeamList = ({
 
   const [downloadingOA, setDownloadingOA] = useState(false);
   const [downloadingBK, setDownloadingBK] = useState(false);
+  const [downloadingTeamsExcelData, setDownloadingTeamsExcelData] =
+    useState(false);
 
   const [finalList, setFinalList] = useState(false);
   const [classesOptions, setClassesOptions] = useState([]);
@@ -152,6 +154,15 @@ export const AdminTeamList = ({
     download(
       `${backendUrl()}/event/getEntryFeeFile?eventId=${eventId}&teamId=${teamId}`,
       "potwierdzenie_wplaty_" + teamName + ".pdf"
+    );
+  };
+
+  const downloadEventTeamExcelData = () => {
+    setDownloadingTeamsExcelData(true);
+    download(
+      `${backendUrl()}/file/getEventTeamExcelData?eventId=${eventId}`,
+      "lista_zawodników" + eventId + ".xls",
+      () => setDownloadingTeamsExcelData(false)
     );
   };
 
@@ -553,26 +564,19 @@ export const AdminTeamList = ({
                                             )}
                                           </td>
                                           <td style={{ width: "30px" }}>
-                                            {item.teamChecked ? (
-                                              <FontAwesomeIcon
-                                                className={"text-success"}
-                                                icon={faClipboard}
-                                                onClick={() =>
-                                                  setTeamToPreview(item.teamId)
-                                                }
-                                                title={"Podgląd danych"}
-                                                cursor={"pointer"}
-                                              />
-                                            ) : (
-                                              <FontAwesomeIcon
-                                                icon={faClipboard}
-                                                onClick={() =>
-                                                  setTeamToPreview(item.teamId)
-                                                }
-                                                title={"Podgląd danych"}
-                                                cursor={"pointer"}
-                                              />
-                                            )}
+                                            <FontAwesomeIcon
+                                              className={
+                                                item.teamChecked
+                                                  ? "text-success"
+                                                  : ""
+                                              }
+                                              icon={faClipboard}
+                                              onClick={() =>
+                                                setTeamToPreview(item)
+                                              }
+                                              title={"Podgląd danych"}
+                                              cursor={"pointer"}
+                                            />
                                           </td>
                                           <td style={{ width: "30px" }}>
                                             <BkOaDiv
@@ -693,7 +697,7 @@ export const AdminTeamList = ({
               myEvent={{
                 eventId: eventId,
                 started: false,
-                teamId: teamToPreview,
+                team: teamToPreview,
               }}
               mode="preview"
             />
@@ -740,6 +744,13 @@ export const AdminTeamList = ({
                 onClick={() => fetchBkDocuments()}
                 msg="Pobierz dokumenty BK"
                 loadingMsg="Pobieranie dokumentów BK"
+              />
+              <MyButton
+                variant="primary"
+                isLoading={downloadingTeamsExcelData}
+                onClick={() => downloadEventTeamExcelData()}
+                msg="Pobierz listę zawodników (Excel)"
+                loadingMsg="Pobieranie listy zawodników"
               />
             </div>
             <div className="col-xl-12">

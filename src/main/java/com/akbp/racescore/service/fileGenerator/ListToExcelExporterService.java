@@ -1,6 +1,7 @@
 package com.akbp.racescore.service.fileGenerator;
 
-import com.akbp.racescore.model.entity.*;
+import com.akbp.racescore.model.entity.Event;
+import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.repository.EventRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -53,23 +56,21 @@ public class ListToExcelExporterService {
 
     private Workbook getScoresWorkbook(Event event) {
         createSheet("Lista zawodników", event);
-
         return workbook;
     }
 
     private void createSheet(String sheetName, Event event) {
-        Sheet sheet = workbook.createSheet( sheetName);
+        Sheet sheet = workbook.createSheet(sheetName);
         setColumnWidth(sheet);
 
         AtomicInteger index = new AtomicInteger(1);
-
         addEventNameAndLogo(sheet, event, index);
 
         createTitle(sheet, sheetName, index);
         createHeader(sheet, index.getAndIncrement());
         List<EventTeam> teams = event.getEventTeams();
-        teams.sort(Comparator.comparing(x->x.getNumber()));
-        teams.forEach(x->createDataRow(sheet, x, index.getAndIncrement()));
+        teams.sort(Comparator.comparing(x -> x.getNumber()));
+        teams.forEach(x -> createDataRow(sheet, x, index.getAndIncrement()));
 
         sheet.createRow(index.getAndIncrement());
         sheet.createRow(index.getAndIncrement());
@@ -120,23 +121,6 @@ public class ListToExcelExporterService {
         return index;
     }
 
-    private void setColumnWidth(Sheet sheet) {
-        sheet.setColumnWidth(0, 4 * 256);
-        sheet.setColumnWidth(1, 14 * 256);
-        sheet.setColumnWidth(2, 22 * 256);
-        sheet.setColumnWidth(3, 20 * 256);
-        sheet.setColumnWidth(4, 22 * 256);
-        sheet.setColumnWidth(5, 22 * 256);
-        sheet.setColumnWidth(6, 20 * 256);
-        sheet.setColumnWidth(7, 22 * 256);
-        sheet.setColumnWidth(8, 10 * 256);
-        sheet.setColumnWidth(9, 15 * 256);
-        sheet.setColumnWidth(10, 35 * 256);
-        sheet.setColumnWidth(11, 10 * 256);
-        sheet.setColumnWidth(12, 25 * 256);
-        sheet.setColumnWidth(13, 25 * 256);
-    }
-
     private void createDataRow(Sheet sheet, EventTeam et, int index) {
         Row row = sheet.createRow(index);
 
@@ -159,6 +143,23 @@ public class ListToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getEmergencyPerson()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getEmergencyPhone()).orElse(""));
+    }
+
+    private void setColumnWidth(Sheet sheet) {
+        sheet.setColumnWidth(0, 4 * 256);
+        sheet.setColumnWidth(1, 14 * 256);
+        sheet.setColumnWidth(2, 22 * 256);
+        sheet.setColumnWidth(3, 20 * 256);
+        sheet.setColumnWidth(4, 22 * 256);
+        sheet.setColumnWidth(5, 22 * 256);
+        sheet.setColumnWidth(6, 20 * 256);
+        sheet.setColumnWidth(7, 22 * 256);
+        sheet.setColumnWidth(8, 10 * 256);
+        sheet.setColumnWidth(9, 15 * 256);
+        sheet.setColumnWidth(10, 35 * 256);
+        sheet.setColumnWidth(11, 10 * 256);
+        sheet.setColumnWidth(12, 25 * 256);
+        sheet.setColumnWidth(13, 25 * 256);
     }
 
     private void setStyle(int index, Row row, CellStyle cellStyle) {

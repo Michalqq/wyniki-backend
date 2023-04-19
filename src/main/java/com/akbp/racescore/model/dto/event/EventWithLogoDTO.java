@@ -1,4 +1,4 @@
-package com.akbp.racescore.model.dto;
+package com.akbp.racescore.model.dto.event;
 
 import com.akbp.racescore.model.entity.Event;
 import lombok.Getter;

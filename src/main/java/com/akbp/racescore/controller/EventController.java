@@ -1,6 +1,9 @@
 package com.akbp.racescore.controller;
 
 import com.akbp.racescore.model.dto.*;
+import com.akbp.racescore.model.dto.event.BasicEventDto;
+import com.akbp.racescore.model.dto.event.EventDTO;
+import com.akbp.racescore.model.dto.event.EventWithLogoDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -11,8 +14,6 @@ import com.akbp.racescore.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -228,6 +229,16 @@ public class EventController {
     public EventWithLogoDTO getEvent(@RequestParam Long eventId) {
         try {
             return eventService.getEvent(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return null;
+    }
+
+    @GetMapping("getBasicEvent")
+    public BasicEventDto getBasicEvent(@RequestParam Long eventId) {
+        try {
+            return eventService.getBasicEvent(eventId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

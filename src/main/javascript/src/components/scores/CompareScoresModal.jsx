@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button";
 import { backendUrl, fetchGetCompareScores } from "../utils/fetchUtils";
 import { Spinner } from "react-bootstrap";
 import { closeOnBack, timeToString } from "../utils/utils";
-import { CarDiv, ScoreDivPenalty, TeamDiv } from "../common/Div";
+import { CarDiv, ScoreDiv, ScoreDivPenalty, TeamDiv } from "../common/Div";
 import { NrBadge } from "../common/NrBadge";
 
 export const CompareScoresModal = ({
@@ -15,6 +15,7 @@ export const CompareScoresModal = ({
   handleClose,
   eventId,
   markedNumbers,
+  psOptions,
 }) => {
   const [loading, setLoading] = useState(false);
   const [scores, setScores] = useState([]);
@@ -118,48 +119,96 @@ export const CompareScoresModal = ({
                   );
                 })}
               </div>
-              <h6 className="pt-2 text-center">
-                Wersja testowa - czasy nie zawierają kar:
-              </h6>
-              <div className="row pt-1">
-                {markedNumbers
-                  .sort((a, b) => a - b)
-                  .map((number, i) => {
-                    const isLeft = i === 0;
-                    const divClassName = isLeft
-                      ? "col px-0 text-right"
-                      : "col px-0";
-                    return (
-                      <>
-                        <div className={divClassName}>
-                          {scores
-                            .filter((x) => x.teamNumber === number)
-                            .sort((a, b) => a.stageId - b.stageId)
-                            .map((score, i) => {
-                              const bg = i % 2 === 0 ? "bg-light-gray " : "";
-                              return (
-                                <div className="">
-                                  <div className={bg + "p-1 px-3 d-flex "}>
-                                    {isLeft && (
-                                      <div style={{ marginRight: "auto" }}>
-                                        <ScoreDivPenalty
-                                          line1={"PS " + (i + 1)}
-                                          line2={"0"}
-                                        />
-                                      </div>
+              <div className="row pt-1 px-3">
+                <table className="table table-stripe">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th style={{ width: "10%" }}>PS</th>
+                      <th
+                        style={{ width: "30%" }}
+                        className="text-end"
+                      >{`Załoga nr ${markedNumbers[0]}`}</th>
+                      <th style={{ width: "10%" }} className="text-center">
+                        Różnica
+                      </th>
+                      <th className="text-start">{`Załoga nr ${markedNumbers[1]}`}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {psOptions.map((psOption, i) => {
+                      const bg = i % 2 === 0 ? "bg-light-gray " : "";
+                      let scoresLine = scores
+                        .filter((x) => x.stageId === Number(psOption.value))
+                        .sort((a, b) => (a.teamNumber > b.teamNumber ? -1 : 1));
+
+                      let totalScore1 =
+                        scoresLine[0]?.score + scoresLine[0]?.penalty * 1000;
+                      let totalScore2 =
+                        scoresLine[1]?.score + scoresLine[1]?.penalty * 1000;
+
+                      return (
+                        <>
+                          <tr className={bg}>
+                            <th className="p-1">
+                              <div style={{ marginRight: "auto" }}>
+                                <ScoreDivPenalty
+                                  line1={"PS " + (i + 1)}
+                                  line2={"0"}
+                                />
+                              </div>
+                            </th>
+                            {scoresLine.length == 2 && (
+                              <>
+                                <th
+                                  className={
+                                    "text-end " +
+                                    (totalScore1 < totalScore2
+                                      ? "text-success"
+                                      : "fw-normal")
+                                  }
+                                >
+                                  <ScoreDivPenalty
+                                    line1={timeToString(scoresLine[0].score)}
+                                    line2={
+                                      scoresLine[0].penalty === 0
+                                        ? "0"
+                                        : scoresLine[0].penalty
+                                    }
+                                  />
+                                </th>
+                                <th className={"text-center"}>
+                                  <ScoreDiv
+                                    line1=""
+                                    line2=""
+                                    line3={timeToString(
+                                      Math.abs(totalScore1 - totalScore2)
                                     )}
-                                    <ScoreDivPenalty
-                                      line1={timeToString(score.score)}
-                                      line2={"0"}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })}
-                        </div>
-                      </>
-                    );
-                  })}
+                                  />
+                                </th>
+                                <th
+                                  className={
+                                    totalScore1 > totalScore2
+                                      ? "text-success"
+                                      : "fw-normal"
+                                  }
+                                >
+                                  <ScoreDivPenalty
+                                    line1={timeToString(scoresLine[1].score)}
+                                    line2={
+                                      scoresLine[1].penalty === 0
+                                        ? "0"
+                                        : scoresLine[1].penalty
+                                    }
+                                  />
+                                </th>
+                              </>
+                            )}
+                          </tr>
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
