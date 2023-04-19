@@ -108,9 +108,29 @@ public class EmailSenderImpl implements EmailSender {
 
         content += getHtmlEnd();
 
-        sendEmail(1L, EMAIL, "WYSłANO - Kończy się ubezpieczenie w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
-        
         return sendEmail(1L, team.getEmail(), "Kończy się ubezpieczenie w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
+    }
+
+    public boolean sendCarInspectionNotification(Team team, Car car) {
+        String content = getHtmlStart();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault());
+        String insuranceExpiryDate = formatter.format(car.getInsuranceExpiryDate());
+
+        content += "<h2>Cześć " + team.getDriver() + "</h2>";
+        content += "<p><br></br></p>";
+
+        content += "<h4>tutaj Michał ze strony: <a href=https://www.wyniki.online>www.wyniki.online</a> - Wyniki motorsportowe online AKBP</h4>";
+        content += "<p><br></br></p>";
+        content += "<h3>W Twojej rajdówce: " + car.getBrand() + " " + car.getModel() + " nr. rej. " + car.getLicensePlate() + " przegląd techniczny skończy się dnia: "
+                + insuranceExpiryDate + "</h3>";
+        content += "Nie zapomnij podbić przeglądu przed kolejnymi zawodami!";
+
+        content += getHtmlEnd();
+
+        sendEmail(1L, EMAIL, "Kończy się przegląd w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
+
+        return sendEmail(1L, team.getEmail(), "Kończy się przegląd w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
     }
 
     public boolean sendMsg(MsgDto msg) {

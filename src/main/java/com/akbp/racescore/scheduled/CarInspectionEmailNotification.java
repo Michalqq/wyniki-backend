@@ -11,10 +11,13 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Component
-public class InsuranceEmailNotify {
+public class CarInspectionEmailNotification {
+
 
     @Autowired
     private CarRepository carRepository;
@@ -23,16 +26,12 @@ public class InsuranceEmailNotify {
     @Autowired
     private EmailSenderImpl emailSender;
 
-    @Value("${insurance.notify1.before.day.count}")
-    private Long notify1DayCount;
     @Value("${insurance.notify2.before.day.count}")
-    private Long notify2DayCount;
+    private Long notifyDayCount;
 
-    //@Scheduled(cron = "0/2 * * * * ?")
     @Scheduled(cron = "0 00 19 * * ?", zone = "Europe/Warsaw")
     public void sendEmail() {
-        send(notify1DayCount);
-        send(notify2DayCount);
+        send(notifyDayCount);
     }
 
     private void send(Long dayCount) {
@@ -40,6 +39,7 @@ public class InsuranceEmailNotify {
         Instant start = startCount.minus(1, ChronoUnit.DAYS).minusSeconds(60);
         List<Car> cars = carRepository.findByInsuranceExpiryDateBetween(start, startCount);
 
-        cars.stream().forEach(x -> emailSender.sendInsuranceNotification(teamRepository.findByTeamId(x.getTeamId()), x));
+        cars.stream().forEach(x -> emailSender.sendCarInspectionNotification(teamRepository.findByTeamId(x.getTeamId()), x));
     }
+
 }
