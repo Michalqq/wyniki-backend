@@ -37,7 +37,7 @@ public class CarInspectionEmailNotification {
     private void send(Long dayCount) {
         Instant startCount = Instant.now().plus(dayCount, ChronoUnit.DAYS);
         Instant start = startCount.minus(1, ChronoUnit.DAYS).minusSeconds(60);
-        List<Car> cars = carRepository.findByInsuranceExpiryDateBetween(start, startCount);
+        List<Car> cars = carRepository.findByCarInspectionExpiryDateBetween(start, startCount);
 
         cars.stream().forEach(x -> emailSender.sendCarInspectionNotification(teamRepository.findByTeamId(x.getTeamId()), x));
     }
