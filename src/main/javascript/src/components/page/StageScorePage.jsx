@@ -436,7 +436,7 @@ const StageScorePage = (props) => {
           show={true}
           handleClose={() => setShowCompareScoresModal()}
           eventId={eventId}
-          markedNumbers={markedNumbers}
+          markedNumbers={markedNumbers.sort((a, b) => (a < b ? -1 : 1))}
           psOptions={psOptions}
         />
       )}

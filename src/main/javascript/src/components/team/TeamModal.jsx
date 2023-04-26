@@ -620,7 +620,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       onClick={() =>
                         fetchTeamChecked(
                           myEvent?.eventId,
-                          myEvent?.teamId,
+                          team?.teamId,
                           true,
                           (data) => setOkModal(data)
                         )
@@ -634,7 +634,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       onClick={() =>
                         fetchTeamChecked(
                           myEvent?.eventId,
-                          myEvent?.teamId,
+                          team?.teamId,
                           false,
                           (data) => setOkModal(data)
                         )
@@ -651,7 +651,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       onClick={() =>
                         fetchBkChecked(
                           myEvent?.eventId,
-                          myEvent?.teamId,
+                          team?.teamId,
                           true,
                           (data) => setOkModal(data)
                         )
@@ -665,7 +665,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       onClick={() =>
                         fetchBkChecked(
                           myEvent?.eventId,
-                          myEvent?.teamId,
+                          team?.teamId,
                           false,
                           (data) => setOkModal(data)
                         )

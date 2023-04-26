@@ -155,7 +155,7 @@ public class EmailSenderImpl implements EmailSender {
 
     private String getHtmlEnd() {
         String content = "<br></br>";
-        content = "__________________________________________________";
+        content += "__________________________________________________";
         content += "<br></br>";
         content += "<h6>Ten email został wygenerowany automatycznie.</h6>";
         content += "</head></html>";

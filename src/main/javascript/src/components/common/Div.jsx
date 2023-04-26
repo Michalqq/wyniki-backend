@@ -55,6 +55,16 @@ export const ScoreDiv = ({ line1, line2, line3 }) => {
   );
 };
 
+export const LightScoreDiv = ({ line1, line2, line3 }) => {
+  return (
+    <div className="float-left fw-normal">
+      <h6 className="font13 m-0">{line1}</h6>
+      <p className="font12 m-0 p-0">{line2}</p>
+      <p className="font12 m-0 p-0">{line3}</p>
+    </div>
+  );
+};
+
 export const ScoreDivPenalty = ({ line1, line2 }) => {
   return (
     <div className="float-left">
@@ -63,6 +73,21 @@ export const ScoreDivPenalty = ({ line1, line2 }) => {
         <></>
       ) : (
         <p className="font11 m-0 p-0 fw-bolder text-danger">
+          {line2 === "TARYFA" ? line2 : "+" + line2 + " s"}
+        </p>
+      )}
+    </div>
+  );
+};
+
+export const LightScoreDivPenalty = ({ line1, line2 }) => {
+  return (
+    <div className="float-left">
+      <h6 className="font13 m-0">{line1}</h6>
+      {line2 === "0" ? (
+        <></>
+      ) : (
+        <p className="font11 m-0 p-0 text-danger">
           {line2 === "TARYFA" ? line2 : "+" + line2 + " s"}
         </p>
       )}
