@@ -37,7 +37,7 @@ public class ListToExcelExporterService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.ms-excel"));
-        headers.set("Content-Disposition", "attachment; filename=" + "lista_zawodnikow" + event.getName() + ".xls");
+        headers.set("Content-Disposition", "attachment; filename=" + "lista_zawodnikow_" + event.getEventId() + ".xls");
         headers.setContentLength(out.toByteArray().length);
 
         return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
@@ -123,8 +123,6 @@ public class ListToExcelExporterService {
 
     private void createDataRow(Sheet sheet, EventTeam et, int index) {
         Row row = sheet.createRow(index);
-
-        LOGGER.info("EventTeam: " + et.toString());
 
         AtomicInteger index2 = new AtomicInteger(0);
 
