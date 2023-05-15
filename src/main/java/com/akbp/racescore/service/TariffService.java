@@ -5,6 +5,8 @@ import com.akbp.racescore.model.entity.*;
 import com.akbp.racescore.model.entity.dictionary.CarClass;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -15,11 +17,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TariffService {
 
     private final StageScoreRepository stageScoreRepository;
 
-    public void calculateStageTariffes(Event event, Stage stage) {
+    public void calculateStageTariffes(Event event, Stage stage, Authentication auth) {
         List<StageScore> scoresToTariff = stageScoreRepository.findByStageIdAndPenaltyIsNotNull(stage.getStageId());
         if (scoresToTariff.isEmpty()) return;
 
@@ -56,12 +59,14 @@ public class TariffService {
             score.setScore(tariff);
             stageScoreRepository.save(score);
         }
+
+        log.debug("Tariff calculated event: " + event.getName() + ", stage: " + stage.getName() + ", user: " + auth.getName());
     }
 
     private HashMap<CarClass, Long> getTariffByClass(Stage stage, List<EventClasses> eventClasses) {
         HashMap<CarClass, Long> scoresByClass = new HashMap<>();
 
-        List<StageScoreSumDTO> stageScores = stageScoreRepository.findScoresInStage(stage.getStageId()).stream().filter(x->x.getTariff()==null).collect(Collectors.toList());
+        List<StageScoreSumDTO> stageScores = stageScoreRepository.findScoresInStage(stage.getStageId()).stream().filter(x -> x.getTariff() == null).collect(Collectors.toList());
 
         for (EventClasses eventClass : eventClasses.stream().sorted(Comparator.comparingDouble(EventClasses::getMaxEngineCapacity)).collect(Collectors.toList())) {
             List<StageScoreSumDTO> stageScores2 = stageScores.stream().filter(x -> x.getCarClass().equals(eventClass.getCarClass().getName())).collect(Collectors.toList());

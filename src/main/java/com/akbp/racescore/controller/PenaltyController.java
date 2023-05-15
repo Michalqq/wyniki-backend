@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,9 +44,9 @@ public class PenaltyController {
     }
 
     @PostMapping("/addPenalty")
-    public Long addPenalty(@RequestBody Penalty penalty, @RequestParam Long seconds) {
+    public Long addPenalty(@RequestBody Penalty penalty, @RequestParam Long seconds, Authentication auth) {
         try {
-            return penaltyService.addPenalty(penalty, seconds);
+            return penaltyService.addPenalty(penalty, seconds, auth);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return -1L;
@@ -53,9 +54,9 @@ public class PenaltyController {
     }
 
     @PostMapping("removePenalty")
-    public boolean removePenalty(@RequestParam("penaltyId") Long penaltyId) {
+    public boolean removePenalty(@RequestParam("penaltyId") Long penaltyId, Authentication auth) {
         try {
-            return penaltyService.removePenalty(penaltyId);
+            return penaltyService.removePenalty(penaltyId, auth);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return false;
@@ -63,9 +64,9 @@ public class PenaltyController {
     }
 
     @PostMapping("removeDisqualification")
-    public boolean removeDisqualification(@RequestParam("penaltyId") Long penaltyId) {
+    public boolean removeDisqualification(@RequestParam("penaltyId") Long penaltyId, Authentication auth) {
         try {
-            return penaltyService.removeDisqualification(penaltyId);
+            return penaltyService.removeDisqualification(penaltyId, auth);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return false;

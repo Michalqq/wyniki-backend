@@ -8,6 +8,7 @@ import com.akbp.racescore.model.repository.EventRepository;
 import com.akbp.racescore.model.repository.StatementRepository;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class StatementService {
 
     @Autowired
@@ -53,10 +55,12 @@ public class StatementService {
 
         statementRepository.save(statement);
 
+        log.debug("Statement added: " + statement.getStatementId() + ", user: " + auth.getName());
+
         return statement.getStatementId();
     }
 
-    public String addFileToStatement(MultipartFile postFile, Long statementId) throws IOException {
+    public String addFileToStatement(Authentication auth, MultipartFile postFile, Long statementId) throws IOException {
         if (postFile == null) return "";
 
         Statement statement = statementRepository.getById(statementId);
@@ -64,6 +68,8 @@ public class StatementService {
 
         statement.setFile(postFile.getBytes());
         statementRepository.save(statement);
+
+        log.debug("Statement added: " + statement.getStatementId() + ", user: " + auth.getName());
 
         return "Dodano komunikat";
     }
@@ -82,6 +88,8 @@ public class StatementService {
         statement.setName(finalListName);
         statement.setFileName(finalListName + ".pdf");
         statementRepository.save(statement);
+
+        log.debug("Final list generated and added to statement: " + finalListName + ", user: " + auth.getName());
     }
 
     private void removeFinalListStatement(String finalListName) {
@@ -97,6 +105,8 @@ public class StatementService {
 
         if (eventRepository.checkIfUserIsReferee(statement.getEventId(), auth.getName()).isPresent())
             statementRepository.delete(statement);
+
+        log.debug("Deleted statement: " + statement + ", user: " + auth.getName());
     }
 
     public Long getStatementsCount(Long eventId) {

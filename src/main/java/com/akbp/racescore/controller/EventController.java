@@ -145,9 +145,9 @@ public class EventController {
     }
 
     @PostMapping("/removeTeam")
-    public boolean removeTeam(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
+    public boolean removeTeam(Authentication auth, @RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
         try {
-            eventService.removeTeam(eventId, teamId);
+            eventService.removeTeam(auth, eventId, teamId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -155,9 +155,9 @@ public class EventController {
     }
 
     @PostMapping("confirmEntryFee")
-    public boolean confirmEntryFee(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
+    public boolean confirmEntryFee(Authentication auth, @RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
         try {
-            eventService.confirmEntryFee(eventId, teamId);
+            eventService.confirmEntryFee(auth, eventId, teamId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

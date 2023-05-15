@@ -12,6 +12,7 @@ import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import com.akbp.racescore.utils.ScoreToString;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ScoreService {
     private final StageScoreRepository stageScoreRepository;
     private final UserRepository userRepository;
@@ -34,15 +36,14 @@ public class ScoreService {
 
     public String addScore(ScoreDTO score, Authentication auth) {
         List<StageScore> stageScores = stageScoreRepository.findByStageIdAndTeamId(score.getStageId(), score.getTeamId());
-
         if (stageScores.isEmpty())
             return null;
 
         StageScore stageScore = stageScores.get(0);
         saveStageScore(stageScore, score.getScore(), auth);
 
-        return "Dodano wynik załogi: " + stageScore.getTeamNumber() + " - " + stageScore.getTeam().getDriver() + "\n"
-                + "Czas: " + ScoreToString.toString(stageScore.getScore());
+        return logAndReturn("Dodano wynik załogi: " + stageScore.getTeamNumber() + " - " + stageScore.getTeam().getDriver() + "\n"
+                + "Czas: " + ScoreToString.toString(stageScore.getScore()), auth);
     }
 
     private void setUserMod(StageScore stageScore, Authentication auth) {
@@ -113,7 +114,7 @@ public class ScoreService {
         stageScore.setPenalty(null);
         saveStageScore(stageScore, null, auth);
 
-        return "Usunięto wynik załogi: " + stageScore.getTeamNumber() + " - " + stageScore.getTeam().getDriver();
+        return logAndReturn("Usunięto wynik załogi: " + stageScore.getTeamNumber() + " - " + stageScore.getTeam().getDriver(), auth);
     }
 
     private void saveStageScore(StageScore stageScore, Long score, Authentication auth) {
@@ -127,7 +128,7 @@ public class ScoreService {
         Event event = eventRepository.getById(eventId);
 
         for (Stage stage : event.getStages())
-            tariffService.calculateStageTariffes(event, stage);
+            tariffService.calculateStageTariffes(event, stage, auth);
     }
 
     public List<StageScore> getCompareScores(Long eventId, List<Long> numbers) {
@@ -145,5 +146,10 @@ public class ScoreService {
 
     private boolean extractPenalty(Penalty penalty, StageScore x) {
         return penalty.getTeamId().equals(x.getTeamId()) && penalty.getStageId().equals(x.getStageId());
+    }
+
+    private String logAndReturn(String result, Authentication auth) {
+        log.debug(result + ", user: " + auth.getName());
+        return result;
     }
 }

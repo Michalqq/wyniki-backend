@@ -56,10 +56,11 @@ public class StatementController {
     }
 
     @PostMapping("/addFileToStatement")
-    public String addFileToStatement(@RequestBody MultipartFile file,
+    public String addFileToStatement(Authentication auth,
+                                     @RequestBody MultipartFile file,
                                      @RequestParam Long statementId) {
         try {
-            return statementService.addFileToStatement(file, statementId);
+            return statementService.addFileToStatement(auth, file, statementId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             return e.getMessage();

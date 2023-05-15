@@ -1,6 +1,9 @@
 package com.akbp.racescore.service;
 
-import com.akbp.racescore.model.dto.*;
+import com.akbp.racescore.model.dto.EventTeamDto;
+import com.akbp.racescore.model.dto.FileDto;
+import com.akbp.racescore.model.dto.PenaltyDTO;
+import com.akbp.racescore.model.dto.RefereeDto;
 import com.akbp.racescore.model.dto.event.BasicEventDto;
 import com.akbp.racescore.model.dto.event.EventDTO;
 import com.akbp.racescore.model.dto.event.EventWithLogoDTO;
@@ -17,6 +20,7 @@ import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import com.akbp.racescore.service.fileGenerator.FinalListCreatorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +43,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventService {
 
     private static final String GENERAL = "GENERALNA";
@@ -234,7 +239,7 @@ public class EventService {
     }
 
     @Transactional
-    public void removeTeam(Long eventId, Long teamId) {
+    public void removeTeam(Authentication auth, Long eventId, Long teamId) {
         try {
             stageScoreRepository.removeStageScoresByTeamIdAndEventId(eventId, teamId);
             eventTeamRepository.deleteByEventIdAndTeamId(eventId, teamId);
@@ -244,16 +249,19 @@ public class EventService {
                 stageScoreRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId);
                 penaltyRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId);
             });
+            log.debug("Removed teamId: " + teamId + "from eventId: " + eventId + " ,user: "+ auth.getName());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
-    public void confirmEntryFee(Long eventId, Long teamId) {
+    public void confirmEntryFee(Authentication auth, Long eventId, Long teamId) {
         EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
         boolean entryFeePaid = eventTeam.getEntryFeePaid() == null ? false : eventTeam.getEntryFeePaid();
         eventTeam.setEntryFeePaid(!entryFeePaid);
         eventTeamRepository.save(eventTeam);
+
+        log.debug("Confirmed Entry fee (value=" + entryFeePaid + "), teamId:" + teamId + " eventId:" + eventId+ ", user: " + auth.getName());
     }
 
     @Transactional
@@ -324,7 +332,7 @@ public class EventService {
         Event event = eventRepository.getById(eventId);
         EventWithLogoDTO eventDTO = new EventWithLogoDTO(event);
         eventDTO.setStages(event.getStages().stream().map(x -> new StageDTO(x)).collect(Collectors.toList()));
-        eventDTO.setReferee(event.getReferee().stream().map(x->new RefereeDto(x.getUserId(), x.getUsername())).collect(Collectors.toList()));
+        eventDTO.setReferee(event.getReferee().stream().map(x -> new RefereeDto(x.getUserId(), x.getUsername())).collect(Collectors.toList()));
 
         return eventDTO;
     }
@@ -482,7 +490,7 @@ public class EventService {
         penalty.setDescription(desc);
         penalty.setTeamId(teamId);
 
-        penaltyService.addPenalty(penalty, 0L);
+        penaltyService.addPenalty(penalty, 0L, null);
     }
 
     public boolean removeFile(Long fileId, Long eventId) {
