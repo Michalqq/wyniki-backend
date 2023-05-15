@@ -249,11 +249,11 @@ public class EventService {
                 stageScoreRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId);
                 penaltyRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId);
             });
-            log.info("Removed teamId: " + teamId + "from eventId: " + eventId + " ,user: "+ auth.getName());
+            log.info("Removed teamId: " + teamId + "from eventId: " + eventId + " ,user: " + auth.getName());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-    }ScoreToString
+    }
 
     public void confirmEntryFee(Authentication auth, Long eventId, Long teamId) {
         EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
@@ -261,7 +261,7 @@ public class EventService {
         eventTeam.setEntryFeePaid(!entryFeePaid);
         eventTeamRepository.save(eventTeam);
 
-        log.info("Confirmed Entry fee (value=" + entryFeePaid + "), teamId:" + teamId + " eventId:" + eventId+ ", user: " + auth.getName());
+        log.info("Confirmed Entry fee (value=" + entryFeePaid + "), teamId:" + teamId + " eventId:" + eventId + ", user: " + auth.getName());
     }
 
     @Transactional
