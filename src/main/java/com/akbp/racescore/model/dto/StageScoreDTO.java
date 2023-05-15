@@ -79,9 +79,12 @@ public class StageScoreDTO {
         this.totalTime = ScoreToString.toString(this.totalTimeWithPenalty);
     }
 
-    public void setScoreFromTotalScore(StageScore score) {
-        this.scoreMin = ScoreToString.getMinutes(score.getScore());
-        this.scoreSec = ScoreToString.getSeconds(score.getScore());
-        this.scoreMiliSec = ScoreToString.getMilis(score.getScore());
+    public void setScoreFromTotalScore(StageScore stageScore) {
+        Long score = stageScore.getScore();
+        if (score==null) return;
+
+        this.scoreMin = ScoreToString.getMinutes(score);
+        this.scoreSec = ScoreToString.getSeconds(score);
+        this.scoreMiliSec = ScoreToString.getMilis(score);
     }
 }

@@ -3,7 +3,7 @@ package com.akbp.racescore.utils;
 public class ScoreToString {
 
     public static final String toString(Long scoreInMilis) {
-        if (scoreInMilis==null) return null;
+        if (scoreInMilis == null) return null;
 
         int minutes = (int) (scoreInMilis / 60000);
 

@@ -253,7 +253,7 @@ public class EventService {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-    }
+    }ScoreToString
 
     public void confirmEntryFee(Authentication auth, Long eventId, Long teamId) {
         EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
