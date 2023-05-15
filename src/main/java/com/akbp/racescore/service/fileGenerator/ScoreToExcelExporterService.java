@@ -216,7 +216,7 @@ public class ScoreToExcelExporterService {
         Row row = sheet.createRow(index);
 
         scores = scores.stream().sorted(Comparator.comparing(x -> x.getStageId())).collect(Collectors.toList());
-        LOGGER.info("EventTeam: " + et.toString());
+        LOGGER.info("EventTeam: id=" + et.getTeamId());
 
         if (classificated) row.createCell(0).setCellValue(index - 6);
 
