@@ -216,7 +216,6 @@ public class ScoreToExcelExporterService {
         Row row = sheet.createRow(index);
 
         scores = scores.stream().sorted(Comparator.comparing(x -> x.getStageId())).collect(Collectors.toList());
-        LOGGER.info("Scores: " + scores.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
         LOGGER.info("EventTeam: " + et.toString());
 
         if (classificated) row.createCell(0).setCellValue(index - 6);
@@ -234,10 +233,8 @@ public class ScoreToExcelExporterService {
 
         scores.stream().forEach(x -> setScore(row, index2, x));
         Long penalties = setPenaltiesSum(row, index2, scores);
-        LOGGER.info("penalties: " + penalties);
 
         Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
-        LOGGER.info("sum: " + sum);
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(ScoreToString.toString(sum));
