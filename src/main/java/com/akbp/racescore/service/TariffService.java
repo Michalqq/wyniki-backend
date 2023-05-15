@@ -60,7 +60,7 @@ public class TariffService {
             stageScoreRepository.save(score);
         }
 
-        log.debug("Tariff calculated event: " + event.getName() + ", stage: " + stage.getName() + ", user: " + auth.getName());
+        log.info("Tariff calculated event: " + event.getName() + ", stage: " + stage.getName() + ", user: " + auth.getName());
     }
 
     private HashMap<CarClass, Long> getTariffByClass(Stage stage, List<EventClasses> eventClasses) {

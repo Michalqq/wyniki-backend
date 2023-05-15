@@ -63,7 +63,7 @@ public class PenaltyService {
             addPenaltyToScore(penalty);
 
         if (auth!=null)
-            log.debug("Added penalty: " + penalty + ", user: " + auth.getName());
+            log.info("Added penalty: " + penalty + ", user: " + auth.getName());
 
         return 1L;
     }
@@ -117,7 +117,7 @@ public class PenaltyService {
         penaltyRepository.deleteById(penaltyId);
 
         if (auth!=null)
-            log.debug("Removed penalty: " + penalty + ", user: " + auth.getName());
+            log.info("Removed penalty: " + penalty + ", user: " + auth.getName());
 
         return true;
     }

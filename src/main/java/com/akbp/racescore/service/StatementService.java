@@ -55,7 +55,7 @@ public class StatementService {
 
         statementRepository.save(statement);
 
-        log.debug("Statement added: " + statement.getStatementId() + ", user: " + auth.getName());
+        log.info("Statement added: " + statement.getStatementId() + ", user: " + auth.getName());
 
         return statement.getStatementId();
     }
@@ -69,7 +69,7 @@ public class StatementService {
         statement.setFile(postFile.getBytes());
         statementRepository.save(statement);
 
-        log.debug("Statement added: " + statement.getStatementId() + ", user: " + auth.getName());
+        log.info("Statement added: " + statement.getStatementId() + ", user: " + auth.getName());
 
         return "Dodano komunikat";
     }
@@ -89,7 +89,7 @@ public class StatementService {
         statement.setFileName(finalListName + ".pdf");
         statementRepository.save(statement);
 
-        log.debug("Final list generated and added to statement: " + finalListName + ", user: " + auth.getName());
+        log.info("Final list generated and added to statement: " + finalListName + ", user: " + auth.getName());
     }
 
     private void removeFinalListStatement(String finalListName) {
@@ -106,7 +106,7 @@ public class StatementService {
         if (eventRepository.checkIfUserIsReferee(statement.getEventId(), auth.getName()).isPresent())
             statementRepository.delete(statement);
 
-        log.debug("Deleted statement: " + statement + ", user: " + auth.getName());
+        log.info("Deleted statement: " + statement + ", user: " + auth.getName());
     }
 
     public Long getStatementsCount(Long eventId) {

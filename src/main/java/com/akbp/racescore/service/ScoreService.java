@@ -149,7 +149,7 @@ public class ScoreService {
     }
 
     private String logAndReturn(String result, Authentication auth) {
-        log.debug(result + ", user: " + auth.getName());
+        log.info(result + ", user: " + auth.getName());
         return result;
     }
 }
