@@ -70,10 +70,10 @@ public class AuthService {
     }
 
     public ResponseEntity<?> registerUser(AuthRequest signupRequest) {
-        if (userRepository.existsByUsername(signupRequest.getUsername()) || userRepository.existsByEmail(signupRequest.getUsername()))
-            return ResponseEntity.badRequest().body("Error: Wybrany login jest zajęty");
+        if (userRepository.existsByUsername(signupRequest.getUsername()) || userRepository.existsByEmailIgnoreCase(signupRequest.getUsername()))
+            return ResponseEntity.badRequest().body("Error: Wybrany login/email jest zajęty");
 
-        if (userRepository.existsByEmail(signupRequest.getEmail()))
+        if (userRepository.existsByEmailIgnoreCase(signupRequest.getEmail()))
             return ResponseEntity.badRequest().body("Error: Wybrany email jest zajęty");
 
         User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),

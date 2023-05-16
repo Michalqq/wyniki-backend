@@ -5,6 +5,7 @@ import com.akbp.racescore.model.entity.Car;
 import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.jwt.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,6 +18,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@Slf4j
 public class EmailSenderImpl implements EmailSender {
     public static final String EMAIL = "kraciukmichal@gmail.com";
 
@@ -59,11 +61,13 @@ public class EmailSenderImpl implements EmailSender {
 
             helper.getMimeMultipart().addBodyPart(imagePart);
             javaMailSender.send(mail);
+            log.info("Sent email " + to + " with msg: " + content);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return attemptCount == 1L ? sendEmail(2L, to, title, content) : false;
         }
+
     }
 
     public boolean sendPasswordReminderEmail(User user) {
@@ -127,8 +131,6 @@ public class EmailSenderImpl implements EmailSender {
         content += "Nie zapomnij podbić przeglądu przed kolejnymi zawodami!";
 
         content += getHtmlEnd();
-
-        sendEmail(1L, EMAIL, "Kończy się przegląd w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
 
         return sendEmail(1L, team.getEmail(), "Kończy się przegląd w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
     }

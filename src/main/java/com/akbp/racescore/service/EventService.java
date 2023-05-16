@@ -261,7 +261,7 @@ public class EventService {
         eventTeam.setEntryFeePaid(!entryFeePaid);
         eventTeamRepository.save(eventTeam);
 
-        log.info("Confirmed Entry fee (value=" + entryFeePaid + "), teamId:" + teamId + " eventId:" + eventId + ", user: " + auth.getName());
+        log.info("Confirmed Entry fee (value=" + !entryFeePaid + "), teamId:" + teamId + " eventId:" + eventId + ", user: " + auth.getName());
     }
 
     @Transactional
