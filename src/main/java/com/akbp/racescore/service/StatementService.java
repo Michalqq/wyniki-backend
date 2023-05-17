@@ -69,7 +69,7 @@ public class StatementService {
         statement.setFile(postFile.getBytes());
         statementRepository.save(statement);
 
-        log.info("Statement added: " + statement.getStatementId() + ", user: " + auth.getName());
+        log.info("Added file to statement: " + statement.getStatementId() + ", user: " + auth.getName());
 
         return "Dodano komunikat";
     }

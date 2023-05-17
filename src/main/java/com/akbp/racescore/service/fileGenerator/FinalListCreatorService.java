@@ -4,7 +4,6 @@ import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.entity.Stage;
 import com.akbp.racescore.model.entity.Team;
-import com.akbp.racescore.service.StatementService;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.font.constants.StandardFonts;
@@ -23,6 +22,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -124,16 +124,16 @@ public class FinalListCreatorService {
     }
 
     private void setAlign(Table table) {
-        table.getCell(1, 1).setHorizontalAlignment(HorizontalAlignment.CENTER);
+        table.getCell(0, 1).setHorizontalAlignment(HorizontalAlignment.CENTER);
     }
 
     private String getTeamNames(EventTeam et) {
-        String coDriver = et.getCoDriver() != null && et.getCoDriver() != "" ? " / " + et.getCoDriver() : "";
+        String coDriver = Strings.isNotBlank(et.getCoDriver()) ? " / " + et.getCoDriver() : "";
         return Optional.ofNullable(et.getDriver()).map(x -> x + coDriver).orElse("");
     }
 
     private String getClubs(EventTeam et) {
-        String coClub = et.getCoClub() != null && et.getCoClub() != "" ? " / " + et.getCoClub() : "";
+        String coClub = Strings.isNotBlank(et.getCoClub()) ? " / " + et.getCoClub() : "";
         return Optional.ofNullable(et.getClub()).map(x -> x + coClub).orElse("");
     }
 
