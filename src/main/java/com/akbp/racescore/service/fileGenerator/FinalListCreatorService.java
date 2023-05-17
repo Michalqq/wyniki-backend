@@ -47,23 +47,22 @@ public class FinalListCreatorService {
         this.startTime = startTime;
         this.frequency = frequency;
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PdfWriter writer = new PdfWriter(out);
-        PdfDocument pdf = new PdfDocument(writer);
-        Document doc = new Document(pdf);
         try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            PdfWriter writer = new PdfWriter(out);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document doc = new Document(pdf);
             FontProgram fontProgram = FontProgramFactory.createFont(StandardFonts.TIMES_ROMAN);
             PdfFont font = PdfFontFactory.createFont(fontProgram, "CP1250");
             doc.setFont(font).setFontSize(6);
+            createPage(doc, eventTeams, event, stage, pkc);
+            doc.close();
+
+            return out.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
         }
-        createPage(doc, eventTeams, event, stage, pkc);
-
-        doc.close();
-
-        return out.toByteArray();
     }
 
     private void createPage(Document doc, List<EventTeam> eventTeams, Event event, Stage stage, String pkc) {

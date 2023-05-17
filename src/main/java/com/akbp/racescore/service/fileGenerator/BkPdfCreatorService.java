@@ -5,6 +5,7 @@ import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.repository.EventRepository;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BkPdfCreatorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BkPdfCreatorService.class);
@@ -88,15 +90,19 @@ public class BkPdfCreatorService {
     }
 
     private void createPagesForTeams(List<EventTeam> eventTeams) throws IOException, DocumentException {
-        Document doc = new Document();
-        PdfReader reader = new PdfReader(BK_FORM_PATH);
-        PdfCopy copy = new PdfSmartCopy(doc, new FileOutputStream(BK_FOR_EVENT_FORM_PATH));
-        doc.open();
+        try {
+            Document doc = new Document();
+            PdfReader reader = new PdfReader(BK_FORM_PATH);
+            PdfCopy copy = new PdfSmartCopy(doc, new FileOutputStream(BK_FOR_EVENT_FORM_PATH));
+            doc.open();
 
-        for (int i = 1; i <= eventTeams.size(); i++)
-            copy.addPage(copy.getImportedPage(reader, 1));
-        doc.close();
-        copy.close();
+            for (int i = 1; i <= eventTeams.size(); i++)
+                copy.addPage(copy.getImportedPage(reader, 1));
+            doc.close();
+            copy.close();
+        } catch (IOException e){
+            log.error(e.getMessage());
+        }
     }
 
     private byte[] getPdf(Event event, List<EventTeam> eventTeams) {

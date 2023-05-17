@@ -9,6 +9,7 @@ import com.akbp.racescore.model.repository.PenaltyRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.service.ScoreService;
 import com.akbp.racescore.utils.ScoreToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ScoreToExcelExporterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScoreToExcelExporterService.class);
@@ -49,21 +51,26 @@ public class ScoreToExcelExporterService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.ms-excel"));
-        headers.set("Content-Disposition", "attachment; filename=" + "wyniki" + event.getEventId() + ".xls");
+        headers.set("Content-Disposition", "attachment; filename=" + "wyniki" + event.getEventId() + ".xlsx");
         headers.setContentLength(out.toByteArray().length);
 
         return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
     }
 
     private ByteArrayOutputStream getOutputStream(Event event, List<StageScore> scores) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        workbook = new XSSFWorkbook();
-        workbook = getScoresWorkbook(event, scores);
-        workbook.write(out);
-        workbook.close();
+            workbook = new XSSFWorkbook();
+            workbook = getScoresWorkbook(event, scores);
+            workbook.write(out);
+            workbook.close();
 
-        return out;
+            return out;
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 
     private Workbook getScoresWorkbook(Event event, List<StageScore> scores) {

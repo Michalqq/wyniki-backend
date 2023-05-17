@@ -185,7 +185,6 @@ public class EventController {
     }
 
     @PostMapping("addLogoFile")
-//    @CachePut(cacheNames="logoPaths")
     public boolean addLogoFile(@RequestBody MultipartFile file,
                                @RequestParam("eventId") Long eventId) {
         try {

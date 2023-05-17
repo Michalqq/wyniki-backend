@@ -3,6 +3,7 @@ package com.akbp.racescore.service.fileGenerator;
 import com.akbp.racescore.model.entity.Event;
 import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.repository.EventRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
+@Slf4j
 public class ListToExcelExporterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScoreToExcelExporterService.class);
@@ -37,21 +39,25 @@ public class ListToExcelExporterService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.ms-excel"));
-        headers.set("Content-Disposition", "attachment; filename=" + "lista_zawodnikow_" + event.getEventId() + ".xls");
+        headers.set("Content-Disposition", "attachment; filename=" + "lista_zawodnikow_" + event.getEventId() + ".xlsx");
         headers.setContentLength(out.toByteArray().length);
 
         return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
     }
 
     private ByteArrayOutputStream getOutputStream(Event event) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            workbook = new XSSFWorkbook();
+            workbook = getScoresWorkbook(event);
+            workbook.write(out);
+            workbook.close();
 
-        workbook = new XSSFWorkbook();
-        workbook = getScoresWorkbook(event);
-        workbook.write(out);
-        workbook.close();
-
-        return out;
+            return out;
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 
     private Workbook getScoresWorkbook(Event event) {
