@@ -1,9 +1,12 @@
 package com.akbp.racescore.controller;
 
-import com.akbp.racescore.model.dto.*;
+import com.akbp.racescore.model.dto.EventTeamDto;
+import com.akbp.racescore.model.dto.FileDto;
+import com.akbp.racescore.model.dto.StgesAndClassesDTO;
 import com.akbp.racescore.model.dto.event.BasicEventDto;
 import com.akbp.racescore.model.dto.event.EventDTO;
 import com.akbp.racescore.model.dto.event.EventWithLogoDTO;
+import com.akbp.racescore.model.dto.event.SimpleEventDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -61,9 +64,9 @@ public class EventController {
     }
 
     @GetMapping("/getAllBefore")
-    public List<EventDTO> getAllBefore(Authentication auth) {
+    public List<SimpleEventDTO> getAllBefore() {
         try {
-            return eventService.getAllBefore(auth);
+            return eventService.getAllBefore();
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

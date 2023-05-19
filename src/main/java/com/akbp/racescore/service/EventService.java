@@ -7,6 +7,7 @@ import com.akbp.racescore.model.dto.RefereeDto;
 import com.akbp.racescore.model.dto.event.BasicEventDto;
 import com.akbp.racescore.model.dto.event.EventDTO;
 import com.akbp.racescore.model.dto.event.EventWithLogoDTO;
+import com.akbp.racescore.model.dto.event.SimpleEventDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -133,11 +134,11 @@ public class EventService {
         return prepareEvents(eventRepository.findAll(), auth);
     }
 
-    public List<EventDTO> getAllBefore(Authentication auth) {
+    public List<SimpleEventDTO> getAllBefore() {
         Instant today = Instant.now();
         today = today.atZone(ZoneOffset.UTC).withHour(0).withMinute(0).withSecond(1).toInstant();
 
-        return prepareEvents(eventRepository.findAllByDateLessThan(today), auth).stream().sorted(Comparator.comparing(EventDTO::getDate).reversed()).collect(Collectors.toList());
+        return prepareSimpleEvents(eventRepository.findAllByDateLessThan(today)).stream().sorted(Comparator.comparing(SimpleEventDTO::getDate).reversed()).collect(Collectors.toList());
     }
 
     public List<EventDTO> getAllFuture(Authentication auth) {
@@ -154,6 +155,10 @@ public class EventService {
             return eventWithJoinedMark(eventDTOS, auth);
 
         return eventDTOS;
+    }
+
+    private List<SimpleEventDTO> prepareSimpleEvents(List<Event> events) {
+        return events.stream().map(x -> new SimpleEventDTO(x)).collect(Collectors.toList());
     }
 
     private List<EventDTO> eventWithJoinedMark(List<EventDTO> eventDTOS, Authentication auth) {
