@@ -9,6 +9,7 @@ import com.akbp.racescore.model.repository.PenaltyRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.service.ScoreService;
 import com.akbp.racescore.utils.ScoreToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ScoreToExcelExporterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScoreToExcelExporterService.class);
@@ -49,21 +51,26 @@ public class ScoreToExcelExporterService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.ms-excel"));
-        headers.set("Content-Disposition", "attachment; filename=" + "wyniki" + event.getEventId() + ".xls");
+        headers.set("Content-Disposition", "attachment; filename=" + "wyniki" + event.getEventId() + ".xlsx");
         headers.setContentLength(out.toByteArray().length);
 
         return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
     }
 
     private ByteArrayOutputStream getOutputStream(Event event, List<StageScore> scores) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        workbook = new XSSFWorkbook();
-        workbook = getScoresWorkbook(event, scores);
-        workbook.write(out);
-        workbook.close();
+            workbook = new XSSFWorkbook();
+            workbook = getScoresWorkbook(event, scores);
+            workbook.write(out);
+            workbook.close();
 
-        return out;
+            return out;
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 
     private Workbook getScoresWorkbook(Event event, List<StageScore> scores) {
@@ -216,8 +223,7 @@ public class ScoreToExcelExporterService {
         Row row = sheet.createRow(index);
 
         scores = scores.stream().sorted(Comparator.comparing(x -> x.getStageId())).collect(Collectors.toList());
-        LOGGER.info("Scores: " + scores.stream().map(x -> x.toString()).collect(Collectors.joining("\n")));
-        LOGGER.info("EventTeam: " + et.toString());
+        LOGGER.info("EventTeam: id=" + et.getTeamId());
 
         if (classificated) row.createCell(0).setCellValue(index - 6);
 
@@ -234,10 +240,8 @@ public class ScoreToExcelExporterService {
 
         scores.stream().forEach(x -> setScore(row, index2, x));
         Long penalties = setPenaltiesSum(row, index2, scores);
-        LOGGER.info("penalties: " + penalties);
 
         Long sum = scores.stream().filter(x -> !Boolean.TRUE.equals(x.getDisqualified())).mapToLong(x -> Optional.ofNullable(x.getScore()).orElse(0L)).sum() + penalties * 1000;
-        LOGGER.info("sum: " + sum);
 
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(ScoreToString.toString(sum));
@@ -313,7 +317,7 @@ public class ScoreToExcelExporterService {
         if (scores.isEmpty()) return 0L;
 
         Long penaltiesSum = 0L;
-        List<Penalty> penalties = penaltyRepository.findByStageIdInAndTeamId(scores.stream().map(x -> x.getStageId()).collect(Collectors.toList()), scores.get(0).getTeamId());
+        List<Penalty> penalties = penaltyRepository.findByStageIdInAndTeamIdIn(scores.stream().map(x -> x.getStageId()).collect(Collectors.toList()), List.of(scores.get(0).getTeamId()));
         if (!penalties.isEmpty()) {
             penaltiesSum = penalties.stream().mapToLong(y -> Optional.ofNullable(y.getPenaltySec()).orElse(0L)).sum();
             row.createCell(index2.get()).setCellValue(penaltiesSum + " sek");

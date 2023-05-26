@@ -13,7 +13,7 @@ import {
 import { AddStatementModal } from "./AddStatementModal";
 import { backendUrl, checkReferee, fetchStatement } from "../utils/fetchUtils";
 import moment from "moment";
-import { download, openFile } from "../utils/fileUtils";
+import { download } from "../utils/fileUtils";
 import { OkCancelModal, OkModal } from "../common/Modal";
 import authHeader from "../../service/auth-header";
 import { Spinner } from "react-bootstrap";
@@ -61,10 +61,14 @@ export const StatementModal = ({ show, handleClose, event }) => {
   };
 
   const downloadFile = (statementId, fileName) => {
-    download(
+    window.open(
       `${backendUrl()}/statement/downloadFile?statementId=${statementId}`,
-      fileName + ".pdf"
+      "_blank"
     );
+    // download(
+    //   `${backendUrl()}/statement/downloadFile?statementId=${statementId}`,
+    //   fileName + ".pdf"
+    // );
   };
 
   const columns = useMemo(

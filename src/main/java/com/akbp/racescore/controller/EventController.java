@@ -1,6 +1,12 @@
 package com.akbp.racescore.controller;
 
-import com.akbp.racescore.model.dto.*;
+import com.akbp.racescore.model.dto.EventTeamDto;
+import com.akbp.racescore.model.dto.FileDto;
+import com.akbp.racescore.model.dto.StgesAndClassesDTO;
+import com.akbp.racescore.model.dto.event.BasicEventDto;
+import com.akbp.racescore.model.dto.event.EventDTO;
+import com.akbp.racescore.model.dto.event.EventWithLogoDTO;
+import com.akbp.racescore.model.dto.event.SimpleEventDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -11,8 +17,6 @@ import com.akbp.racescore.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -60,9 +64,9 @@ public class EventController {
     }
 
     @GetMapping("/getAllBefore")
-    public List<EventDTO> getAllBefore(Authentication auth) {
+    public List<SimpleEventDTO> getAllBefore() {
         try {
-            return eventService.getAllBefore(auth);
+            return eventService.getAllBefore();
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -144,9 +148,9 @@ public class EventController {
     }
 
     @PostMapping("/removeTeam")
-    public boolean removeTeam(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
+    public boolean removeTeam(Authentication auth, @RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
         try {
-            eventService.removeTeam(eventId, teamId);
+            eventService.removeTeam(auth, eventId, teamId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -154,9 +158,9 @@ public class EventController {
     }
 
     @PostMapping("confirmEntryFee")
-    public boolean confirmEntryFee(@RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
+    public boolean confirmEntryFee(Authentication auth, @RequestParam("eventId") Long eventId, @RequestParam("teamId") Long teamId) {
         try {
-            eventService.confirmEntryFee(eventId, teamId);
+            eventService.confirmEntryFee(auth, eventId, teamId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -184,7 +188,6 @@ public class EventController {
     }
 
     @PostMapping("addLogoFile")
-//    @CachePut(cacheNames="logoPaths")
     public boolean addLogoFile(@RequestBody MultipartFile file,
                                @RequestParam("eventId") Long eventId) {
         try {
@@ -228,6 +231,16 @@ public class EventController {
     public EventWithLogoDTO getEvent(@RequestParam Long eventId) {
         try {
             return eventService.getEvent(eventId);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+        }
+        return null;
+    }
+
+    @GetMapping("getBasicEvent")
+    public BasicEventDto getBasicEvent(@RequestParam Long eventId) {
+        try {
+            return eventService.getBasicEvent(eventId);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }

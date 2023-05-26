@@ -20,8 +20,6 @@ public class EventTeamDto {
 
     private Long eventId;
 
-    private Team team;
-
     private Long teamId;
 
     private Integer number;
@@ -50,9 +48,7 @@ public class EventTeamDto {
 
     private boolean entryFeeFileExist;
 
-    private Car car;
-
-    private Long carClassId;
+    private CarDto car;
 
     private CarClass carClass;
 }

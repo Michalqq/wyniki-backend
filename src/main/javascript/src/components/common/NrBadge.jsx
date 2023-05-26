@@ -13,7 +13,7 @@ export const NrBadge = ({ value, isBold, onClick }) => {
         scale: scale,
         paddingTop: "5px",
         justifyContent: "center",
-        display: "grid",
+        display: "inline-flex",
         width: "22px",
         height: "22px",
         borderRadius: "20px",

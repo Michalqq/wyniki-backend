@@ -19,8 +19,6 @@ public interface EventTeamRepository extends JpaRepository<EventTeam, Long> {
 
     EventTeam findByEventIdAndTeamId(Long eventId, Long teamId);
 
-    List<EventTeam> findByTeamId(Long teamId);
-
     List<EventTeam> findByEventId(Long eventId);
 
     Long countByEventId(Long eventId);

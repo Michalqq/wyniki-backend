@@ -143,7 +143,7 @@ export const AddStatementModal = ({ show, handleClose, eventId }) => {
                 <span className={"font14 input-group-text py-0 "} id="">
                   Dodaj plik
                 </span>
-                <div class="input-group mb-0">
+                <div className="input-group mb-0">
                   <input
                     type="file"
                     name="file"

@@ -13,7 +13,9 @@ import com.akbp.racescore.model.repository.PenaltyRepository;
 import com.akbp.racescore.model.repository.StageRepository;
 import com.akbp.racescore.model.repository.StageScoreRepository;
 import com.akbp.racescore.model.repository.dictionary.PenaltyDictRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PenaltyService {
     private final PenaltyRepository penaltyRepository;
     private final PenaltyDictRepository penaltyDictRepository;
@@ -45,7 +48,7 @@ public class PenaltyService {
     }
 
     @Transactional
-    public Long addPenalty(Penalty penalty, Long seconds) {
+    public Long addPenalty(Penalty penalty, Long seconds, Authentication auth) {
         PenaltyDict penaltyDict = penaltyDictRepository.getById(penalty.getPenaltyKind());
         if (penaltyDict.getDisqualification())
             setDisualifiedInStageScores(penalty, true);
@@ -58,6 +61,9 @@ public class PenaltyService {
 
         if (penalty.getPenaltyDict().getId() == TARIFF_PENALTY_ID)
             addPenaltyToScore(penalty);
+
+        if (auth!=null)
+            log.info("Added penalty: " + penalty + ", user: " + auth.getName());
 
         return 1L;
     }
@@ -103,12 +109,16 @@ public class PenaltyService {
         return penaltyDTOS.stream().sorted(Comparator.comparingInt(x -> x.getNumber())).collect(Collectors.toList());
     }
 
-    public boolean removePenalty(Long penaltyId) {
+    public boolean removePenalty(Long penaltyId, Authentication auth) {
         Penalty penalty = penaltyRepository.getById(penaltyId);
         if (penalty!=null && penalty.getPenaltyDict().getId() == TARIFF_PENALTY_ID)
             removeTariffFromScore(penalty);
 
         penaltyRepository.deleteById(penaltyId);
+
+        if (auth!=null)
+            log.info("Removed penalty: " + penalty + ", user: " + auth.getName());
+
         return true;
     }
 
@@ -132,10 +142,10 @@ public class PenaltyService {
         return x.getDescription() + " [" + x.getPenaltySec() + "s]";
     }
 
-    public boolean removeDisqualification(Long penaltyId) {
+    public boolean removeDisqualification(Long penaltyId, Authentication auth) {
         Penalty penalty = penaltyRepository.getById(penaltyId);
         setDisualifiedInStageScores(penalty, false);
-        removePenalty(penaltyId);
+        removePenalty(penaltyId, auth);
         return true;
     }
 

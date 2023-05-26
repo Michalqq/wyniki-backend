@@ -10,7 +10,6 @@ import {
   fetchPsOptions,
   fetchRemoveFromEvent,
   fetchSaveEventTeam,
-  fetchSaveTeam,
 } from "../utils/fetchUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -66,6 +65,8 @@ export const AdminTeamList = ({
 
   const [downloadingOA, setDownloadingOA] = useState(false);
   const [downloadingBK, setDownloadingBK] = useState(false);
+  const [downloadingTeamsExcelData, setDownloadingTeamsExcelData] =
+    useState(false);
 
   const [finalList, setFinalList] = useState(false);
   const [classesOptions, setClassesOptions] = useState([]);
@@ -97,7 +98,7 @@ export const AdminTeamList = ({
       classFilter !== "0"
         ? teams.filter(
             (x) =>
-              x.carClass.name === classFilter ||
+              x.carClass?.name === classFilter ||
               x.car?.driveTypeEnum === classFilter
           )
         : teams
@@ -118,10 +119,10 @@ export const AdminTeamList = ({
     });
   };
 
-  const getDriverAndTeamId = (team) => {
+  const getDriverAndTeamId = (eventTeam) => {
     return {
-      teamId: team.teamId,
-      driver: team.driver + " / " + team.coDriver,
+      teamId: eventTeam.teamId,
+      driver: eventTeam.driver + " / " + eventTeam.coDriver,
     };
   };
 
@@ -143,7 +144,7 @@ export const AdminTeamList = ({
       .then((res) => {
         setEventClasses(
           res.data.eventClasses.map((x) => {
-            return { ...x, value: x.carClassId, label: x.carClass.name };
+            return { ...x, value: x.carClassId, label: x.carClass?.name };
           })
         );
       });
@@ -153,6 +154,15 @@ export const AdminTeamList = ({
     download(
       `${backendUrl()}/event/getEntryFeeFile?eventId=${eventId}&teamId=${teamId}`,
       "potwierdzenie_wplaty_" + teamName + ".pdf"
+    );
+  };
+
+  const downloadEventTeamExcelData = () => {
+    setDownloadingTeamsExcelData(true);
+    download(
+      `${backendUrl()}/file/getEventTeamExcelData?eventId=${eventId}`,
+      "lista_zawodników" + eventId + ".xls",
+      () => setDownloadingTeamsExcelData(false)
     );
   };
 
@@ -240,6 +250,7 @@ export const AdminTeamList = ({
 
     if (teams[index].carClassId === newCarClassId) return;
     teams[index].carClassId = newCarClassId;
+    teams[index].carClass.carClassId = newCarClassId;
     setTeams(teams);
   };
 
@@ -400,7 +411,15 @@ export const AdminTeamList = ({
                                             <FontAwesomeIcon
                                               icon={faUserEdit}
                                               onClick={() =>
-                                                setTeamToEdit(item.team)
+                                                setTeamToEdit({
+                                                  teamId: item.teamId,
+                                                  driver: item.driver,
+                                                  coDriver: item.coDriver,
+                                                  club: item.club,
+                                                  coClub: item.coClub,
+                                                  teamName: item.teamName,
+                                                  currentCar: item.car,
+                                                })
                                               }
                                               title={"Edytuj dane"}
                                               cursor={"pointer"}
@@ -478,7 +497,9 @@ export const AdminTeamList = ({
                                                   );
                                                 }}
                                                 isValid={true}
-                                                value={item.carClassId}
+                                                value={
+                                                  item.carClass?.carClassId
+                                                }
                                               />
                                             )}
                                             {refreshSelect && (
@@ -518,7 +539,7 @@ export const AdminTeamList = ({
                                               icon={faCoins}
                                               onClick={() =>
                                                 setTeamToEntryFee(
-                                                  getDriverAndTeamId(item.team)
+                                                  getDriverAndTeamId(item)
                                                 )
                                               }
                                               title={"Potwierdź wpisowe"}
@@ -531,8 +552,8 @@ export const AdminTeamList = ({
                                                 icon={faDownload}
                                                 onClick={() =>
                                                   fetchEntryFeeFile(
-                                                    item.team.teamId,
-                                                    item.team.driver
+                                                    item.teamId,
+                                                    item.driver
                                                   )
                                                 }
                                                 title={"Pobierz plik"}
@@ -543,30 +564,19 @@ export const AdminTeamList = ({
                                             )}
                                           </td>
                                           <td style={{ width: "30px" }}>
-                                            {item.teamChecked ? (
-                                              <FontAwesomeIcon
-                                                className={"text-success"}
-                                                icon={faClipboard}
-                                                onClick={() =>
-                                                  setTeamToPreview(
-                                                    item.team.teamId
-                                                  )
-                                                }
-                                                title={"Podgląd danych"}
-                                                cursor={"pointer"}
-                                              />
-                                            ) : (
-                                              <FontAwesomeIcon
-                                                icon={faClipboard}
-                                                onClick={() =>
-                                                  setTeamToPreview(
-                                                    item.team.teamId
-                                                  )
-                                                }
-                                                title={"Podgląd danych"}
-                                                cursor={"pointer"}
-                                              />
-                                            )}
+                                            <FontAwesomeIcon
+                                              className={
+                                                item.teamChecked
+                                                  ? "text-success"
+                                                  : ""
+                                              }
+                                              icon={faClipboard}
+                                              onClick={() =>
+                                                setTeamToPreview(item)
+                                              }
+                                              title={"Podgląd danych"}
+                                              cursor={"pointer"}
+                                            />
                                           </td>
                                           <td style={{ width: "30px" }}>
                                             <BkOaDiv
@@ -586,7 +596,7 @@ export const AdminTeamList = ({
                                               icon={faTimesCircle}
                                               onClick={() =>
                                                 setTeamToRemove(
-                                                  getDriverAndTeamId(item.team)
+                                                  getDriverAndTeamId(item)
                                                 )
                                               }
                                               title={"Usuń załoge"}
@@ -687,7 +697,7 @@ export const AdminTeamList = ({
               myEvent={{
                 eventId: eventId,
                 started: false,
-                teamId: teamToPreview,
+                team: teamToPreview,
               }}
               mode="preview"
             />
@@ -734,6 +744,13 @@ export const AdminTeamList = ({
                 onClick={() => fetchBkDocuments()}
                 msg="Pobierz dokumenty BK"
                 loadingMsg="Pobieranie dokumentów BK"
+              />
+              <MyButton
+                variant="primary"
+                isLoading={downloadingTeamsExcelData}
+                onClick={() => downloadEventTeamExcelData()}
+                msg="Pobierz listę zawodników (Excel)"
+                loadingMsg="Pobieranie listy zawodników"
               />
             </div>
             <div className="col-xl-12">

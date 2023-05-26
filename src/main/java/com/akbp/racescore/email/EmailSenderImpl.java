@@ -5,6 +5,7 @@ import com.akbp.racescore.model.entity.Car;
 import com.akbp.racescore.model.entity.Team;
 import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.jwt.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,6 +18,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@Slf4j
 public class EmailSenderImpl implements EmailSender {
     public static final String EMAIL = "kraciukmichal@gmail.com";
 
@@ -59,11 +61,13 @@ public class EmailSenderImpl implements EmailSender {
 
             helper.getMimeMultipart().addBodyPart(imagePart);
             javaMailSender.send(mail);
+            log.info("Sent email " + to + " with msg: " + content);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return attemptCount == 1L ? sendEmail(2L, to, title, content) : false;
         }
+
     }
 
     public boolean sendPasswordReminderEmail(User user) {
@@ -108,9 +112,27 @@ public class EmailSenderImpl implements EmailSender {
 
         content += getHtmlEnd();
 
-        sendEmail(1L, EMAIL, "WYSłANO - Kończy się ubezpieczenie w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
-        
         return sendEmail(1L, team.getEmail(), "Kończy się ubezpieczenie w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
+    }
+
+    public boolean sendCarInspectionNotification(Team team, Car car) {
+        String content = getHtmlStart();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault());
+        String insuranceExpiryDate = formatter.format(car.getInsuranceExpiryDate());
+
+        content += "<h2>Cześć " + team.getDriver() + "</h2>";
+        content += "<p><br></br></p>";
+
+        content += "<h4>tutaj Michał ze strony: <a href=https://www.wyniki.online>www.wyniki.online</a> - Wyniki motorsportowe online AKBP</h4>";
+        content += "<p><br></br></p>";
+        content += "<h3>W Twojej rajdówce: " + car.getBrand() + " " + car.getModel() + " nr. rej. " + car.getLicensePlate() + " przegląd techniczny skończy się dnia: "
+                + insuranceExpiryDate + "</h3>";
+        content += "Nie zapomnij podbić przeglądu przed kolejnymi zawodami!";
+
+        content += getHtmlEnd();
+
+        return sendEmail(1L, team.getEmail(), "Kończy się przegląd w Twojej rajdówce: " + car.getBrand() + " " + car.getModel(), content);
     }
 
     public boolean sendMsg(MsgDto msg) {
@@ -135,7 +157,7 @@ public class EmailSenderImpl implements EmailSender {
 
     private String getHtmlEnd() {
         String content = "<br></br>";
-        content = "__________________________________________________";
+        content += "__________________________________________________";
         content += "<br></br>";
         content += "<h6>Ten email został wygenerowany automatycznie.</h6>";
         content += "</head></html>";

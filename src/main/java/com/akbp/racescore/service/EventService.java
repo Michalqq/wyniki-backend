@@ -1,6 +1,13 @@
 package com.akbp.racescore.service;
 
-import com.akbp.racescore.model.dto.*;
+import com.akbp.racescore.model.dto.EventTeamDto;
+import com.akbp.racescore.model.dto.FileDto;
+import com.akbp.racescore.model.dto.PenaltyDTO;
+import com.akbp.racescore.model.dto.RefereeDto;
+import com.akbp.racescore.model.dto.event.BasicEventDto;
+import com.akbp.racescore.model.dto.event.EventDTO;
+import com.akbp.racescore.model.dto.event.EventWithLogoDTO;
+import com.akbp.racescore.model.dto.event.SimpleEventDTO;
 import com.akbp.racescore.model.dto.selectors.ClassesOption;
 import com.akbp.racescore.model.dto.selectors.PsOption;
 import com.akbp.racescore.model.dto.selectors.RefereeOption;
@@ -14,9 +21,9 @@ import com.akbp.racescore.security.model.entity.User;
 import com.akbp.racescore.security.model.repository.UserRepository;
 import com.akbp.racescore.service.fileGenerator.FinalListCreatorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,6 +44,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventService {
 
     private static final String GENERAL = "GENERALNA";
@@ -86,9 +94,7 @@ public class EventService {
     }
 
     public List<EventTeamDto> getBasicTeams(Long eventId) {
-        Optional<Event> eventOptional = eventRepository.findById(eventId);
-
-        return eventOptional.get().getEventTeams().stream()
+        return eventTeamRepository.findByEventId(eventId).stream()
                 .sorted(Comparator.comparingInt(x -> x.getOrder()))
                 .map(x -> {
                     EventTeamDto et = modelMapper.map(x, EventTeamDto.class);
@@ -128,11 +134,11 @@ public class EventService {
         return prepareEvents(eventRepository.findAll(), auth);
     }
 
-    public List<EventDTO> getAllBefore(Authentication auth) {
+    public List<SimpleEventDTO> getAllBefore() {
         Instant today = Instant.now();
         today = today.atZone(ZoneOffset.UTC).withHour(0).withMinute(0).withSecond(1).toInstant();
 
-        return prepareEvents(eventRepository.findAllByDateLessThan(today), auth);
+        return prepareSimpleEvents(eventRepository.findAllByDateLessThan(today)).stream().sorted(Comparator.comparing(SimpleEventDTO::getDate).reversed()).collect(Collectors.toList());
     }
 
     public List<EventDTO> getAllFuture(Authentication auth) {
@@ -149,6 +155,10 @@ public class EventService {
             return eventWithJoinedMark(eventDTOS, auth);
 
         return eventDTOS;
+    }
+
+    private List<SimpleEventDTO> prepareSimpleEvents(List<Event> events) {
+        return events.stream().map(x -> new SimpleEventDTO(x)).collect(Collectors.toList());
     }
 
     private List<EventDTO> eventWithJoinedMark(List<EventDTO> eventDTOS, Authentication auth) {
@@ -234,7 +244,7 @@ public class EventService {
     }
 
     @Transactional
-    public void removeTeam(Long eventId, Long teamId) {
+    public void removeTeam(Authentication auth, Long eventId, Long teamId) {
         try {
             stageScoreRepository.removeStageScoresByTeamIdAndEventId(eventId, teamId);
             eventTeamRepository.deleteByEventIdAndTeamId(eventId, teamId);
@@ -244,16 +254,19 @@ public class EventService {
                 stageScoreRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId);
                 penaltyRepository.deleteByStageIdAndTeamId(x.getStageId(), teamId);
             });
+            log.info("Removed teamId: " + teamId + "from eventId: " + eventId + " ,user: " + auth.getName());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
-    public void confirmEntryFee(Long eventId, Long teamId) {
+    public void confirmEntryFee(Authentication auth, Long eventId, Long teamId) {
         EventTeam eventTeam = eventTeamRepository.findByEventIdAndTeamId(eventId, teamId);
         boolean entryFeePaid = eventTeam.getEntryFeePaid() == null ? false : eventTeam.getEntryFeePaid();
         eventTeam.setEntryFeePaid(!entryFeePaid);
         eventTeamRepository.save(eventTeam);
+
+        log.info("Confirmed Entry fee (value=" + !entryFeePaid + "), teamId:" + teamId + " eventId:" + eventId + ", user: " + auth.getName());
     }
 
     @Transactional
@@ -324,9 +337,13 @@ public class EventService {
         Event event = eventRepository.getById(eventId);
         EventWithLogoDTO eventDTO = new EventWithLogoDTO(event);
         eventDTO.setStages(event.getStages().stream().map(x -> new StageDTO(x)).collect(Collectors.toList()));
-        eventDTO.setReferee(event.getReferee());
+        eventDTO.setReferee(event.getReferee().stream().map(x -> new RefereeDto(x.getUserId(), x.getUsername())).collect(Collectors.toList()));
 
         return eventDTO;
+    }
+
+    public BasicEventDto getBasicEvent(Long eventId) {
+        return new BasicEventDto(eventRepository.getById(eventId));
     }
 
     public Boolean deleteEvent(Long eventId) {
@@ -388,7 +405,16 @@ public class EventService {
     }
 
     public boolean saveNumbersAndClasses(List<EventTeam> teams, Long eventId) {
-        teams.stream().forEach(x -> eventTeamRepository.save(x));
+        teams.stream().forEach(x -> {
+            EventTeam etEntity = eventTeamRepository.findByEventIdAndTeamId(eventId, x.getTeamId());
+            etEntity.setNumber(x.getNumber());
+            etEntity.setOrder(x.getOrder());
+            etEntity.setForcedNumber(x.getForcedNumber());
+            if (x.getCarClassId() != null)
+                etEntity.setCarClassId(x.getCarClassId());
+
+            eventTeamRepository.save(etEntity);
+        });
 
         List<StageScore> stageScores = stageScoreRepository.findAllByEventId(eventId);
 
@@ -469,7 +495,7 @@ public class EventService {
         penalty.setDescription(desc);
         penalty.setTeamId(teamId);
 
-        penaltyService.addPenalty(penalty, 0L);
+        penaltyService.addPenalty(penalty, 0L, null);
     }
 
     public boolean removeFile(Long fileId, Long eventId) {
@@ -563,6 +589,15 @@ public class EventService {
     public void saveEventTeam(Long eventId, Team team) {
         EventTeam et = eventTeamRepository.findByEventIdAndTeamId(eventId, team.getTeamId());
         if (et == null) return;
+
+        Car car = et.getCar();
+        car.setBrand(team.getCurrentCar().getBrand());
+        car.setModel(team.getCurrentCar().getModel());
+        car.setEngineCapacity(team.getCurrentCar().getEngineCapacity());
+        car.setTurbo(team.getCurrentCar().getTurbo());
+        car.setDriveType(team.getCurrentCar().getDriveType());
+        team.setCurrentCar(car);
+
         setTeamData(et, team);
 
         eventTeamRepository.save(et);

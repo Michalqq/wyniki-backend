@@ -1,7 +1,9 @@
 package com.akbp.racescore.service.fileGenerator;
 
-import com.akbp.racescore.model.entity.*;
+import com.akbp.racescore.model.entity.Event;
+import com.akbp.racescore.model.entity.EventTeam;
 import com.akbp.racescore.model.repository.EventRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -15,10 +17,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
+@Slf4j
 public class ListToExcelExporterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScoreToExcelExporterService.class);
@@ -34,42 +39,44 @@ public class ListToExcelExporterService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.ms-excel"));
-        headers.set("Content-Disposition", "attachment; filename=" + "lista_zawodnikow" + event.getName() + ".xls");
+        headers.set("Content-Disposition", "attachment; filename=" + "lista_zawodnikow_" + event.getEventId() + ".xlsx");
         headers.setContentLength(out.toByteArray().length);
 
         return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.OK);
     }
 
     private ByteArrayOutputStream getOutputStream(Event event) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            workbook = new XSSFWorkbook();
+            workbook = getScoresWorkbook(event);
+            workbook.write(out);
+            workbook.close();
 
-        workbook = new XSSFWorkbook();
-        workbook = getScoresWorkbook(event);
-        workbook.write(out);
-        workbook.close();
-
-        return out;
+            return out;
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw e;
+        }
     }
 
     private Workbook getScoresWorkbook(Event event) {
         createSheet("Lista zawodników", event);
-
         return workbook;
     }
 
     private void createSheet(String sheetName, Event event) {
-        Sheet sheet = workbook.createSheet( sheetName);
+        Sheet sheet = workbook.createSheet(sheetName);
         setColumnWidth(sheet);
 
         AtomicInteger index = new AtomicInteger(1);
-
         addEventNameAndLogo(sheet, event, index);
 
         createTitle(sheet, sheetName, index);
         createHeader(sheet, index.getAndIncrement());
         List<EventTeam> teams = event.getEventTeams();
-        teams.sort(Comparator.comparing(x->x.getNumber()));
-        teams.forEach(x->createDataRow(sheet, x, index.getAndIncrement()));
+        teams.sort(Comparator.comparing(x -> x.getNumber()));
+        teams.forEach(x -> createDataRow(sheet, x, index.getAndIncrement()));
 
         sheet.createRow(index.getAndIncrement());
         sheet.createRow(index.getAndIncrement());
@@ -120,27 +127,8 @@ public class ListToExcelExporterService {
         return index;
     }
 
-    private void setColumnWidth(Sheet sheet) {
-        sheet.setColumnWidth(0, 4 * 256);
-        sheet.setColumnWidth(1, 14 * 256);
-        sheet.setColumnWidth(2, 22 * 256);
-        sheet.setColumnWidth(3, 20 * 256);
-        sheet.setColumnWidth(4, 22 * 256);
-        sheet.setColumnWidth(5, 22 * 256);
-        sheet.setColumnWidth(6, 20 * 256);
-        sheet.setColumnWidth(7, 22 * 256);
-        sheet.setColumnWidth(8, 10 * 256);
-        sheet.setColumnWidth(9, 15 * 256);
-        sheet.setColumnWidth(10, 35 * 256);
-        sheet.setColumnWidth(11, 10 * 256);
-        sheet.setColumnWidth(12, 25 * 256);
-        sheet.setColumnWidth(13, 25 * 256);
-    }
-
     private void createDataRow(Sheet sheet, EventTeam et, int index) {
         Row row = sheet.createRow(index);
-
-        LOGGER.info("EventTeam: " + et.toString());
 
         AtomicInteger index2 = new AtomicInteger(0);
 
@@ -159,6 +147,23 @@ public class ListToExcelExporterService {
         row.createCell(index2.getAndIncrement()).setCellValue("");
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getEmergencyPerson()).orElse(""));
         row.createCell(index2.getAndIncrement()).setCellValue(Optional.ofNullable(et.getTeam().getEmergencyPhone()).orElse(""));
+    }
+
+    private void setColumnWidth(Sheet sheet) {
+        sheet.setColumnWidth(0, 4 * 256);
+        sheet.setColumnWidth(1, 14 * 256);
+        sheet.setColumnWidth(2, 22 * 256);
+        sheet.setColumnWidth(3, 20 * 256);
+        sheet.setColumnWidth(4, 22 * 256);
+        sheet.setColumnWidth(5, 22 * 256);
+        sheet.setColumnWidth(6, 20 * 256);
+        sheet.setColumnWidth(7, 22 * 256);
+        sheet.setColumnWidth(8, 10 * 256);
+        sheet.setColumnWidth(9, 15 * 256);
+        sheet.setColumnWidth(10, 35 * 256);
+        sheet.setColumnWidth(11, 10 * 256);
+        sheet.setColumnWidth(12, 25 * 256);
+        sheet.setColumnWidth(13, 25 * 256);
     }
 
     private void setStyle(int index, Row row, CellStyle cellStyle) {

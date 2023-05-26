@@ -13,69 +13,55 @@ import authHeader from "../../service/auth-header";
 import { AdminTeamList } from "../team/AdminTeamList";
 import Spinner from "react-bootstrap/Spinner";
 import { StatementModal } from "../statement/StatementModal";
+import {
+  useGetAllBeforeQuery,
+  useGetAllFutureQuery,
+} from "../../service/rtk-fetch-api";
 
 const HomePage = (props) => {
   const [futureEvents, setFutureEvents] = useState([]);
-  const [archiveEvents, setArchiveEvents] = useState([]);
   const [createEvent, setCreateEvent] = useState();
   const [eventToTeamList, setEventToTeamList] = useState();
   const [eventToTeamPanel, setEventToTeamPanel] = useState();
-  const [loadingFuture, setLoadingFuture] = useState(true);
-  const [loadingBefore, setLoadingBefore] = useState(true);
   const [mainAdmin, setMainAdmin] = useState(false);
   const [redirected, setRedirected] = useState(false);
   const [showStatement, setShowStatement] = useState();
   const [referee, setReferee] = useState(false);
 
+  const { data: archiveEvents = [], isFetching: fetchingBefore } =
+    useGetAllBeforeQuery();
+
+  const {
+    data: futureEventsData = [],
+    isFetching: fetchingFuture,
+    refetch: refetchFutureEvents,
+  } = useGetAllFutureQuery();
+
   let eventRedirect = useLocation().search;
 
   const navigate = useNavigate();
 
-  const fetchEvents = () => {
-    fetchFuture();
-    if (archiveEvents.length === 0) fetchArchive();
-  };
+  useEffect(() => {
+    if (fetchingFuture || futureEventsData.length === 0) return;
+    const events = JSON.parse(JSON.stringify(futureEventsData));
 
-  const fetchFuture = () => {
-    setLoadingFuture(true);
+    setFutureEvents(events.sort((x, y) => (x.date < y.date ? -1 : 1)));
 
-    axios
-      .get(`${backendUrl()}/event/getAllFuture`, {
-        headers: authHeader(),
-      })
-      .then((res) => {
-        setFutureEvents(res.data.sort((x, y) => (x.date < y.date ? -1 : 1)));
-
-        if (eventRedirect !== undefined && !redirected) {
-          const index = eventRedirect.includes("&")
-            ? eventRedirect.indexOf("&")
-            : eventRedirect.length;
-          const event = res.data.find(
-            (x) =>
-              x.eventId ===
-              Number(eventRedirect.substring(0, index).replace("?", ""))
-          );
-          if (eventRedirect.includes("list")) setEventToTeamList(event);
-          else setEventToTeamPanel(event);
-          eventRedirect = null;
-          setRedirected(true);
-        }
-        setLoadingFuture(false);
-      });
-  };
-
-  const fetchArchive = () => {
-    setLoadingBefore(true);
-
-    axios
-      .get(`${backendUrl()}/event/getAllBefore`, {
-        headers: authHeader(),
-      })
-      .then((res) => {
-        setArchiveEvents(res.data.sort((x, y) => (x.date > y.date ? -1 : 1)));
-        setLoadingBefore(false);
-      });
-  };
+    if (eventRedirect !== undefined && !redirected) {
+      const index = eventRedirect.includes("&")
+        ? eventRedirect.indexOf("&")
+        : eventRedirect.length;
+      const event = events.find(
+        (x) =>
+          x.eventId ===
+          Number(eventRedirect.substring(0, index).replace("?", ""))
+      );
+      if (eventRedirect.includes("list")) setEventToTeamList(event);
+      else setEventToTeamPanel(event);
+      eventRedirect = null;
+      setRedirected(true);
+    }
+  }, [fetchingFuture]);
 
   const fetchMainAdmin = () => {
     if (sessionStorage.getItem("username") !== null)
@@ -94,7 +80,7 @@ const HomePage = (props) => {
   };
 
   useEffect(() => {
-    fetchEvents();
+    refetchFutureEvents();
     fetchMainAdmin();
   }, []);
 
@@ -109,7 +95,7 @@ const HomePage = (props) => {
         </h4>
       </Card>
       <div className="row mx-0 justify-content-center card-body p-0">
-        {loadingFuture && futureEvents.length === 0 && (
+        {fetchingFuture && futureEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />
           </div>
@@ -149,7 +135,7 @@ const HomePage = (props) => {
       </Card>
 
       <div className="row mx-0 justify-content-center card-body">
-        {loadingBefore && archiveEvents.length === 0 && (
+        {fetchingBefore && archiveEvents.length === 0 && (
           <div className="text-center">
             <Spinner animation="border" variant="secondary" size="lg" />
           </div>
@@ -192,7 +178,7 @@ const HomePage = (props) => {
         show={createEvent !== undefined}
         handleClose={() => {
           setCreateEvent();
-          fetchEvents();
+          refetchFutureEvents();
         }}
         event={createEvent}
       />
@@ -201,7 +187,7 @@ const HomePage = (props) => {
           show={eventToTeamList !== undefined}
           handleClose={() => {
             setEventToTeamList();
-            fetchEvents();
+            refetchFutureEvents();
           }}
           eventId={eventToTeamList?.eventId}
           eventName={eventToTeamList?.name}
@@ -213,10 +199,9 @@ const HomePage = (props) => {
           show={eventToTeamList !== undefined}
           handleClose={() => {
             setEventToTeamList();
-            fetchEvents();
+            refetchFutureEvents();
           }}
           eventId={eventToTeamList?.eventId}
-          started={eventToTeamList?.started}
         />
       )}
       {showStatement && (
@@ -230,7 +215,7 @@ const HomePage = (props) => {
         show={eventToTeamPanel !== undefined}
         handleClose={() => {
           setEventToTeamPanel();
-          fetchEvents();
+          refetchFutureEvents();
         }}
         event={eventToTeamPanel}
       />

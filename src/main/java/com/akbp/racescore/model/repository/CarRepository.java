@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CarRepository extends JpaRepository<Car, Long> {
     List<Car> findByInsuranceExpiryDateBetween(Instant expiryDateStart, Instant expiryDateEnd);
+    List<Car> findByCarInspectionExpiryDateBetween(Instant expiryDateStart, Instant expiryDateEnd);
 }

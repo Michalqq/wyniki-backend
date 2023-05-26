@@ -5,22 +5,20 @@ import ResultTable from "../common/table/ResultTable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ScoreDiv, ScoreDivPenalty, TeamDiv, CarDiv } from "../common/Div";
 import { Selector } from "../common/Selector";
-import {
-  backendUrl,
-  checkReferee,
-  fetchGetScores,
-  fetchPsOptions,
-} from "../utils/fetchUtils";
+import { backendUrl, checkReferee, fetchPsOptions } from "../utils/fetchUtils";
 import PenaltyTable from "../tables/PenaltyTable";
 import DisqualificationTable from "../tables/DisqualificationTable";
 import { NrBadge } from "../common/NrBadge";
 import Button from "react-bootstrap/Button";
-import { download } from "../utils/fileUtils";
 import { MyButton } from "../common/Button";
 import { calcTimeTo } from "../utils/utils";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import { CompareScoresModal } from "../scores/CompareScoresModal";
+import {
+  useGetScoresQuery,
+  useGetSummedScoresQuery,
+} from "../../service/rtk-fetch-api";
 
 const StageScorePage = (props) => {
   const [activeTab, setActiveTab] = useState(1);
@@ -44,11 +42,11 @@ const StageScorePage = (props) => {
 
   const [event, setEvent] = useState();
 
-  const [scores, setScores] = useState([]);
+  // const [scores, setScores] = useState([]);
   const [scoresByClass, setScoresByClass] = useState([]);
   const [referee, setReferee] = useState(false);
 
-  const [summedScores, setSummedScores] = useState([]);
+  // const [summedScores, setSummedScores] = useState([]);
   const [summedScoresByClass, setSummedScoresByClass] = useState([]);
 
   const [psOptions, setPsOptions] = useState([]);
@@ -62,30 +60,24 @@ const StageScorePage = (props) => {
   const [loading, setLoading] = useState(true);
   const [loadingScoreFile, setLoadingScoreFile] = useState(false);
 
-  const fetchScores = () => {
-    fetchGetScores(stage, (data) => {
-      setScores(data);
-      setLoading(false);
-    });
-  };
+  const {
+    data: scores = [],
+    isFetching,
+    refetch: scoresRefetch,
+  } = useGetScoresQuery(stage, {
+    skip: stage === undefined,
+  });
 
-  const fetchScoresAndUpdate = () => {
-    fetchGetScores(stage, (data) => {
-      setScores(data);
-      fetchSummedScores();
-    });
-  };
-
-  const fetchSummedScores = () => {
-    axios
-      .get(
-        `${backendUrl()}/score/getStagesSumScores?eventId=${eventId}&stageId=${stage}`
-      )
-      .then((res) => {
-        setSummedScores(res.data);
-        setLoading(false);
-      });
-  };
+  const {
+    data: summedScores = [],
+    isFetching: summedScoresFetching,
+    refetch: summedScoreRefetch,
+  } = useGetSummedScoresQuery(
+    { eventId: eventId, stageId: stage },
+    {
+      skip: stage === undefined || eventId === undefined,
+    }
+  );
 
   const fetchPsOptionsFnc = () => {
     fetchPsOptions(eventId, (data) => {
@@ -96,7 +88,7 @@ const StageScorePage = (props) => {
 
   const fetchEvent = () => {
     axios
-      .get(`${backendUrl()}/event/getEvent?eventId=${eventId}`)
+      .get(`${backendUrl()}/event/getBasicEvent?eventId=${eventId}`)
       .then((res) => {
         setEvent({
           ...res.data,
@@ -105,22 +97,24 @@ const StageScorePage = (props) => {
         });
       });
   };
+
   const fetchData = () => {
-    setLoading(true);
     if (stage !== undefined) {
-      fetchScores();
-      fetchSummedScores();
       fetchEvent();
     }
   };
 
   const getScoresFile = () => {
-    setLoadingScoreFile(true);
-    download(
+    // setLoadingScoreFile(true);
+    window.open(
       `${backendUrl()}/file/getScoresFile?eventId=${eventId}`,
-      "wyniki_" + event.name + ".xlsx",
-      () => setLoadingScoreFile(false)
+      "_blank"
     );
+    // download(
+    //   `${backendUrl()}/file/getScoresFile?eventId=${eventId}`,
+    //   "wyniki_" + event.name + ".xlsx",
+    //   () => setLoadingScoreFile(false)
+    // );
   };
 
   useEffect(() => {
@@ -130,6 +124,8 @@ const StageScorePage = (props) => {
 
   useEffect(() => {
     fetchData();
+    setScoresByClass([]);
+    setSummedScoresByClass([]);
   }, [stage]);
 
   useEffect(() => {
@@ -138,7 +134,9 @@ const StageScorePage = (props) => {
   }, []);
 
   useEffect(() => {
-    let tempScores =
+    if (isFetching || scores.length === 0) return;
+
+    const tempScores =
       currentClass === `${GENERAL}+${GUEST}`
         ? scores
         : currentClass === GENERAL
@@ -151,6 +149,8 @@ const StageScorePage = (props) => {
   }, [scores, currentClass]);
 
   useEffect(() => {
+    if (summedScoresFetching || summedScores.length === 0) return;
+
     let tempScores =
       currentClass === `${GENERAL}+${GUEST}`
         ? summedScores
@@ -246,8 +246,6 @@ const StageScorePage = (props) => {
   );
 
   const handleMarked = (number) => {
-    console.log(number);
-
     if (!markedNumbers.includes(number)) markedNumbers.push(number);
     else markedNumbers.splice(markedNumbers.indexOf(number), 1);
 
@@ -255,7 +253,7 @@ const StageScorePage = (props) => {
   };
 
   const highlightRow = (row) => {
-    if (markedNumbers.includes(row.values.nr)) return "yellow";
+    if (markedNumbers.includes(row.values.nr)) return "#c9e9a7";
   };
 
   return (
@@ -348,7 +346,10 @@ const StageScorePage = (props) => {
             <Button
               className={"m-1"}
               variant="primary"
-              onClick={() => fetchData()}
+              onClick={() => {
+                summedScoreRefetch();
+                scoresRefetch();
+              }}
             >
               Odśwież
             </Button>
@@ -372,14 +373,14 @@ const StageScorePage = (props) => {
           onSelect={(key) => setActiveTab(key)}
           className="mb-1 fw-bold text-dark device-small"
         >
-          <Tab eventKey={1} title="Czas NA" className="alert-secondary">
+          <Tab eventKey={1} title="Czas NA" className="custom-tab">
             <div className="my-pe-1">
               <div className="shadow bg-body rounded">
                 <ResultTable
                   columns={columns}
                   data={scoresByClass}
                   pageCount={3}
-                  isLoading={loading}
+                  isLoading={isFetching}
                   isFooter={false}
                   isHeader={true}
                   cursor={"pointer"}
@@ -389,14 +390,14 @@ const StageScorePage = (props) => {
               </div>
             </div>
           </Tab>
-          <Tab eventKey={2} title="Suma PO">
+          <Tab eventKey={2} title="Suma PO" className="custom-tab">
             <div className="my-ps-1">
               <div className="shadow bg-body rounded">
                 <ResultTable
                   columns={columns}
                   data={summedScoresByClass}
                   pageCount={3}
-                  isLoading={loading}
+                  isLoading={summedScoresFetching}
                   isFooter={false}
                   isHeader={true}
                   cursor={"pointer"}
@@ -435,7 +436,8 @@ const StageScorePage = (props) => {
           show={true}
           handleClose={() => setShowCompareScoresModal()}
           eventId={eventId}
-          markedNumbers={markedNumbers}
+          markedNumbers={markedNumbers.sort((a, b) => (a < b ? -1 : 1))}
+          psOptions={psOptions}
         />
       )}
     </>

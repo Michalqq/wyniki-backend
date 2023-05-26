@@ -48,7 +48,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
     setMsg("");
     if (mode === undefined || mode === "teamPanel") fetchGetTeam();
     if (mode === "preview") {
-      fetchTeam(myEvent?.teamId);
+      fetchTeam(myEvent?.team?.teamId);
       setDisable(true);
     }
     fetchPsOptions();
@@ -73,7 +73,18 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
         headers: authHeader(),
       })
       .then((res) => {
-        if (res.data !== "") setTeam(res.data);
+        if (res.data !== "")
+          if (mode === "preview") {
+            const et = myEvent?.team;
+            setTeam({
+              ...res.data,
+              driver: et.driver,
+              coDriver: et.coDriver,
+              club: et.club,
+              coClub: et.coClub,
+              teamName: et.teamName,
+            });
+          } else setTeam(res.data);
       });
   };
 
@@ -273,6 +284,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                             type={"radio"}
                             id={`inline-1`}
                             checked={team.sportLicense}
+                            readOnly={disable}
                             onClick={() =>
                               setTeam({ ...team, sportLicense: true })
                             }
@@ -284,6 +296,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                             type={"radio"}
                             id={`inline-2`}
                             checked={!team.sportLicense}
+                            readOnly={disable}
                             onClick={() =>
                               setTeam({ ...team, sportLicense: false })
                             }
@@ -437,6 +450,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                             type={"radio"}
                             id={`inline-1`}
                             checked={team.coSportLicense}
+                            readOnly={disable}
                             onClick={() =>
                               setTeam({ ...team, coSportLicense: true })
                             }
@@ -448,6 +462,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                             type={"radio"}
                             id={`inline-2`}
                             checked={!team.coSportLicense}
+                            readOnly={disable}
                             onClick={() =>
                               setTeam({ ...team, coSportLicense: false })
                             }
@@ -605,7 +620,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       onClick={() =>
                         fetchTeamChecked(
                           myEvent?.eventId,
-                          myEvent?.teamId,
+                          team?.teamId,
                           true,
                           (data) => setOkModal(data)
                         )
@@ -619,7 +634,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       onClick={() =>
                         fetchTeamChecked(
                           myEvent?.eventId,
-                          myEvent?.teamId,
+                          team?.teamId,
                           false,
                           (data) => setOkModal(data)
                         )
@@ -636,7 +651,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       onClick={() =>
                         fetchBkChecked(
                           myEvent?.eventId,
-                          myEvent?.teamId,
+                          team?.teamId,
                           true,
                           (data) => setOkModal(data)
                         )
@@ -650,7 +665,7 @@ export const TeamModal = ({ show, handleClose, handleOk, myEvent, mode }) => {
                       onClick={() =>
                         fetchBkChecked(
                           myEvent?.eventId,
-                          myEvent?.teamId,
+                          team?.teamId,
                           false,
                           (data) => setOkModal(data)
                         )

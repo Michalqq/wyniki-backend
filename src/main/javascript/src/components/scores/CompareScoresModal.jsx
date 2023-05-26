@@ -4,18 +4,17 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
-import {
-  backendUrl,
-  checkReferee,
-  fetchGetCompareScores,
-  fetchStatement,
-} from "../utils/fetchUtils";
-import moment from "moment";
-import { download, openFile } from "../utils/fileUtils";
-import authHeader from "../../service/auth-header";
+import { backendUrl, fetchGetCompareScores } from "../utils/fetchUtils";
 import { Spinner } from "react-bootstrap";
 import { closeOnBack, timeToString } from "../utils/utils";
-import { CarDiv, ScoreDivPenalty, TeamDiv } from "../common/Div";
+import {
+  CarDiv,
+  LightScoreDiv,
+  LightScoreDivPenalty,
+  ScoreDiv,
+  ScoreDivPenalty,
+  TeamDiv,
+} from "../common/Div";
 import { NrBadge } from "../common/NrBadge";
 
 export const CompareScoresModal = ({
@@ -23,6 +22,7 @@ export const CompareScoresModal = ({
   handleClose,
   eventId,
   markedNumbers,
+  psOptions,
 }) => {
   const [loading, setLoading] = useState(false);
   const [scores, setScores] = useState([]);
@@ -36,7 +36,6 @@ export const CompareScoresModal = ({
       fetchTeams();
       fetchGetCompareScores(eventId, markedNumbers, (data) => {
         setScores(data);
-        setLoading(false);
       });
     }
   }, [show]);
@@ -48,6 +47,42 @@ export const CompareScoresModal = ({
       .then((res) => {
         setTeams(res.data);
       });
+  };
+
+  const sumByTeamNumber = (teamNumber) => {
+    return scores
+      .filter((x) => x.teamNumber === teamNumber)
+      .map((x) => x.score + x.penalty * 1000)
+      .reduce((prev, next) => prev + next);
+  };
+
+  useEffect(() => {
+    if (teams.length > 0 && scores.length > 0) {
+      setLoading(false);
+    }
+  }, [teams, scores]);
+
+  const getTeamDiv = (number) => {
+    const eventTeam = teams.find((x) => x.number === number);
+
+    if (!eventTeam) return <></>;
+
+    return (
+      <div className="d-inline-flex">
+        <div className="align-self-center pe-2">
+          <NrBadge value={number}></NrBadge>
+        </div>
+        <TeamDiv
+          team={{
+            driver: eventTeam.driver,
+            coDriver: eventTeam.coDriver,
+            club: eventTeam.club,
+            coClub: eventTeam.coClub,
+            teamName: eventTeam.teamName,
+          }}
+        ></TeamDiv>
+      </div>
+    );
   };
 
   return (
@@ -75,38 +110,22 @@ export const CompareScoresModal = ({
             </h6>
           ) : (
             <div>
-              <div className="row pt-0 my-px-3 bg-light">
-                {markedNumbers.map((number) => {
-                  const eventTeam = teams.find((x) => x.number === number);
-                  const team = eventTeam?.team;
-                  return (
-                    <div className="col p-1 ps-4" style={{ scale: "1.1" }}>
-                      {team && (
-                        <div className="d-flex">
-                          <div className="align-self-center pe-2">
-                            <NrBadge value={number}></NrBadge>
-                          </div>
-                          <TeamDiv team={team}></TeamDiv>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
               <div
                 className="row pt-0 my-px-3"
                 style={{ backgroundColor: "lightgray" }}
               >
                 {markedNumbers.map((number) => {
                   const eventTeam = teams.find((x) => x.number === number);
-                  const team = eventTeam?.team;
                   const car = eventTeam?.car;
                   return (
-                    <div className="col p-3 ps-4" style={{ scale: "1.1" }}>
-                      {team && (
+                    <div
+                      className="col p-3 ps-4 d-inline-flex"
+                      style={{ scale: "1.1" }}
+                    >
+                      {eventTeam && (
                         <CarDiv
                           line1={(car?.brand || "") + " " + (car?.model || "")}
-                          line2={eventTeam.carClass.name}
+                          line2={eventTeam.carClass?.name}
                           carBrand={car?.brand}
                           driveType={car?.driveTypeEnum}
                         ></CarDiv>
@@ -115,48 +134,162 @@ export const CompareScoresModal = ({
                   );
                 })}
               </div>
-              <h6 className="pt-2 text-center">
-                Wersja testowa - czasy nie zawierają kar:
-              </h6>
-              <div className="row pt-1">
-                {markedNumbers
-                  .sort((a, b) => a - b)
-                  .map((number, i) => {
-                    const isLeft = i === 0;
-                    const divClassName = isLeft
-                      ? "col px-0 text-right"
-                      : "col px-0";
-                    return (
-                      <>
-                        <div className={divClassName}>
-                          {scores
-                            .filter((x) => x.teamNumber === number)
-                            .sort((a, b) => a.stageId - b.stageId)
-                            .map((score, i) => {
-                              const bg = i % 2 === 0 ? "bg-light-gray " : "";
-                              return (
-                                <div className="">
-                                  <div className={bg + "p-1 px-3 d-flex "}>
-                                    {isLeft && (
-                                      <div style={{ marginRight: "auto" }}>
-                                        <ScoreDivPenalty
-                                          line1={"PS " + (i + 1)}
-                                          line2={"0"}
-                                        />
-                                      </div>
-                                    )}
-                                    <ScoreDivPenalty
-                                      line1={timeToString(score.score)}
-                                      line2={"0"}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })}
-                        </div>
-                      </>
-                    );
-                  })}
+              <div className="row pt-1 px-3">
+                <table className="table table-stripe">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th style={{ width: "10%" }}>PS</th>
+                      <th
+                        style={{ width: "38%" }}
+                        className="text-end align-middle"
+                      >
+                        {getTeamDiv(markedNumbers[0])}
+                      </th>
+                      <th className="text-start align-middle">
+                        {getTeamDiv(markedNumbers[1])}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {psOptions.map((psOption, i) => {
+                      const bg = i % 2 === 0 ? "bg-light-gray " : "";
+                      let scoresLine = scores
+                        .filter((x) => x.stageId === Number(psOption.value))
+                        .sort((a, b) => (a.teamNumber < b.teamNumber ? -1 : 1));
+
+                      let totalScore1 =
+                        scoresLine[0]?.score + scoresLine[0]?.penalty * 1000;
+                      let totalScore2 =
+                        scoresLine[1]?.score + scoresLine[1]?.penalty * 1000;
+
+                      let sign =
+                        totalScore1 === totalScore2
+                          ? ""
+                          : totalScore1 > totalScore2
+                          ? "+ "
+                          : "- ";
+
+                      return (
+                        <>
+                          <tr className={bg}>
+                            <th className="p-1">
+                              <div style={{ marginRight: "auto" }}>
+                                <ScoreDivPenalty
+                                  line1={"PS " + (i + 1)}
+                                  line2={"0"}
+                                />
+                              </div>
+                            </th>
+                            {scoresLine.length == 2 && (
+                              <>
+                                <th
+                                  className={
+                                    "text-end align-middle " +
+                                    (totalScore1 < totalScore2
+                                      ? "text-success"
+                                      : "fw-normal")
+                                  }
+                                >
+                                  <LightScoreDiv
+                                    line1={timeToString(Math.abs(totalScore1))}
+                                    line3={
+                                      totalScore1 > totalScore2
+                                        ? "+" +
+                                          timeToString(
+                                            totalScore1 - totalScore2
+                                          )
+                                        : ""
+                                    }
+                                  />
+                                </th>
+                                <th
+                                  className={
+                                    "align-middle " +
+                                    (totalScore1 > totalScore2
+                                      ? "text-success"
+                                      : "fw-normal")
+                                  }
+                                >
+                                  <LightScoreDiv
+                                    line1={timeToString(Math.abs(totalScore2))}
+                                    line3={
+                                      totalScore1 < totalScore2
+                                        ? "+" +
+                                          timeToString(
+                                            totalScore2 - totalScore1
+                                          )
+                                        : ""
+                                    }
+                                  />
+                                </th>
+                              </>
+                            )}
+                          </tr>
+                        </>
+                      );
+                    })}
+                  </tbody>
+
+                  {markedNumbers.length == 2 && scores.length > 0 && (
+                    <tfoot>
+                      <tr>
+                        <th className="p-1">
+                          <ScoreDivPenalty line1={"Suma"} line2={"0"} />
+                        </th>
+                        <th
+                          className={
+                            "text-end fw-normal " +
+                            (sumByTeamNumber(markedNumbers[0]) <
+                            sumByTeamNumber(markedNumbers[1])
+                              ? "text-success"
+                              : "")
+                          }
+                        >
+                          <ScoreDiv
+                            line1={timeToString(
+                              sumByTeamNumber(markedNumbers[0])
+                            )}
+                            line2={
+                              sumByTeamNumber(markedNumbers[0]) >
+                              sumByTeamNumber(markedNumbers[1])
+                                ? "+" +
+                                  timeToString(
+                                    sumByTeamNumber(markedNumbers[0]) -
+                                      sumByTeamNumber(markedNumbers[1])
+                                  )
+                                : ""
+                            }
+                          />
+                        </th>
+                        <th
+                          className={
+                            "fw-normal " +
+                            (sumByTeamNumber(markedNumbers[0]) >
+                            sumByTeamNumber(markedNumbers[1])
+                              ? "text-success"
+                              : "")
+                          }
+                        >
+                          <ScoreDiv
+                            line1={timeToString(
+                              sumByTeamNumber(markedNumbers[1])
+                            )}
+                            line2={
+                              sumByTeamNumber(markedNumbers[0]) <
+                              sumByTeamNumber(markedNumbers[1])
+                                ? "+" +
+                                  timeToString(
+                                    sumByTeamNumber(markedNumbers[1]) -
+                                      sumByTeamNumber(markedNumbers[0])
+                                  )
+                                : ""
+                            }
+                          />
+                        </th>
+                      </tr>
+                    </tfoot>
+                  )}
+                </table>
               </div>
             </div>
           )}

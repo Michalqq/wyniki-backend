@@ -12,39 +12,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { closeOnBack } from "../utils/utils";
 import { Selector } from "../common/Selector";
+import { useGetBasicTeamsQuery } from "../../service/rtk-fetch-api";
 
-export const TeamListModal = ({ show, handleClose, eventId, started }) => {
-  const [teams, setTeams] = useState([]);
-  const [startEvent, setStartEvent] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [referee, setReferee] = useState(false);
+export const TeamListModal = ({ show, handleClose, eventId }) => {
   const [classesOptions, setClassesOptions] = useState([]);
   const [classFilter, setClassFilter] = useState("0");
 
-  const fetchTeams = () => {
-    if (eventId === undefined) return;
-    axios
-      .get(`${backendUrl()}/event/getBasicTeams?eventId=${eventId}`)
-      .then((res) => {
-        setTeams(res.data);
-        setLoading(false);
-      });
-  };
+  const { data: teams = [], isFetching: loading } = useGetBasicTeamsQuery(
+    eventId,
+    {
+      skip: eventId === undefined,
+    }
+  );
 
   useEffect(() => {
     if (show) {
       closeOnBack(handleClose);
-      setLoading(true);
-      setTeams([]);
       fetchPsOptionsFnc();
     }
-    fetchTeams();
   }, [show]);
-
-  useEffect(() => {
-    setTeams([]);
-    fetchTeams();
-  }, [referee]);
 
   const fetchPsOptionsFnc = () => {
     fetchPsOptions(eventId, (data) => {
@@ -106,7 +92,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
         Cell: (row) => (
           <CarDiv
             line1={(row.value?.brand || "") + " " + (row.value?.model || "")}
-            line2={row.row.original.carClass.name}
+            line2={row.row.original.carClass?.name}
             carBrand={row.value?.brand}
             driveType={row.value?.driveTypeEnum}
           ></CarDiv>
@@ -182,7 +168,7 @@ export const TeamListModal = ({ show, handleClose, eventId, started }) => {
                 classFilter !== "0"
                   ? teams.filter(
                       (x) =>
-                        x.carClass.name === classFilter ||
+                        x.carClass?.name === classFilter ||
                         x.car.driveTypeEnum === classFilter
                     )
                   : teams

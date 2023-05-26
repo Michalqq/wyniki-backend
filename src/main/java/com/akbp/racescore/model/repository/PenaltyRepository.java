@@ -23,7 +23,7 @@ public interface PenaltyRepository extends JpaRepository<Penalty, Long> {
 
     List<Penalty> findByStageIdAndTeamId(Long stageId, Long teamId);
 
-    List<Penalty> findByStageIdInAndTeamId(List<Long> stagesId, Long teamId);
+    List<Penalty> findByStageIdInAndTeamIdIn(List<Long> stagesId, List<Long> teamId);
 
     List<Penalty> findByStageIdAndTeamIdAndPenaltyKind(Long stageId, Long teamId, Long penaltyKind);
 

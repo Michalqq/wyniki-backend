@@ -46,7 +46,7 @@ public class CarService {
             EventClasses eventClass = event.getEventClasses().stream()
                     .filter(x -> !x.getCarClass().getName().equals(QUEST))
                     .filter(x -> x.getMaxEngineCapacity() > finalEngine)
-                    .min(Comparator.comparingLong(x -> x.getCarClassId())).get();
+                    .min(Comparator.comparingDouble(x -> x.getMaxEngineCapacity())).get();
 
             et.setCarClassId(eventClass.getCarClassId());
 

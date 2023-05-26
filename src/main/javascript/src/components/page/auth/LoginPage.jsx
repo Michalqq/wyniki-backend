@@ -88,7 +88,7 @@ export const LoginPage = (props) => {
                 {`Nie masz konta - `}
                 <a
                   role="button"
-                  class="a"
+                  className="a"
                   onClick={() => navigate(`/register`)}
                 >
                   zarejestruj się
@@ -97,7 +97,7 @@ export const LoginPage = (props) => {
                 <a
                   style={{ fontSize: "13px" }}
                   role="button"
-                  class="a"
+                  className="a"
                   onClick={() => navigate(`/reminder`)}
                 >
                   Odzyskaj hasło

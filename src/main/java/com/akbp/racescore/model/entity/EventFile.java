@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.io.IOException;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class EventFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +44,7 @@ public class EventFile {
             this.file = file.getBytes();
         } catch (IOException e) {
             e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 }

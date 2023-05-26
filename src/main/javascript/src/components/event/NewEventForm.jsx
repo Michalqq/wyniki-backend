@@ -244,7 +244,7 @@ export const NewEventForm = ({ show, handleClose, event }) => {
         setReferee(res.data.referee);
         setEventClasses(
           res.data.eventClasses.map((x) => {
-            return { ...x, carClassName: x.carClass.name };
+            return { ...x, carClassName: x.carClass?.name };
           })
         );
         setEventPaths(res.data.eventPaths);
